@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Threading.Tasks;
 namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
 {
     public static class BasicDataFunctions
@@ -13,6 +8,11 @@ namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
             None, WindowsDT, WindowsRT, Android, Linux, Macintosh, Wasm //this means can even account for webassembly.
         }
         public static EnumOS OS { get; set; } = EnumOS.WindowsDT;
+
+        //you have to somehow populate this now.  does not fit using standard di.  if i decided to do standard di, has to put into here.
+
+        public static ISQLServer? SQLServerConnectionClass { get; set; }
+
 
         //looks like i need my random stuff now.
         //may need to rethink the random stuff now.
