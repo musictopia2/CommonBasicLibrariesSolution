@@ -558,6 +558,24 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             return output;
         }
+        /// <summary>
+        /// this will load the text file and return a list of the object you want.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="delimiter"></param>
+        /// <returns></returns>
+        public static BasicList<T> LoadTextList<T>(this string path, string delimiter = ",")
+        {
+            BasicList<T> output = new();
+            if (File.Exists(path) == false)
+            {
+                return output;
+            }
+            string content = File.ReadAllText(path);
+            output = content.DeserializeDelimitedTextList<T>(delimiter);
+            return output;
+        }
 
         /// <summary>
         /// this will load the text file and return a list of the object you want.
