@@ -1,10 +1,16 @@
-﻿using System;
+﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.UIHelpers;
+using System;
 using System.Threading.Tasks;
 namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
 {
     public static class UIPlatform
     {
         //there are lots of stuff not needed anymore.
+
+        //may not be needed because i already have the execute version.
+
+        public static IUIThread CurrentThread { get; set; } = new DefaultThread(); //if you don't specify, you will get defaultthread
+
         public static Action ExitApp { get; set; } = () => { Console.WriteLine("Closing"); };
         public static Action<string> ShowSystemError { get; set; } = (message) =>
         {
@@ -37,6 +43,11 @@ namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
         {
             Console.WriteLine($"Error { message}");
         };
-
+        //this only works on desktop
+        //still needed for possible music validations but can be others as well.
+        public static Action<string> DesktopValidationError { get; set; } = (message) =>
+        {
+            Console.WriteLine(message);
+        };
     }
 }

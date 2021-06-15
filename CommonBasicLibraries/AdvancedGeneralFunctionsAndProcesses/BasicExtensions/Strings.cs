@@ -2,6 +2,7 @@
 using CommonBasicLibraries.BasicDataSettingsAndProcesses;
 using CommonBasicLibraries.CollectionClasses;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -561,6 +562,17 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             });
             newText = newText.Replace("I P ", " IP ");
             return newText;
+        }
+        //this uses the built in stuff.  even includes stuff like FBI.
+        public static string ToTitleCase(this string info, bool replaceUnderstores = true)
+        {
+            if (replaceUnderstores)
+            {
+                info = info.Replace("_", " ");
+            }
+            TextInfo currentTextInfo = CultureInfo.CurrentCulture.TextInfo;
+            string output = currentTextInfo.ToTitleCase(info);
+            return output;
         }
 
 

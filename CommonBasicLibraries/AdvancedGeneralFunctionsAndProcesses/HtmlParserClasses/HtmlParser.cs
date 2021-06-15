@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using dd = CommonBasicLibraries.BasicDataSettingsAndProcesses.Constants;
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses
 {
     public class HtmlParser
@@ -171,6 +172,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
                 throw new MissingTags(EnumLocation.Ending);
             return GetSomeInfo(StartTag, EndTag, bTakeOutBody, bIncludeFirst, bIncludeLast);
         }
+
+        public string GetQuoteInfo(string tagBeforeQuote, bool bTakeOutBody = false, bool bIncludeFirst = false, bool bIncludeLast = false)
+        {
+            return GetSomeInfo($"{tagBeforeQuote}{dd.DoubleQuote}", dd.DoubleQuote, bTakeOutBody, bIncludeFirst, bIncludeLast);
+        }
+
         public string GetSomeInfo(string bstrStartTag, string bstrEndTag, bool bTakeOutBody = false, bool bIncludeFirst = false, bool bIncludeLast = false)
         {
             if (Body.Length == 0)

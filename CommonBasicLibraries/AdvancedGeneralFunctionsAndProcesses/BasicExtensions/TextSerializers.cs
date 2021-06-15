@@ -1,10 +1,11 @@
 ﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions;
 using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
+using ff = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions.FileFunctions;
 using CommonBasicLibraries.BasicDataSettingsAndProcesses;
 using CommonBasicLibraries.CollectionClasses;
 using System;
 using System.Collections.Generic;
-using System.IO;
+//using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             {
                 list.Add(p.GetValue(payLoad)!.ToString()!);
             });
-            await File.WriteAllLinesAsync(path, list);
+            await ff.WriteAllLinesAsync(path, list);
         }
         public static string SerializeText<T>(this BasicList<T> payLoad, string delimiter = ",")
         {
@@ -54,14 +55,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static void SaveText<T>(this BasicList<T> payLoad, string path, string delimiter = ",")
         {
             string content = payLoad.SerializeText(delimiter);
-            File.WriteAllText(path, content, Encoding.UTF8);
+            ff.WriteAllText(path, content, Encoding.UTF8);
         }
 
         public static async Task SaveTextAsync<T>(this BasicList<T> payLoad, string path, string delimiter = ",")
         {
             //will be utf8
             string content = payLoad.SerializeText<T>(delimiter);
-            await File.WriteAllTextAsync(path, content, Encoding.UTF8);
+            await ff.WriteAllTextAsync(path, content, Encoding.UTF8);
 
         }
 
@@ -85,12 +86,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static async Task<T> LoadTextSingleAsync<T>(this string path) where T : new()
         {
             var properties = GetProperties<T>();
-            if (File.Exists(path) == false)
+            if (ff.FileExists(path) == false)
             {
                 return new T();
             }
-            var lines = await File.ReadAllLinesAsync(path);
-            if (lines.Length != properties.Count)
+            var lines = await ff.ReadAllLinesAsync(path);
+            if (lines.Count != properties.Count)
             {
                 throw new CustomBasicException("Text file corrupted because the delimiter count don't match the properties");
             }
@@ -120,7 +121,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             else if (type == typeof(int?))
                 if (item == "")
+                {
                     return null;
+                }
                 else
                 {
                     bool rets = int.TryParse(item, out int y);
@@ -142,7 +145,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
 
             else if (type.IsNullableEnum())
                 if (item == "")
+                {
                     return null;
+                }
                 else
                 {
                     bool rets = int.TryParse(item, out int y);
@@ -213,7 +218,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             else if (type == typeof(float?))
                 if (item == "")
+                {
                     return null;
+                }
                 else
                 {
                     bool rets = float.TryParse(item, out float y);
@@ -259,7 +266,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             else if (type == typeof(DateTime?))
                 if (item == "")
+                {
                     return null;
+                }
                 else
                 {
                     bool rets = DateTime.TryParse(item, out DateTime y);
@@ -281,7 +290,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             else if (type == typeof(DateTimeOffset?))
                 if (item == "")
+                {
                     return null;
+                }
                 else
                 {
                     bool rets = DateTimeOffset.TryParse(item, out DateTimeOffset y);
@@ -302,9 +313,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             else if (type == typeof(Guid?))
                 if (item == "")
-                    return null;
-                else
                 {
+                    return null;
+
+                }
+                else
+            {
                     bool rets = Guid.TryParse(item, out Guid y);
                     if (rets == false)
                     {
@@ -323,7 +337,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             else if (type == typeof(char?))
                 if (item == "")
+                {
                     return null;
+                }
                 else
                 {
                     bool rets = char.TryParse(item, out char y);
@@ -344,7 +360,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             else if (type == typeof(short?))
                 if (item == "")
+                {
                     return null;
+                }
                 else
                 {
                     bool rets = short.TryParse(item, out short y);
@@ -411,7 +429,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             else if (type == typeof(long?))
                 if (item == "")
+                {
                     return null;
+                }
                 else
                 {
                     bool rets = long.TryParse(item, out long y);
@@ -461,7 +481,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             {
                 output.Add($"{item.Key},{item.Value}");
             }
-            await File.WriteAllLinesAsync(path, output, Encoding.UTF8);
+            await ff.WriteAllLinesAsync(path, output, Encoding.UTF8);
         }
         public static async Task<Dictionary<TKey, TValue>> LoadTextDictionaryAsync<TKey, TValue>(this string path, string delimiter = ",")
             where TKey : notnull
@@ -477,11 +497,11 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             {
                 throw new CustomBasicException("Second item is not simple for dictionary");
             }
-            if (File.Exists(path) == false)
+            if (ff.FileExists(path) == false)
             {
                 return new Dictionary<TKey, TValue>();
             }
-            var lines = await File.ReadAllLinesAsync(path);
+            var lines = await ff.ReadAllLinesAsync(path);
 
             Dictionary<TKey, TValue> output = new();
             foreach (var line in lines)
@@ -568,11 +588,11 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static BasicList<T> LoadTextList<T>(this string path, string delimiter = ",")
         {
             BasicList<T> output = new();
-            if (File.Exists(path) == false)
+            if (ff.FileExists(path) == false)
             {
                 return output;
             }
-            string content = File.ReadAllText(path);
+            string content = ff.AllText(path);
             output = content.DeserializeDelimitedTextList<T>(delimiter);
             return output;
         }
@@ -587,11 +607,11 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static async Task<BasicList<T>> LoadTextListAsync<T>(this string path, string delimiter = ",")
         {
             BasicList<T> output = new();
-            if (File.Exists(path) == false)
+            if (ff.FileExists(path) == false)
             {
                 return output;
             }
-            string content = await File.ReadAllTextAsync(path);
+            string content = await ff.AllTextAsync(path);
             output = content.DeserializeDelimitedTextList<T>(delimiter);
             return output;
         }

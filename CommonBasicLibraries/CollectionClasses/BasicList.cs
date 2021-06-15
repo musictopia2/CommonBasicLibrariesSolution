@@ -10,7 +10,7 @@ using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctio
 namespace CommonBasicLibraries.CollectionClasses
 {
     //i like the idea this time of leaving out the custom.
-    public class BasicList<T> : IEnumerable<T>, IListModifiers<T> //needs inheritance still because game package needs it.
+    public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection, ISimpleList<T>, IBasicList<T> //needs inheritance still because game package needs it.
     {
         protected List<T> PrivateList; //was going to use ilist but we need features that only applies to the ilist.
         public BasicList(int initCapacity = 5)
@@ -126,7 +126,7 @@ namespace CommonBasicLibraries.CollectionClasses
         //attempt to not even have findall.  if needed, rethink.
 
 
-        public BasicList<T> FindAll(Predicate<T> match) //done
+        public IBasicList<T> FindAll(Predicate<T> match) //done
         {
             BasicList<T> output = new();
             foreach (T thisItem in PrivateList)
@@ -140,7 +140,7 @@ namespace CommonBasicLibraries.CollectionClasses
         }
         public T FindOnlyOne(Predicate<T> match)
         {
-            BasicList<T> thisList = FindAll(match);
+            var thisList = FindAll(match);
             if (thisList.Count > 1)
             {
                 throw new CustomBasicException("Found more than one item using FindOnlyOne");
@@ -299,7 +299,7 @@ namespace CommonBasicLibraries.CollectionClasses
             return _rs!.GetSeed();
         }
         //for getting randomlist, 
-        public BasicList<T> GetRandomList(bool removePrevious, int howManyInList) //done
+        public IBasicList<T> GetRandomList(bool removePrevious, int howManyInList) //done
         {
             _rs = RandomHelpers.GetRandomGenerator();
             BasicList<int> rList = _rs.GenerateRandomList(PrivateList.Count, howManyInList);
@@ -326,7 +326,7 @@ namespace CommonBasicLibraries.CollectionClasses
             }
             RemoveGivenList(list);
         }
-        public BasicList<T> GetConditionalItems(Predicate<T> match)
+        public IBasicList<T> GetConditionalItems(Predicate<T> match)
         {
             BasicList<T> output = new();
             foreach (var item in PrivateList)
@@ -338,15 +338,15 @@ namespace CommonBasicLibraries.CollectionClasses
             }
             return output;
         }
-        public BasicList<T> GetRandomList()
+        public IBasicList<T> GetRandomList()
         {
             return GetRandomList(false, PrivateList.Count);
         }
-        public BasicList<T> GetRandomList(bool removePrevious)
+        public IBasicList<T> GetRandomList(bool removePrevious)
         {
             return GetRandomList(removePrevious, PrivateList.Count);
         }
-        public BasicList<T> GetRange(int index, int count)
+        public IBasicList<T> GetRange(int index, int count)
         {
             BasicList<T> output = new();
             for (int i = index; i < count; i++)
@@ -380,7 +380,7 @@ namespace CommonBasicLibraries.CollectionClasses
             PrivateList.Insert(index, value);
             Behavior!.Add(value);
         }
-        public BasicList<T> RemoveAllAndObtain(Predicate<T> match)
+        public IBasicList<T> RemoveAllAndObtain(Predicate<T> match)
         {
 
             BasicList<T> output = new();
@@ -641,7 +641,7 @@ namespace CommonBasicLibraries.CollectionClasses
         }
         //ConvertAll  try to not have convertall anymore.  if i am wrong, rethink.
 
-        public BasicList<U> ConvertAll<U>(Converter<T, U> converter)
+        public IBasicList<U> ConvertAll<U>(Converter<T, U> converter)
         {
             BasicList<U> output = new();
             output.Capacity = PrivateList.Count; //use their count

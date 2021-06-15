@@ -45,7 +45,7 @@ namespace CommonBasicLibraries.DatabaseHelpers.Extensions
             tempList.Add(thiscon);
             return tempList;
         }
-        public static OrCondition AppendOr(this OrCondition thisOr, string property, object value)
+        public static OrCondition AppendOr(this OrCondition thisOr, string property, object? value)
         {
             var thisCon = new AndCondition();
             thisCon.Property = property;
@@ -53,7 +53,7 @@ namespace CommonBasicLibraries.DatabaseHelpers.Extensions
             thisOr.ConditionList.Add(thisCon);
             return thisOr;
         }
-        public static OrCondition AppendOr(this OrCondition thisOr, string property, string toperator, object value)
+        public static OrCondition AppendOr(this OrCondition thisOr, string property, string toperator, object? value)
         {
             var thisCon = new AndCondition();
             thisCon.Property = property;

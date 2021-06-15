@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
 {
@@ -21,22 +22,27 @@ namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
         //this may be needed afterall.
         public delegate Task ActionAsync<in T>(T obj); //this is used so if there is a looping, then it can await it if needed.
         public delegate void UpdateFunct<T>(T thisObj, int expectedItem); //the purpose of this is so i can update.  for this to work, the list has to determine the proper value
+        public delegate void ErrorRaisedEventHandler(string message); //this is when i want to make it clear its error data.  anything can use this.  used for media processes
+
 
         //i like it done this way i think.  allows anybody to override and figure out themselves if they want special code that only runs in docker situations.
         public static Func<bool> IsDocker { get; set; } = () => false;
+        //default is does nothing.  only when its docker would it do anything else.  i already do the function.  might as well do this as well.
 
+        public static Func<string, string> GetCleanedPath { get; set; } = (path) => path;
         public static bool AutoUseMainContainer { get; set; } = true;
 
-        //for now, will not do anything for sql server.
-        //will rethink later.  actually i like the idea of doing extensions for this instead.
-        //that way i don't have to resolve.
+        public static bool SetProperty<T>(ref T backingStore, T value)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+            {
+                return false;
+            }
+            backingStore = value;
+            return true;
+        }
 
 
-        //public static string GetSQLServerConnectionString(string databaseOrPath) //this is intended for sql server.  this means can have several implementations of this.
-        //{
-        //    ISQLServer sqls = cons!.Resolve<ISQLServer>();
-        //    return sqls.GetConnectionString(databaseOrPath);
-        //}
 
     }
 }

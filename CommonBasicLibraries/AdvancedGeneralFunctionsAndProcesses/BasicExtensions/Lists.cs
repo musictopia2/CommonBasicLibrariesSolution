@@ -96,7 +96,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         {
             thisList.ForEach(items => Console.WriteLine(items!.ToString()));
         }
-        public static bool HasDuplicates<TSource, TKey>(this BasicList<TSource> source, Func<TSource, TKey> keySelector)
+        public static bool HasDuplicates<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new ();
             foreach (var item in source)
@@ -108,7 +108,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             return false;
         }
-        public static bool HasOnlyOne<TSource, TKey>(this BasicList<TSource> source, Func<TSource, TKey> keySelector)
+        public static bool HasOnlyOne<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new ();
             if (source.Count == 0)
@@ -151,7 +151,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             var firstList = source.GroupBy(Items => Items).OrderByDescending(Items => Items.Count());
             return firstList.First().Count();
         }
-        public static BasicList<TSource> GetDuplicates<TSource, TKey>(this BasicList<TSource> source, Func<TSource, TKey> keySelector)
+        public static BasicList<TSource> GetDuplicates<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new ();
             BasicList<TSource> output = new();
@@ -183,7 +183,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             return true; //may need to test this idea.
             //its case sensitive.  i think its okay since its intended for anything.
         }
-        public static bool IsIntOrdered<TSource>(this BasicList<TSource> source, Func<TSource, int?> keySelector, bool ExcludeUnknowns = true)
+        public static bool IsIntOrdered<TSource>(this IBasicList<TSource> source, Func<TSource, int?> keySelector, bool ExcludeUnknowns = true)
         {
             if (source.Count == 0)
             {

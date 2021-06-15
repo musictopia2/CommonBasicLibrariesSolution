@@ -1,4 +1,4 @@
-﻿//using CommonBasicStandardLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
+﻿//using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 using CommonBasicLibraries.BasicDataSettingsAndProcesses;
 using CommonBasicLibraries.CollectionClasses;

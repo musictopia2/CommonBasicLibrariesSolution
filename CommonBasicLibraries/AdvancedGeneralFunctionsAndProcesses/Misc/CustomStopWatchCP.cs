@@ -1,4 +1,5 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
+﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.UIHelpers;
+using CommonBasicLibraries.BasicDataSettingsAndProcesses;
 using System.Diagnostics;
 using System.Timers;
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
@@ -31,7 +32,10 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
             if (_thisStop.ElapsedMilliseconds > MaxTime)
             {
                 _thisStop.Stop();
-                TimeUp?.Invoke();
+                Execute.OnUIThread(() =>
+                {
+                    TimeUp?.Invoke(); //tru this way just in case.
+                });
                 return;
             }
             Progress?.Invoke(MaxTime - _thisStop.ElapsedMilliseconds);
@@ -84,7 +88,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
         {
             _thisStop.Stop();
             if (showEvent)
+            {
                 TimeUp?.Invoke(); //i think.
+            }
         }
     }
 }
