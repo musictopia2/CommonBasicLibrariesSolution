@@ -1,21 +1,71 @@
-﻿//using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
-using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class Integers
     {
+        private readonly static BasicList<string> _units = new()
+        {
+            "Zero",
+            "One",
+            "Two",
+            "Three",
+            "Four",
+            "Five",
+            "Six",
+            "Seven",
+            "Eight",
+            "Nine",
+            "Ten",
+            "Eleven",
+            "Twelve",
+            "Thirteen",
+            "Fourteen",
+            "Fifteen",
+            "Sixteen",
+            "Seventeen",
+            "Eighteen",
+            "Nineteen"
+        };
+        private readonly static BasicList<string> _tens = new()
+        {
+            "",
+            "",
+            "Twenty",
+            "Thirty",
+            "Forty",
+            "Fifty",
+            "Sixty",
+            "Seventy",
+            "Eighty",
+            "Ninety"
+        };
+        public static string ConvertToIntegerWords(this int value)
+        {
+            if (value < 20)
+            {
+                return _units[value].ToLower();
+            }
+            if (value < 100)
+            {
+                return _tens[value / 10].ToLower() + ((value % 10 > 0) ? " " + ConvertToIntegerWords(value % 10) : "");
+            }
+            if (value < 1000)
+            {
+                return _units[value / 100].ToLower() + " hundred"
+                        + ((value % 100 > 0) ? " " + ConvertToIntegerWords(value % 100) : "");
+            }
+            if (value < 100000)
+            {
+                return ConvertToIntegerWords(value / 1000) + " thousand "
+                + ((value % 1000 > 0) ? " " + ConvertToIntegerWords(value % 1000) : "");
+            }
+            throw new CustomBasicException("This only supports up to 100,000.  If you need hundred thousands, then rethink");
+        }
         public static string Join(this BasicList<int> thisList, string delimiter)
         {
-            StrCat cats = new ();
+            StrCat cats = new();
             thisList.ForEach(x => cats.AddToString(x.ToString(), delimiter));
             return cats.GetInfo();
         }
-
         public static (int Batches, int LeftOver) GetRemainderInfo(this int thisInt, int batchSize)
         {
             int x = 0;
@@ -31,7 +81,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             return (b, x);
         }
-
         public static string ConvertToSpecificStrings(this int thisInt, int desiredDigits)
         {
             string temps = thisInt.ToString();
@@ -44,7 +93,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 return temps;
             }
             int padding = desiredDigits - temps.Length;
-            StrCat cats = new ();
+            StrCat cats = new();
             for (int i = 0; i < padding; i++)
             {
                 cats.AddToString("0");
@@ -56,13 +105,13 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         {
             TimeSpan progressSpan = TimeSpan.FromMilliseconds(milliSecondsUpTo);
             TimeSpan durationSpan = TimeSpan.FromMilliseconds(durationMilliseconds);
-            return progressSpan.SongProgress(durationSpan);
+            return progressSpan.MediaProgress(durationSpan);
         }
         public static string MusicProgressStringFromSeconds(this int secondsUpTo, int durationSeconds)
         {
             TimeSpan progressSpan = TimeSpan.FromSeconds(secondsUpTo);
             TimeSpan durationSpan = TimeSpan.FromSeconds(durationSeconds); //meant to use from seconds.
-            return progressSpan.SongProgress(durationSpan);
+            return progressSpan.MediaProgress(durationSpan);
         }
         public static int MultiplyPercentage(this int amount, int percentage) => (int)Math.Ceiling((decimal)percentage / 100 * amount); //decided this needs to be clear it multiplies
         public static T ToEnum<T>(this int param) //i may need to cast other times to enums and even generic enums.
@@ -73,7 +122,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 T result = (T)Enum.Parse(typeof(T), param.ToString(), true);
                 return result;
             }
-
             return default!; //i think should be fine (?)
         }
         public static int FromEnum<T>(this T param) where T : Enum
@@ -88,15 +136,13 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 action?.Invoke();
             }
         }
-
         public static void Times(this int @this, Action<int> action)
         {
             for (var i = 0; i < @this; i++)
             {
-                action?.Invoke(i + 1); //we want it one based.
+                action?.Invoke(i + 1);
             }
         }
-
         public async static Task TimesAsync(this int @this, Func<Task> action)
         {
             for (var i = 0; i < @this; i++)
@@ -108,7 +154,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         {
             for (var i = 0; i < @this; i++)
             {
-                await action?.Invoke(i + 1)!; //we want it one based.
+                await action?.Invoke(i + 1)!;
             }
         }
         public static bool IsNumberOdd(this int x)

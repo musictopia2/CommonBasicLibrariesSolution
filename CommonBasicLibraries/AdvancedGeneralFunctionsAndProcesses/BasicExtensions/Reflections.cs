@@ -1,9 +1,4 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class Reflections
     {
@@ -26,8 +21,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         {
             var simpleTypesList = new List<Type>
             {
-                //typeof(byte),
-                //typeof(sbyte),
                 typeof(short),
                 typeof(ushort),
                 typeof(int),
@@ -64,7 +57,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             return simpleTypesList.Contains(type);
         }
-
         public static bool IsDateType(this PropertyInfo property)
         {
             if (typeof(DateTime).IsAssignableFrom(property.PropertyType))
@@ -75,9 +67,16 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             {
                 return true;
             }
+            if (typeof(DateOnly).IsAssignableFrom(property.PropertyType)) //to better support the dateonly.
+            {
+                return true;
+            }
+            if (typeof(DateOnly?).IsAssignableFrom(property.PropertyType))
+            {
+                return true;
+            }
             return false;
         }
-
         public static bool IsIntegerType(this PropertyInfo property)
         {
             if (typeof(int).IsAssignableFrom(property.PropertyType))
@@ -90,8 +89,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             return false;
         }
-
-
         public static bool IsSimpleType(this PropertyInfo property)
         {
             return property.PropertyType.IsSimpleType();
@@ -108,12 +105,11 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 typeof(bool),
                 typeof(bool?),
             };
-            //enums are not booleans.
             return simpleTypesList.Contains(property.PropertyType);
         }
         public static bool IsString(this PropertyInfo property)
         {
-            var newTypes = new List<Type> { typeof(string) };
+            var newTypes = new List<Type> { typeof(string) }; //okay to use standard list this time instead of my custom one because its temporary.
             return newTypes.Contains(property.PropertyType);
         }
         public static bool IsIntOrEnum(this PropertyInfo property)
@@ -140,9 +136,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 return false;
             }
             bool output = false;
-
             Type[] firstList = property.PropertyType.GetInterfaces();
-
             foreach (var i in firstList)
                 if (i.IsGenericType && i.GetGenericTypeDefinition().Equals(typeof(IEnumerable<>)))
                     output = true;
@@ -171,7 +165,11 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             var attributeName = typeof(TAttribute).Name;
             return type.GetCustomAttributes(true).Any(attr => attr.GetType().Name == attributeName);
         }
-        public static IEnumerable<PropertyInfo> GetPropertiesWithAttribute<TAttribute>(this Type type)
+        public static IEnumerable<PropertyInfo> GetAllPropertiesWithAttribute<TAttribute>(this Type type)
+        {
+            return type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(p => p.HasAttribute<TAttribute>());
+        }
+        public static IEnumerable<PropertyInfo> GetPublicPropertiesWithAttribute<TAttribute>(this Type type)
         {
             return type.GetProperties().Where(p => p.HasAttribute<TAttribute>());
         }

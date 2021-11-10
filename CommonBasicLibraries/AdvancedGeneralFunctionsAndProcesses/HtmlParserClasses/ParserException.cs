@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses
 {
     public class ParserException : Exception
     {

@@ -1,5 +1,4 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
 {
     public partial class RandomGenerator
     {
@@ -13,7 +12,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             }
             return output;
         }
-
         public ITestPerson GetTestSinglePerson<T>(EnumAgeRanges defaultAge = EnumAgeRanges.Adult) where T : ITestPerson, new()
         {
             ITestPerson output = new T();
@@ -33,7 +31,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             CityStateClass chosen = cities.GetRandomItem();
             output.City = chosen.City;
             output.State = chosen.StateAbb;
-            output.LastDate = NextDate(simple: true);
+            output.LastDate = NextDateOnly();
             output.PostalCode = NextZipCode();
             output.Address = NextAddress();
             output.IsActive = NextBool(70); //wants to lean towards active

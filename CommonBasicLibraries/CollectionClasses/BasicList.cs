@@ -1,56 +1,35 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
 namespace CommonBasicLibraries.CollectionClasses
 {
     //i like the idea this time of leaving out the custom.
     public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection, ISimpleList<T>, IBasicList<T> //needs inheritance still because game package needs it.
     {
-        protected List<T> PrivateList; //was going to use ilist but we need features that only applies to the ilist.
+        protected List<T> PrivateList;
         public BasicList(int initCapacity = 5)
         {
 
             PrivateList = new(initCapacity);
             LoadBehavior();
-            //hopefully no need for factories.
-        } //will go ahead and always use the simple one unless another one is used
-
+        }
         public BasicList(IEnumerable<T> list)
         {
             if (list == null)
             {
                 throw new CustomArgumentException();
-                //throw new ArgumentNullException("CustomBasicList");
             }
-            //FactoryRequested = new SimpleCollectionFactory<T>
-            //{
-            //    SendingType = GetType()
-            //};
             PrivateList = new List<T>(list.Count()); //telling them we know what to start with if sending a new list.
             CopyFrom(list);
             LoadBehavior();
             Behavior!.LoadStartLists(list);
         }
-
-
         protected bool IsStart = true;
-
         protected IListModifiers<T>? Behavior;
-
-
         protected virtual void LoadBehavior()
         {
             Behavior = new BlankListBehavior<T>(); //so inherited version can load a different behavior.
         }
-
-
-        protected void CopyFrom(IEnumerable<T> collection) //done
+        protected void CopyFrom(IEnumerable<T> collection)
         {
             IList<T> items = PrivateList;
             if (collection != null && items != null)
@@ -62,45 +41,31 @@ namespace CommonBasicLibraries.CollectionClasses
                 }
             }
         }
-        public int Capacity { get => PrivateList.Capacity; set => PrivateList.Capacity = value; } //now have a new function.
+        public int Capacity { get => PrivateList.Capacity; set => PrivateList.Capacity = value; }
         public void TrimExcess()
         {
             PrivateList.TrimExcess();
         }
-
-        public T this[int index] //not sure how changing this would affect things.
+        public T this[int index]
         {
             get { return PrivateList[index]; }
             set
             {
-
                 if (index < 0 || index >= PrivateList.Count)
                 {
                     throw new CustomArgumentException("Index", "When setting custom collection, out of range");
                 }
                 PrivateList[index] = value;
-
             }
         }
-        public int Count => PrivateList.Count; //done
-
+        public int Count => PrivateList.Count;
         internal IRandomGenerator? _rs;
-        //this needs its own copy somehow.
-
-        //no need for maincontainer now.
-        //if a person will not implement it and send in, the system will do it.
-
-        //no need for extras since no collections anymore.
-
-
-        public void Add(T value) //done i think
+        public void Add(T value)
         {
-            PrivateList.Add(value); //hopefully this simple now.
-            Behavior!.Add(value); //we do need behaviors now.
+            PrivateList.Add(value);
+            Behavior!.Add(value);
         }
-
-        //because i really don't have to have 2 different interfaces.  that causes problems too.
-        public void AddRange(IEnumerable<T> thisList) //done
+        public void AddRange(IEnumerable<T> thisList)
         {
             PrivateList.AddRange(thisList);
             Behavior!.AddRange(thisList);
@@ -110,23 +75,19 @@ namespace CommonBasicLibraries.CollectionClasses
             PrivateList.Clear();
             Behavior!.Clear();
         }
-        public bool Contains(T item) //this uses the proxy because i am controlling access to the list instead of accessing it directly. done
+        public bool Contains(T item)
         {
             return PrivateList.Contains(item);
         }
-        public bool Exists(Predicate<T> match) //done
+        public bool Exists(Predicate<T> match)
         {
             return PrivateList.Exists(match);
         }
-        //now it can be null.
-        public T? Find(Predicate<T> match) //done
+        public T? Find(Predicate<T> match)
         {
             return PrivateList.Find(match);
         }
-        //attempt to not even have findall.  if needed, rethink.
-
-
-        public IBasicList<T> FindAll(Predicate<T> match) //done
+        public IBasicList<T> FindAll(Predicate<T> match)
         {
             BasicList<T> output = new();
             foreach (T thisItem in PrivateList)
@@ -134,9 +95,9 @@ namespace CommonBasicLibraries.CollectionClasses
                 if (match(thisItem) == true)
                 {
                     output.Add(thisItem);
-                }    
+                }
             }
-            return output; //surprisingly this worked out well.
+            return output;
         }
         public T FindOnlyOne(Predicate<T> match)
         {
@@ -151,31 +112,31 @@ namespace CommonBasicLibraries.CollectionClasses
             }
             return thisList.Single();
         }
-        public int FindFirstIndex(Predicate<T> match) //done
+        public int FindFirstIndex(Predicate<T> match)
         {
             return PrivateList.FindIndex(match);
         }
-        public int FindFirstIndex(int startIndex, Predicate<T> match) //done
+        public int FindFirstIndex(int startIndex, Predicate<T> match)
         {
             return PrivateList.FindIndex(startIndex, match);
         }
-        public int FindFirstIndex(int startIndex, int count, Predicate<T> match) //done
+        public int FindFirstIndex(int startIndex, int count, Predicate<T> match)
         {
             return PrivateList.FindIndex(startIndex, count, match);
         }
-        public T? FindLast(Predicate<T> match) //done
+        public T? FindLast(Predicate<T> match)
         {
             return PrivateList.FindLast(match);
         }
-        public int FindLastIndex(Predicate<T> match) //done
+        public int FindLastIndex(Predicate<T> match)
         {
             return PrivateList.FindLastIndex(match);
         }
-        public int FindLastIndex(int startIndex, Predicate<T> match) //done
+        public int FindLastIndex(int startIndex, Predicate<T> match)
         {
             return PrivateList.FindLastIndex(startIndex, match);
         }
-        public int FindLastIndex(int startIndex, int count, Predicate<T> match) //done
+        public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
             return PrivateList.FindLastIndex(startIndex, count, match);
         }
@@ -183,7 +144,7 @@ namespace CommonBasicLibraries.CollectionClasses
         {
             return PrivateList.LastIndexOf(thisItem);
         }
-        public void ForEach(Action<T> action) //this is easy because i hook into the list  (done)
+        public void ForEach(Action<T> action)
         {
             PrivateList.ForEach(action);
         }
@@ -211,11 +172,9 @@ namespace CommonBasicLibraries.CollectionClasses
                     action.Invoke(thisItem);
                     return true;
                 }
-
             }
             return false;
         }
-
         /// <summary>
         /// 
         /// </summary>
@@ -228,7 +187,6 @@ namespace CommonBasicLibraries.CollectionClasses
             foreach (T thisItem in PrivateList)
             {
                 if (match1.Invoke(thisItem) == true)
-                    //Console.WriteLine($"Trying To Invoke For Item {ThisItem.ToString()}");
                     allAction.Invoke(thisItem);
             }
             foreach (T thisItem in PrivateList)
@@ -236,7 +194,7 @@ namespace CommonBasicLibraries.CollectionClasses
                 if (match1.Invoke(thisItem) == true && match2.Invoke(thisItem) == true)
                 {
                     specificAction.Invoke(thisItem);
-                    return; //at this point, can stop because it already found the second match and did the second action.
+                    return;
                 }
             }
         }
@@ -261,7 +219,7 @@ namespace CommonBasicLibraries.CollectionClasses
                     await action.Invoke(thisItem);
             }
         }
-        public async Task ForEachAsync(ActionAsync<T> action) //i think done.
+        public async Task ForEachAsync(ActionAsync<T> action)
         {
             foreach (T thisItem in PrivateList)
             {
@@ -272,7 +230,7 @@ namespace CommonBasicLibraries.CollectionClasses
         {
             return PrivateList.GetEnumerator();
         }
-        public T GetRandomItem() //okay.
+        public T GetRandomItem()
         {
             return GetRandomItem(false);
         }
@@ -291,15 +249,10 @@ namespace CommonBasicLibraries.CollectionClasses
         }
         public int GetSeed()
         {
-            if (_rs == null)
-            {
-                //get new random function.
-
-            }
+            _rs = RandomHelpers.GetRandomGenerator();
             return _rs!.GetSeed();
         }
-        //for getting randomlist, 
-        public IBasicList<T> GetRandomList(bool removePrevious, int howManyInList) //done
+        public IBasicList<T> GetRandomList(bool removePrevious, int howManyInList)
         {
             _rs = RandomHelpers.GetRandomGenerator();
             BasicList<int> rList = _rs.GenerateRandomList(PrivateList.Count, howManyInList);
@@ -319,7 +272,7 @@ namespace CommonBasicLibraries.CollectionClasses
         {
             _rs = RandomHelpers.GetRandomGenerator();
             BasicList<int> rList = _rs.GenerateRandomList(PrivateList.Count, howMany);
-            List<T> list = new ();
+            List<T> list = new();
             foreach (int index in rList)
             {
                 list.Add(PrivateList[index - 1]);
@@ -399,7 +352,7 @@ namespace CommonBasicLibraries.CollectionClasses
         }
         public void RemoveAllOnly(Predicate<T> match)
         {
-            List<T> tempList = new ();
+            List<T> tempList = new();
             foreach (T item in PrivateList)
             {
                 if (match(item) == true)
@@ -414,7 +367,7 @@ namespace CommonBasicLibraries.CollectionClasses
         }
         public void KeepConditionalItems(Predicate<T> match)
         {
-            List<T> tempList = new ();
+            List<T> tempList = new();
             foreach (T item in PrivateList)
             {
                 if (match(item) == false)
@@ -435,37 +388,24 @@ namespace CommonBasicLibraries.CollectionClasses
         {
             RemoveItem(0);
         }
-
         private void RemoveItem(int index)
         {
             T oldItem = PrivateList[index];
             PrivateList.RemoveAt(index);
             Behavior!.RemoveSpecificItem(oldItem);
         }
-
         public void RemoveGivenList(IEnumerable<T> list)
         {
-
-
-
-
             if (list == null)
             {
                 throw new ArgumentNullException(nameof(list));
             }
-
             foreach (var item in list)
             {
                 PrivateList.Remove(item);
                 Behavior!.RemoveSpecificItem(item);
             }
-            //hopefully this simple now.
         }
-
-
-        //hopefully no need for factories anymore.  especially since there is no observablecollections anymore.
-
-
         public void RemoveLastItem()
         {
             RemoveItem(PrivateList.Count - 1);
@@ -479,23 +419,23 @@ namespace CommonBasicLibraries.CollectionClasses
         {
             int index = PrivateList.IndexOf(value);
             if (index == -1)
-                return false; //because not even there.
+                return false;
             RemoveItem(index);
             return true;
         }
-        public void ReplaceAllWithGivenItem(T value) //hopefully no problem here (?)  i think done.
+        public void ReplaceAllWithGivenItem(T value)
         {
             PrivateList.Clear();
             Behavior!.Clear();
             Add(value);
         }
-        public void ReplaceItem(T oldItem, T newItem) //i think done
+        public void ReplaceItem(T oldItem, T newItem)
         {
             int index = PrivateList.IndexOf(oldItem);
             RemoveItem(index);
-            InsertMiddle(index, newItem); //hopefully this simple.
+            InsertMiddle(index, newItem);
         }
-        public void Reverse() //i think
+        public void Reverse()
         {
             PrivateList.Reverse();
         }
@@ -503,11 +443,11 @@ namespace CommonBasicLibraries.CollectionClasses
         {
             if (Count == 0)
             {
-                return; //because there is nothing to shuffle.  so can't obviously.  better than runtime error.
+                return;
             }
             _rs = RandomHelpers.GetRandomGenerator();
             BasicList<int> thisList = _rs.GenerateRandomList(PrivateList.Count); //i think
-            List<T> rList = new (); //since they removed and added, then i think its best if i just remove the entire thing.   however, let them know it really moved.
+            List<T> rList = new();
             foreach (int index in thisList)
             {
                 rList.Add(PrivateList[index - 1]); //because 0 based.
@@ -519,20 +459,18 @@ namespace CommonBasicLibraries.CollectionClasses
         {
             _rs = RandomHelpers.GetRandomGenerator();
             BasicList<int> thisList = _rs.GenerateRandomList(PrivateList.Count, howMany);
-            List<T> rList = new ();
+            List<T> rList = new();
             foreach (int index in thisList)
             {
-                rList.Add(PrivateList[index - 1]); //because 0 based.
+                rList.Add(PrivateList[index - 1]);
             }
             PrivateList.Clear();
-            InsertRange(0, rList); //i think this time, it will reset it.
+            InsertRange(0, rList);
         }
-
         public void Sort()
         {
             PrivateList.Sort();
         }
-
         public void Sort(Comparison<T> comparison)
         {
             PrivateList.Sort(comparison);
@@ -558,7 +496,6 @@ namespace CommonBasicLibraries.CollectionClasses
         {
             CopyFrom(thisList);
         }
-
         public void InsertRange(int index, IEnumerable<T> items) //done i think.
         {
             if (items == null)
@@ -588,19 +525,19 @@ namespace CommonBasicLibraries.CollectionClasses
                 throw new CustomArgumentException("Collection Cannot Be Nothing When Replacing Range");
             }
             PrivateList.Clear();
-            PrivateList.AddRange(thisList); //i think
+            PrivateList.AddRange(thisList);
             Behavior!.ReplaceRange(thisList);
         }
-        public void RemoveOnlyOneAfterAction(Predicate<T> match, Action<T> action) //does not have to be there.  if not there, ignore
+        public void RemoveOnlyOneAfterAction(Predicate<T> match, Action<T> action)
         {
             if (Exists(match) == false)
             {
-                return; //because there is none.
+                return;
             }
             T thisItem;
             try
             {
-                thisItem = FindOnlyOne(match); //so if more than one is found, then will raise an exception
+                thisItem = FindOnlyOne(match);
             }
             catch (CustomBasicException)
             {
@@ -615,7 +552,7 @@ namespace CommonBasicLibraries.CollectionClasses
         }
         public void RemoveSeveralConditionalItems(BasicList<ConditionActionPair<T>> thisList)
         {
-            BasicList<T> rList = new ();
+            BasicList<T> rList = new();
             thisList.ForEach(firstItem =>
             {
                 if (Exists(firstItem.Predicate) == true)
@@ -639,12 +576,10 @@ namespace CommonBasicLibraries.CollectionClasses
             });
             RemoveGivenList(rList);
         }
-        //ConvertAll  try to not have convertall anymore.  if i am wrong, rethink.
-
         public IBasicList<U> ConvertAll<U>(Converter<T, U> converter)
         {
             BasicList<U> output = new();
-            output.Capacity = PrivateList.Count; //use their count
+            output.Capacity = PrivateList.Count;
             for (int i = 0; i < PrivateList.Count; i++)
             {
                 output.Add(converter(PrivateList[i]));
@@ -671,8 +606,5 @@ namespace CommonBasicLibraries.CollectionClasses
             PrivateList.RemoveAt(oldIndex);
             PrivateList.Insert(newIndex, item);
         }
-
-
-
     }
 }

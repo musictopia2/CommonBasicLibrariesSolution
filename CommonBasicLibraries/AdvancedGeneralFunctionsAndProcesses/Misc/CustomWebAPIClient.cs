@@ -1,10 +1,4 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ConfigProcesses;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks; //most of the time, i will be using asyncs.
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
 {
     //for now i am unable to have a simplewebpage class.  if needed, rethinking is required.  since i am using something declared as obsolete.
     public abstract class CustomWebAPIClient
@@ -29,12 +23,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
         private async void SetUp(ISimpleConfig sims)
         {
             string firstPart = await sims.GetStringAsync(Key);
-            Uri secondPart = new (firstPart);
-            BaseAddress = new (secondPart, ServicePath);
+            Uri secondPart = new(firstPart);
+            BaseAddress = new(secondPart, ServicePath);
         }
         protected async Task SaveResults(string extras, string errorMessage)
         {
-            Uri finalAddress = new (BaseAddress!, extras);
+            Uri finalAddress = new(BaseAddress!, extras);
             var results = await Client.GetAsync(finalAddress);
             if (results.IsSuccessStatusCode == false)
             {
@@ -43,7 +37,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
         }
         protected async Task<T> GetResults<T>(string extras, string errorMessage)
         {
-            Uri finalAddress = new (BaseAddress!, extras);
+            Uri finalAddress = new(BaseAddress!, extras);
             return await Client.GetJsonAsync<T>(finalAddress, errorMessage);
         }
     }

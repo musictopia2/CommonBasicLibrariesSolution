@@ -1,5 +1,4 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
 {
     public class RandomPasswordParameterClass
     {

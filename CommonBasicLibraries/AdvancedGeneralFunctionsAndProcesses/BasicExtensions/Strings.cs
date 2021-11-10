@@ -1,17 +1,15 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Globalization;
+using System.Text.RegularExpressions; //not common enough to put into globals.
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class Strings
     {
+        public static string BackSpaceRemoveEnding0s(this string payLoad)
+        {
+            string output = payLoad.TrimEnd(new char[] { '0' });
+            return output;
+        }
+
         private static string _monthReplace = "";
         public static BasicList<string> CommaDelimitedList(string payLoad)
         {
@@ -44,8 +42,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 }
             return possNum;
         }
-
-
         public static BasicList<string> SplitStringEliminateMonth(this string thisStr)
         {
             thisStr = thisStr.Trim();
@@ -86,7 +82,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 _ => 0
             };
         }
-
         public static BasicList<string> GetSentences(this string sTextToParse)
         {
             BasicList<string> al = new();
@@ -266,37 +261,25 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             throw new CustomBasicException("Not sure");
         }
-        public static bool IsValidDate(this string dateStr, out DateTime? newDate) // can't use nothing as a variable type.  too bad the function did not allow that.  can try one more thing
+        //will use the new dateonly for this.  no reason for time if we are entering date alone.
+        public static bool IsValidDate(this string dateStr, out DateOnly? newDate) // can't use nothing as a variable type.  too bad the function did not allow that.  can try one more thing
         {
-            string thisText;
-            thisText = dateStr;
+
+            DateOnly temps;
+            bool rets = DateOnly.TryParseExact(dateStr, "mmddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
+            if (rets)
+            {
+                newDate = temps;
+                return true;
+            }
+            rets = DateOnly.TryParseExact(dateStr, "mmddyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
+            if (rets)
+            {
+                newDate = temps;
+                return true;
+            }
             newDate = null;
-            //if it has 8 characters, try something else.
-            //because i could get it from a picker.  that has to be valid as well.
-
-            if (thisText.Length != 6 && thisText.Length != 8)
-            {
-                return false;
-            }
-
-            int lasts;
-            if (thisText.Length == 8)
-            {
-                lasts = 4;
-            }
-            else
-            {
-                lasts = 2;
-            }
-            var newText = thisText.Substring(0, 2) + "/" + thisText.Substring(2, 2) + "/" + thisText.Substring(4, lasts);
-            bool rets;
-            rets = DateTime.TryParse(newText, out DateTime TempDate);
-            if (rets == false)
-            {
-                return false;
-            }
-            newDate = TempDate;
-            return true; // i think
+            return false;
         }
         public static BasicList<Tuple<string, int?>> GetStringIntegerCombos(this string thisStr)
         {
@@ -310,7 +293,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             string item2;
             item2 = "";
             int x = 0;
-            // if the first item is a number, then the first string will be blank and the second part will be a integer.  this is used for games like farmville where there is a string and number associated to it.  if 0 is entered, then will return 0 items.  its up to the process to decide what to do with a blank number
             bool hadNumber = false;
             bool hadStr = false;
             bool reject = false;
@@ -353,7 +335,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 }
                 else if (lastAlpha == true && isInt == true)
                 {
-                    item2 = thisItem.ToString(); // start of a number
+                    item2 = thisItem.ToString();
                 }
                 else
                 {
@@ -368,10 +350,10 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     }
                     Tuple<string, int?> thisTuple = new(item1, thisInt);
                     thisList.Add(thisTuple);
-                    item1 = thisItem.ToString(); // try this way.
-                    item2 = null!; // try this
+                    item1 = thisItem.ToString();
+                    item2 = null!;
                 }
-                lastAlpha = isAlpha; // hopefully this is the only bug
+                lastAlpha = isAlpha;
             }
             if (reject == true)
             {
@@ -485,7 +467,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         {
             return thisStr.Where(Items => char.IsNumber(Items) == true).Any();
         }
-
         public static string PartialString(this string fullString, string searchFor, bool beginning)
         {
             if (fullString.Contains(searchFor) == false)
@@ -563,7 +544,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             newText = newText.Replace("I P ", " IP ");
             return newText;
         }
-        //this uses the built in stuff.  even includes stuff like FBI.
         public static string ToTitleCase(this string info, bool replaceUnderstores = true)
         {
             if (replaceUnderstores)
@@ -574,11 +554,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             string output = currentTextInfo.ToTitleCase(info);
             return output;
         }
-
-
-        //i needed this for my music processes.
-        //however, it has to return a string
-
         public static string ConvertCase(this string info, bool doAll = true)
         {
             string tempStr = "";
@@ -638,7 +613,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             return tempStr;
         }
-
         public static string FixBase64ForFileData(this string str_Image)
         {
             // *** Need to clean up the text in case it got corrupted travelling in an XML file
@@ -653,38 +627,33 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             sbText.Replace(" ", string.Empty);
             return sbText.ToString();
         }
-
         public static void SaveFile(this string data, string path)
         {
             byte[] Bytes = Convert.FromBase64String(data);
-            FileStream FileStream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            using FileStream FileStream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
             FileStream.Write(Bytes, 0, Bytes.Length);
             FileStream.Flush();
             FileStream.Close();
         }
-
         public async static Task SaveFileAsync(this string data, string path)
         {
             byte[] Bytes = Convert.FromBase64String(data);
-            FileStream fileStream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            using FileStream fileStream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
             await fileStream.WriteAsync(Bytes);
             await fileStream.FlushAsync();
             fileStream.Close();
-            fileStream.Dispose(); // did not have dispose before though
         }
-
         public static string GetFileData(this string path)
         {
-            FileStream fileStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            using FileStream fileStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
             byte[] Bytes = new byte[fileStream.Length - 1 + 1];
             fileStream.Read(Bytes, 0, (int)fileStream.Length);
             fileStream.Close();
             return Convert.ToBase64String(Bytes);
         }
-
         public async static Task<string> GetFileDataAsync(this string path)
         {
-            FileStream fileStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            using FileStream fileStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
             byte[] Bytes = new byte[fileStream.Length - 1 + 1];
             await fileStream.ReadAsync(Bytes.AsMemory(0, (int)fileStream.Length));
             fileStream.Close();
@@ -700,7 +669,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             {
                 throw new CustomBasicException("Must have at least one item in order to get the body from the string list");
             }
-            StrCat cats = new ();
+            StrCat cats = new();
             thisList.ForEach(ThisItem =>
             {
                 cats.AddToString(ThisItem, Constants.VBCrLf);
@@ -794,10 +763,13 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             {
                 throw new CustomBasicException("You did not use the sanme string as when using the GetTime function");
             }
-            TimeSpan thisSpan = new (_previousTime.Days, _previousTime.Hours, _previousTime.Minutes, 0);
+            TimeSpan thisSpan = new(_previousTime.Days, _previousTime.Hours, _previousTime.Minutes, 0);
             return (int)thisSpan.TotalSeconds;
         }
-        //decided to add this now since i realized this is very common.
         public static string GetDoubleQuoteString(this string value) => $"{Constants.DoubleQuote}{value}{Constants.DoubleQuote}";
+        public static T ParseEnum<T>(this string value)
+        {
+            return (T)Enum.Parse(typeof(T), value, true);
+        }
     }
 }

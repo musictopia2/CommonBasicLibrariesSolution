@@ -1,37 +1,38 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Reflection;
-using CommonBasicLibraries.CollectionClasses;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses;
-using bb = CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions
 {
     public static class FileFunctions
     {
-
+        public static void PopulateAndroidDesktopApplicationPath(ref string fileName)
+        {
+            if (bb.OS == bb.EnumOS.Android)
+            {
+                fileName = Path.Combine(GetApplicationDataForMobileDevices(), fileName);
+                return;
+            }
+            if (bb.OS == bb.EnumOS.WindowsDT)
+            {
+                fileName = Path.Combine(aa.GetApplicationPath(), fileName);
+                return;
+            }
+            throw new CustomBasicException("Only android and desktop are supported for now");
+        }
         public static BasicList<string> GetHttpsLinks(string fileSource)
         {
-            //HtmlParser parses = new HtmlParser.HtmlParser();
             HtmlParser parses = new();
             parses.Body = AllText(fileSource);
-            BasicList<string> temps = parses.GetList("https", Constants.DoubleQuote, showErrors: false); //if not there, then just returns 0 items.
+            BasicList<string> temps = parses.GetList("https", Constants.DoubleQuote, showErrors: false);
             BasicList<string> output = temps.Select(x => "https" + x).ToBasicList();
-            return output; //maybe this simple (not sure).
+            return output;
         }
         public static string GetApplicationDataForMobileDevices()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); // i think this is where it should be.
+            return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }
         public static string GetSDCardReadingPathForAndroid() //keey this because we want the ability to sometimes not use local storage for blazor stuff.
         {
             if (DirectoryExists("/storage/sdcard1") == true)
             {
-                return "/storage/sdcard1"; // can't assume its always accessing the music folder
+                return "/storage/sdcard1";
             }
             else if (DirectoryExists("//storage/0123-4567"))
             {
@@ -48,8 +49,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         }
         public static string GetWriteLocationForExternalOnAndroid()
         {
-            return @"/sdcard"; //try this instead of the other.  tried on 2 devices and this worked.  the other did not always work.
-            //return "/storage/emulated/0"; // for writing, its always this location.  so for cristina, it will be internal.  for andy, external but the path is still the same
+            return @"/sdcard"; //can be iffy for now (?)
         }
         public static bool FileExists(string filePath)
         {
@@ -69,7 +69,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             }
             return true;
         }
-
         public static bool DirectoryExists(string directoryPath)
         {
             return Directory.Exists(bb.GetCleanedPath(directoryPath));
@@ -92,8 +91,8 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                             }
                             break;
                         }
-                    }   
-                }   
+                    }
+                }
             }
             );
             if (thisStr == null)
@@ -102,10 +101,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             }
             return thisStr;
         }
-
         public static async Task FilterDirectoryAsync(BasicList<string> firstList)
         {
-            BasicList<string> removeList = new ();
+            BasicList<string> removeList = new();
             await Task.Run(() =>
             {
                 firstList.ForEach(items =>
@@ -117,11 +115,11 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                 });
 
             });
-            firstList.RemoveGivenList(removeList); //i think
+            firstList.RemoveGivenList(removeList);
         }
         public static void FilterDirectory(BasicList<string> firstList)
         {
-            BasicList<string> removeList = new ();
+            BasicList<string> removeList = new();
             firstList.ForEach(items =>
             {
                 if (Directory.EnumerateFiles(bb.GetCleanedPath(items)).Any() == false)
@@ -129,13 +127,13 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                     removeList.Add(items);
                 }
             });
-            firstList.RemoveGivenList(removeList); //i think
+            firstList.RemoveGivenList(removeList);
         }
         public static async Task<BasicList<string>> GetDriveListAsync()
         {
 
             DriveInfo[] completeDrives;
-            BasicList<string> newList = new ();
+            BasicList<string> newList = new();
             await Task.Run(() =>
             {
                 completeDrives = DriveInfo.GetDrives();
@@ -156,7 +154,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         public static BasicList<string> GetDriveList()
         {
             DriveInfo[] completeDrives;
-            BasicList<string> newList = new ();
+            BasicList<string> newList = new();
             completeDrives = DriveInfo.GetDrives();
             foreach (var temps in completeDrives)
             {
@@ -178,7 +176,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             }
             return thisFile.CreationTime;
         }
-
         private static DateTime GetModifiedDate(System.IO.FileInfo thisFile)
         {
             if (thisFile.LastWriteTime.IsDaylightSavingTime() == true)
@@ -187,7 +184,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             }
             return thisFile.LastWriteTime;
         }
-
         public static string GetParentPath(string thisPath)
         {
             var thisDir = Directory.GetParent(bb.GetCleanedPath(thisPath));
@@ -207,11 +203,11 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                     Directory = thisFile.DirectoryName!,
                     DateAccessed = thisFile.LastAccessTime,
                     DateModified = GetModifiedDate(thisFile),
-                    FilePath = filePath // this is needed so if i only have the fileinfo, i know the full path.
+                    FilePath = filePath
                 };
                 if (tempFile.DateModified > tempFile.DateAccessed)
                 {
-                    tempFile.DateAccessed = tempFile.DateModified;// this means something is wrong.
+                    tempFile.DateAccessed = tempFile.DateModified;
                 }
             });
             return tempFile;
@@ -228,16 +224,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                 Directory = thisFile.DirectoryName!,
                 DateAccessed = thisFile.LastAccessTime,
                 DateModified = GetModifiedDate(thisFile),
-                FilePath = filePath // this is needed so if i only have the fileinfo, i know the full path.
+                FilePath = filePath
             };
             if (tempFile.DateModified > tempFile.DateAccessed)
             {
-                tempFile.DateAccessed = tempFile.DateModified;// this means something is wrong.
+                tempFile.DateAccessed = tempFile.DateModified;
             }
             return tempFile;
         }
-
-        //since i have more async support now, its best to use more awaits.
         public static string DirectoryName(string directoryPath)
         {
             var thisItem = new DirectoryInfo(bb.GetCleanedPath(directoryPath));
@@ -248,7 +242,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             var thisItem = new System.IO.FileInfo(bb.GetCleanedPath(filePath));
             return thisItem.Name;
         }
-
         public static string FileName(string filePath)
         {
             var thisItem = new System.IO.FileInfo(bb.GetCleanedPath(filePath));
@@ -265,7 +258,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         }
         public static BasicList<string> FileList(BasicList<string> directoryList) //this can be just top because you already sent in a directory list
         {
-            BasicList<string> newList = new ();
+            BasicList<string> newList = new();
             directoryList.ForEach(x =>
             {
                 var temps = FileList(x);
@@ -273,7 +266,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             });
             return newList;
         }
-        public static BasicList<string> GetSeveralSpecificFiles(string directoryPath, string extensionEndsAt, SearchOption searchOption = SearchOption.TopDirectoryOnly) //to not break compatibility
+        public static BasicList<string> GetSeveralSpecificFiles(string directoryPath, string extensionEndsAt, SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {
             var tempList = FileList(directoryPath, searchOption);
             tempList.KeepConditionalItems(items => items.ToLower().EndsWith(extensionEndsAt.ToLower()));
@@ -289,7 +282,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         /// <returns></returns>
         public static BasicList<string> GetSeveralSpecificFiles(string directoryPath, string extensionEndsAt, BasicList<string> goodList, SearchOption searchOption = SearchOption.AllDirectories)
         {
-            //step 1 is getting the specific files without the good list
             BasicList<string> firstList = GetSeveralSpecificFiles(directoryPath, extensionEndsAt, searchOption);
             firstList.KeepConditionalItems(items =>
             {
@@ -306,30 +298,27 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             }
             return firstList;
         }
-
         public static async Task<BasicList<string>> DirectoryListAsync(string whatPath, SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {
-            var tDirectoryList = new BasicList<string> ();
+            var tDirectoryList = new BasicList<string>();
             await Task.Run(() =>
             {
                 tDirectoryList = Directory.EnumerateDirectories(bb.GetCleanedPath(whatPath), "*", searchOption).ToBasicList();
             });
             return tDirectoryList;
         }
-
         public static async Task<BasicList<string>> FileListAsync(string directoryPath, SearchOption thisOption = SearchOption.TopDirectoryOnly)
         {
-            BasicList<string> tFileList = new ();
+            BasicList<string> tFileList = new();
             await Task.Run(() =>
             {
-                tFileList = Directory.EnumerateFiles(bb.GetCleanedPath(directoryPath), "*", thisOption).ToBasicList(); // hopefully will still work
+                tFileList = Directory.EnumerateFiles(bb.GetCleanedPath(directoryPath), "*", thisOption).ToBasicList();
             });
             return tFileList;
         }
-
-        public static async Task<BasicList<string>> FileListAsync(BasicList<string> directoryList) //this can be just top because you already sent in a directory list
+        public static async Task<BasicList<string>> FileListAsync(BasicList<string> directoryList)
         {
-            BasicList<string> newList = new ();
+            BasicList<string> newList = new();
             await directoryList.ForEachAsync(async x =>
             {
                 var temps = await FileListAsync(x);
@@ -337,7 +326,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             });
             return newList;
         }
-        public static async Task<BasicList<string>> GetSeveralSpecificFilesAsync(string directoryPath, string extensionEndsAt, SearchOption searchOption = SearchOption.TopDirectoryOnly) //to not break compatibility
+        public static async Task<BasicList<string>> GetSeveralSpecificFilesAsync(string directoryPath, string extensionEndsAt, SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {
             var tempList = await FileListAsync(directoryPath, searchOption);
             tempList.KeepConditionalItems(items => items.ToLower().EndsWith(extensionEndsAt.ToLower()));
@@ -353,7 +342,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         /// <returns></returns>
         public static async Task<BasicList<string>> GetSeveralSpecificFilesAsync(string directoryPath, string extensionEndsAt, BasicList<string> goodList, SearchOption searchOption = SearchOption.AllDirectories)
         {
-            //step 1 is getting the specific files without the good list
             BasicList<string> firstList = await GetSeveralSpecificFilesAsync(directoryPath, extensionEndsAt, searchOption);
             firstList.KeepConditionalItems(items =>
             {
@@ -388,8 +376,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         /// <returns></returns>
         public static async Task<string> SearchForFileNameAsync(string directoryPath, string fileName)
         {
-            //this time i need first a list of all but even sub folders for it.
-            BasicList<string> tFileList = new ();
+            BasicList<string> tFileList = new();
             await Task.Run(() =>
             {
                 tFileList = Directory.EnumerateFiles(bb.GetCleanedPath(directoryPath), fileName, SearchOption.AllDirectories).ToBasicList();
@@ -398,7 +385,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             {
                 throw new CustomBasicException($"The File Name {fileName} Was Not Found At {directoryPath} Or Even Sub Directories");
             }
-            return tFileList.Single(); //if nothing is found, then will get runtime error
+            return tFileList.Single();
         }
         /// <summary>
         /// This searches for files in not only top directory but sub directories as well
@@ -408,38 +395,30 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         /// <returns></returns>
         public static string SearchForFileName(string directoryPath, string fileName)
         {
-            //this time i need first a list of all but even sub folders for it.
             BasicList<string> tFileList;
             tFileList = Directory.EnumerateFiles(bb.GetCleanedPath(directoryPath), fileName, SearchOption.AllDirectories).ToBasicList();
             if (tFileList.Count == 0)
             {
                 throw new CustomBasicException($"The File Name {fileName} Was Not Found At {directoryPath} Or Even Sub Directories");
             }
-            return tFileList.Single(); //if nothing is found, then will get runtime error
+            return tFileList.Single();
         }
         private static async Task<string> PrivateAllTextAsync(string filePath, Encoding encodes)
         {
-            string thisText;
-            using (StreamReader s = new(bb.GetCleanedPath(filePath), encodes))
-            {
-                thisText = await s.ReadToEndAsync();
-                s.Close();
-            }
+            using StreamReader s = new(bb.GetCleanedPath(filePath), encodes);
+            string thisText = await s.ReadToEndAsync();
+            s.Close();
             return thisText;
         }
         private static string PrivateAllText(string filePath, Encoding encodes)
         {
-            string thisText;
-            using (StreamReader s = new (bb.GetCleanedPath(filePath), encodes))
-            {
-                thisText = s.ReadToEnd();
-                s.Close();
-            }
+            using StreamReader s = new(bb.GetCleanedPath(filePath), encodes);
+            string thisText = s.ReadToEnd();
             return thisText;
         }
         private static async Task PrivateWriteAllTextAsync(string filePath, string text, bool append, Encoding encoding, bool isLine = false)
         {
-            using StreamWriter w = new (bb.GetCleanedPath(filePath), append, encoding);
+            using StreamWriter w = new(bb.GetCleanedPath(filePath), append, encoding);
             if (isLine == true)
             {
                 await w.WriteLineAsync(text);
@@ -453,7 +432,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         }
         private static void PrivateWriteAllText(string filePath, string text, bool append, Encoding encoding, bool isLine = false)
         {
-            using StreamWriter w = new (bb.GetCleanedPath(filePath), append, encoding);
+            using StreamWriter w = new(bb.GetCleanedPath(filePath), append, encoding);
             if (isLine == true)
             {
                 w.WriteLine(text);
@@ -465,9 +444,43 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             w.Flush();
             w.Close();
         }
+        public static async Task<int> ReadNumberFromFileAsync(string filePath)
+        {
+            string text = await PrivateAllTextAsync(filePath, Encoding.Default);
+            return int.Parse(text);
+        }
+        public static async Task WriteNextNumberAsync(string filePath, int previousNumber)
+        {
+            previousNumber++;
+            await PrivateWriteAllTextAsync(filePath, previousNumber.ToString(), false, Encoding.Default);
+        }
+        public static async Task ReplaceSeveralTextAsync(string filePath, Func<string, string> replaceActions)
+        {
+            if (FileExists(filePath) == false)
+            {
+                throw new CustomBasicException($"Failed to replace text because {filePath} does not exist");
+            }
+            string text = await AllTextAsync(filePath);
+            text = replaceActions.Invoke(text);
+            await WriteAllTextAsync(filePath, text);
+        }
+        public static async Task ReplaceSimpleTextAsync(string filePath, string toSearch, string replaceWith)
+        {
+            if (FileExists(filePath) == false)
+            {
+                throw new CustomBasicException($"Failed to replace text because {filePath} does not exist");
+            }
+            string text = await AllTextAsync(filePath);
+            if (text.Contains(toSearch) == false)
+            {
+                throw new CustomBasicException($"{toSearch} does not exist");
+            }
+            text = text.Replace(toSearch, replaceWith);
+            await WriteAllTextAsync(filePath, text);
+        }
         public static async Task<string> AllTextAsync(string filePath)
         {
-            return await PrivateAllTextAsync(filePath, Encoding.Default); //i think
+            return await PrivateAllTextAsync(filePath, Encoding.Default);
         }
         public static async Task<string> AllTextAsync(string FilePath, Encoding encoding)
         {
@@ -479,7 +492,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         }
         public static string AllText(string filePath)
         {
-            return PrivateAllText(filePath, Encoding.Default); //i think
+            return PrivateAllText(filePath, Encoding.Default);
         }
         public static async Task WriteAllTextAsync(string filePath, string whatText)
         {
@@ -496,12 +509,10 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         {
             await PrivateWriteAllTextAsync(filePath, whatText, false, encoding);
         }
-
         public static async Task WriteTextAsync(string filePath, string whatText, bool append)
         {
             await PrivateWriteAllTextAsync(filePath, whatText, append, Encoding.Default, true);
         }
-
         public static void WriteAllText(string filePath, string whatText)
         {
             PrivateWriteAllText(filePath, whatText, false, Encoding.Default);
@@ -517,7 +528,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         {
             PrivateWriteAllText(filePath, whatText, false, encoding);
         }
-
         public static void WriteText(string filePath, string whatText, bool append)
         {
             PrivateWriteAllText(filePath, whatText, append, Encoding.Default, true);
@@ -542,17 +552,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         {
             await Task.Run(() => File.Copy(bb.GetCleanedPath(originalFile), bb.GetCleanedPath(newFile), true));
         }
-
-        public static async Task DeleteFolderAsync(string path) //i like just delete folder instead
+        public static async Task DeleteFolderAsync(string path)
         {
-            await Task.Run(() => Directory.Delete(bb.GetCleanedPath(path)));
+            await Task.Run(() => Directory.Delete(bb.GetCleanedPath(path), true));
         }
-
         public static async Task CreateFolderAsync(string path)
         {
             await Task.Run(() => Directory.CreateDirectory(bb.GetCleanedPath(path)));
         }
-
         public static async Task DeleteSeveralFilesAsync(string directoryPath, string stringEnd)
         {
             BasicList<string> thisList = await FileListAsync(directoryPath);
@@ -560,7 +567,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             items.ToLower().EndsWith(stringEnd.ToLower()));
             await thisList.ForEachAsync(async items => await DeleteFileAsync(items));
         }
-
         public static async Task DeleteFileAsync(string path)
         {
             await Task.Run(() => File.Delete(bb.GetCleanedPath(path)));
@@ -569,7 +575,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         {
             if (File.Exists(oldFile) == false && File.Exists(newName) && oldFile.ToLower().Contains("storage/emulated"))
             {
-                return; //because you already renamed.  i will assume this only for sd card situations.
+                return;
             }
             await Task.Run(() =>
             {
@@ -592,12 +598,10 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                 }
             });
         }
-
         public static async Task RenameDirectoryAsync(string oldDirectory, string newName)
         {
             await Task.Run(() => Directory.Move(bb.GetCleanedPath(oldDirectory), bb.GetCleanedPath(newName)));
         }
-
         public static async Task<BasicList<string>> ReadAllLinesAsync(string filePath)
         {
             var temps = await File.ReadAllLinesAsync(bb.GetCleanedPath(filePath));
@@ -619,7 +623,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                 {
                     return;
                 }
-                Directory.CreateDirectory(findest); //most of the time, can't copy if files are already there.
+                Directory.CreateDirectory(findest);
                 string[] files = Directory.GetFiles(bb.GetCleanedPath(sourceFolder));
                 foreach (string file in files)
                 {
@@ -640,16 +644,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         {
             File.Copy(bb.GetCleanedPath(originalFile), bb.GetCleanedPath(newFile), true);
         }
-
-        public static void DeleteFolder(string path) //i like just delete folder instead
+        public static void DeleteFolder(string path)
         {
-            Directory.Delete(bb.GetCleanedPath(path));
+            Directory.Delete(bb.GetCleanedPath(path), true);
         }
         public static void CreateFolder(string path)
         {
             Directory.CreateDirectory(bb.GetCleanedPath(path));
         }
-
         public static void DeleteSeveralFiles(string directoryPath, string stringEnd)
         {
             BasicList<string> thisList = FileList(directoryPath);
@@ -657,7 +659,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             Items.ToLower().EndsWith(stringEnd.ToLower()));
             thisList.ForEach(items => DeleteFile(items));
         }
-
         public static void DeleteFile(string path)
         {
             File.Delete(bb.GetCleanedPath(path));
@@ -667,7 +668,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             string finold = bb.GetCleanedPath(oldFile);
             string finnew = bb.GetCleanedPath(newName);
             if (File.Exists(finold) == false && File.Exists(finnew) && oldFile.ToLower().Contains("storage/emulated"))
+            {
                 return; //because you already renamed.  i will assume this only for sd card situations.
+            }
             try
             {
                 File.Move(finold, finnew);
@@ -686,7 +689,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         {
             Directory.Move(bb.GetCleanedPath(oldDirectory), bb.GetCleanedPath(newName));
         }
-
         public static BasicList<string> ReadAllLines(string filePath)
         {
             return File.ReadAllLines(bb.GetCleanedPath(filePath)).ToBasicList();
@@ -706,12 +708,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             {
                 return;
             }
-            Directory.CreateDirectory(findest); //most of the time, can't copy if files are already there.
+            Directory.CreateDirectory(findest);
             string[] files = Directory.GetFiles(finsource);
             foreach (string file in files)
             {
                 string name = Path.GetFileName(file);
-                string dest = Path.Combine(findest, name); //hopefully combining works (?)
+                string dest = Path.Combine(findest, name);
                 File.Copy(file, dest);
             }
             string[] folders = Directory.GetDirectories(finsource);
@@ -722,24 +724,20 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                 CopyFolder(folder, dest);
             }
         }
-
-        public static Stream GetStreamForReading(string filePath) // some classes require the actual stream.  therefore will use this
+        public static Stream GetStreamForReading(string filePath)
         {
             return new FileStream(filePath, FileMode.Open, FileAccess.Read);
         }
-
         public static async Task<string> ResourcesAllTextFromFileAsync(object thisObj, string fileName)
         {
             Assembly thisA = Assembly.GetAssembly(thisObj.GetType())!;
             return await thisA.ResourcesAllTextFromFileAsync(fileName);
         }
-
         public static async Task<Stream?> ResourcesGetStreamAsync(object thisObj, string fileName)
         {
             Assembly thisA = Assembly.GetAssembly(thisObj.GetType())!;
             return await thisA.ResourcesGetStreamAsync(fileName);
         }
-
         public static string GetMediaURIFromStream(object thisObj, string fileName)
         {
             Assembly ThisA = Assembly.GetAssembly(thisObj.GetType())!;
@@ -747,13 +745,10 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
         }
         public static void CopyFilesRecursively(string sourcePath, string targetPath)
         {
-            //Now Create all of the directories
             foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
             {
                 Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
             }
-
-            //Copy all the files & Replaces any files with the same name
             foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
                 File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);

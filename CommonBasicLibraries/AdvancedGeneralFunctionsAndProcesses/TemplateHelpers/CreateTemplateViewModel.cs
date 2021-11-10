@@ -1,6 +1,4 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations; //not common enough.
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.TemplateHelpers
 {
     public class CreateTemplateViewModel : ICreateTemplateViewModel

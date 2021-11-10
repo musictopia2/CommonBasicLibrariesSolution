@@ -1,16 +1,11 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.UIHelpers;
-using System;
-using System.Threading.Tasks;
-namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
+﻿namespace CommonBasicLibraries.BasicUIProcesses
 {
     public static class UIPlatform
     {
         //there are lots of stuff not needed anymore.
-
         //may not be needed because i already have the execute version.
-
+        //go ahead and keep.  hopefully will just work when i do blazor server side
         public static IUIThread CurrentThread { get; set; } = new DefaultThread(); //if you don't specify, you will get defaultthread
-
         public static Action ExitApp { get; set; } = () => { Console.WriteLine("Closing"); };
         public static Action<string> ShowSystemError { get; set; } = (message) =>
         {
@@ -22,9 +17,6 @@ namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
             Console.WriteLine(message);
             return Task.CompletedTask;
         };
-        //i like the idea of showing toast.  because its intended to show up for just a while.
-        //for now, wpf blazor can do differently than the rest of the system.  obviously, if doing from console, will be console.writeline.
-
         public static Action<string> ShowWarningToast { get; set; } = (message) =>
         {
             Console.WriteLine($"Warning { message}");

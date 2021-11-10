@@ -1,15 +1,10 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using System.Collections.Generic;
-using System.Linq;
-namespace CommonBasicLibraries.CollectionClasses
+﻿namespace CommonBasicLibraries.CollectionClasses
 {
     public class WeightedAverageLists<T>
-        where T: notnull
+        where T : notnull
     {
-        private readonly Dictionary<T, int> _possibleList = new ();
-        private readonly Dictionary<int, int> _subList = new ();
+        private readonly Dictionary<T, int> _possibleList = new();
+        private readonly Dictionary<int, int> _subList = new();
         private IRandomGenerator? _rs;
         public WeightedAverageLists<T> AddSubItem(int numberPossible, int weight)
         {
@@ -23,7 +18,7 @@ namespace CommonBasicLibraries.CollectionClasses
             {
                 throw new CustomBasicException("You never used the sublist");
             }
-            BasicList<int> output = new ();
+            BasicList<int> output = new();
             foreach (var item in _subList.Keys)
             {
                 int howMany = _subList[item];
@@ -75,7 +70,7 @@ namespace CommonBasicLibraries.CollectionClasses
         public BasicList<T> GetWeightedList()
         {
             _rs = RandomHelpers.GetRandomGenerator();
-            BasicList<T> output = new ();
+            BasicList<T> output = new();
             foreach (var thisItem in _possibleList.Keys)
             {
                 int howMany = _possibleList[thisItem];

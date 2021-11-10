@@ -1,10 +1,4 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using System;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions
 {
     public static class FileExtensions
     {
@@ -19,9 +13,8 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             // maybe needs to be xml afterall (don't know though).  otherwise; may have to do serializing/deserializing.
             // some stuff is iffy at this point.
             // at this point, its proven to work.  so i will keep.  this will be good even for iphones/androids, other operating systems even
-
             StringBuilder sbText;
-            string? thisStr = default; //i like settng to default.
+            string? thisStr = default;
             await Task.Run(() =>
             {
                 sbText = new StringBuilder(str_Image, str_Image.Length);
@@ -51,7 +44,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
                     throw new CustomBasicException(@"Cannot contain the / or \ in the file name.   Its already smart enough to figure out even if put in folders", null!);
                 }
                 var thisList = thisAssembly.GetManifestResourceNames();
-                var firstName = thisAssembly.GetName().Name; // needs 2 things affterall.  looks like simplier in .net standard 2.0
+                var firstName = thisAssembly.GetName().Name;
                 firstName = firstName!.Replace(" ", "_");
                 string internalPath;
                 if (ResourceLocation == "")
@@ -70,47 +63,44 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunction
             });
             return thisStream;
         }
-        public static string GetMediaURIFromStream(this Assembly thisAssembly, string fileName) //for the other, it has to create assembly.  however, no extensions.
+        public static string GetMediaURIFromStream(this Assembly thisAssembly, string fileName)
         {
             if (fileName.Contains("/") == true || fileName.Contains(@"\") == true)
             {
                 throw new CustomBasicException(@"Cannot contain the / or \ in the file name.   Its already smart enough to figure out even if put in folders", null!);
             }
-            var firstName = thisAssembly.GetName().Name; // needs 2 things affterall.  looks like simplier in .net standard 2.0
+            var firstName = thisAssembly.GetName().Name;
             firstName = firstName!.Replace(" ", "_");
             string internalPath;
             internalPath = firstName + "." + fileName;
             return internalPath;
         }
-
         public static string ResourcesBinaryTextFromFile(this Assembly assembly, string fileName)
         {
-            Stream stream = assembly.ResourcesGetStream(fileName);
+            using Stream stream = assembly.ResourcesGetStream(fileName);
             byte[] bb = new byte[stream.Length - 1 + 1];
             stream.Read(bb, 0, (int)stream.Length);
             stream.Close();
             return Convert.ToBase64String(bb);
         }
-
         public static async Task<string> ResourcesBinaryTextFromFileAsync(this Assembly assembly, string fileName)
         {
-            var stream = await GetStreamAsync(assembly, fileName);
+            using var stream = await GetStreamAsync(assembly, fileName);
             byte[] bb = new byte[stream!.Length - 1 + 1];
             await stream.ReadAsync(bb.AsMemory(0, (int)stream.Length));
             stream.Close();
             return Convert.ToBase64String(bb);
         }
-
         public static async Task<string> ResourcesAllTextFromFileAsync(this Assembly thisAssembly, string fileName)
         {
-            var thisStream = await GetStreamAsync(thisAssembly, fileName);
+            using var thisStream = await GetStreamAsync(thisAssembly, fileName);
             using var thisRead = new StreamReader(thisStream!);
             return await thisRead.ReadToEndAsync();
         }
 
         public static string ResourcesAllTextFromFile(this Assembly thisAssembly, string fileName)
         {
-            var thisStream = thisAssembly.ResourcesGetStream(fileName);
+            using var thisStream = thisAssembly.ResourcesGetStream(fileName);
             using var thisRead = new StreamReader(thisStream);
             return thisRead.ReadToEnd();
         }

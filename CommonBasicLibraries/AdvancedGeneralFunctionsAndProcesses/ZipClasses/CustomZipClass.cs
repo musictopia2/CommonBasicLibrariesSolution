@@ -1,20 +1,13 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions.FileFunctions;
+﻿using System.IO.Compression; //not common enough.
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses
 {
     public class CustomZipClass
     {
-        private readonly BasicList<PrivateZipInfo> _zipList = new ();
+        private readonly BasicList<PrivateZipInfo> _zipList = new();
         public void Clear()
         {
             _zipList.Clear();
         }
-
         public void AddFileToZip(string path)
         {
             _zipList.Add(new PrivateZipInfo()
@@ -30,7 +23,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses
                 Folder = folder
             });
         }
-
         public void SaveZipFile(string zipPath, bool clearContents = true)
         {
             if (_zipList.Count == 0)
@@ -41,12 +33,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses
             {
                 File.Delete(zipPath);
             }
-            using FileStream zipToOpen = new (zipPath, FileMode.Create);
-            using ZipArchive archive = new (zipToOpen, ZipArchiveMode.Create);
+            using FileStream zipToOpen = new(zipPath, FileMode.Create);
+            using ZipArchive archive = new(zipToOpen, ZipArchiveMode.Create);
             _zipList.ForEach(x =>
             {
                 string relative;
-                string name = FullFile(x.Path);
+                string name = ff.FullFile(x.Path);
                 if (x.Folder == "")
                 {
                     relative = name;
@@ -58,22 +50,18 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses
                 ZipArchiveEntry rr = archive.CreateEntryFromFile(x.Path, relative);
             });
             if (clearContents)
+            {
                 _zipList.Clear();
+            }
         }
-
-        //good news is i can now open zip file to get what is needed.
         public static BasicList<OpenedZipFile> OpenZipFile(string path)
         {
             using ZipArchive archive = ZipFile.OpenRead(path);
-            BasicList<OpenedZipFile> output = new ();
+            BasicList<OpenedZipFile> output = new();
             foreach (ZipArchiveEntry entry in archive.Entries)
             {
-
-
-                OpenedZipFile zip = new ();
-                //putting the entry means nothing because it gets disposed so too late.
-                //zip.Entry = entry;
-                zip.ModifyDate = entry.LastWriteTime.DateTime; //try this way.
+                OpenedZipFile zip = new();
+                zip.ModifyDate = entry.LastWriteTime.DateTime;
                 zip.FileName = entry.Name;
                 if (entry.FullName == entry.Name)
                 {
@@ -91,8 +79,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses
             }
             return output;
         }
-
-        public static void UnzipAll(string zipFile, string extractPath) //nice to have a choice.
+        public static void UnzipAll(string zipFile, string extractPath)
         {
             ZipFile.ExtractToDirectory(zipFile, extractPath, true);
         }

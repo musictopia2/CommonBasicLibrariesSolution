@@ -1,6 +1,4 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-using System.Threading.Tasks;
-namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces
+﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces
 {
     /// <summary>
     /// This has methods used for cases where i access data manually and not doing automapping

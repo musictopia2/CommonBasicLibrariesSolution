@@ -1,12 +1,4 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using js = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers.NewtonJsonStrings;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class HttpExtensions
     {
@@ -19,8 +11,8 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         /// <returns></returns>
         public static async Task<HttpResponseMessage> PostCustomJsonAsync(this HttpClient client, string uri, object value) //needs to be async.
         {
-            string thisStr = JsonConvert.SerializeObject(value); //can't use await this time for the custom method to send to server.
-            StringContent content = new (thisStr);
+            string thisStr = JsonConvert.SerializeObject(value);
+            StringContent content = new(thisStr);
             return await client.PostAsync(uri, content);
         }
         public static async Task SaveDownloadFileAsync(this HttpClient client, string requesturi, string path) //so if it fails, you will know
@@ -35,22 +27,25 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             var results = await output.Content.ReadAsByteArrayAsync();
             await stream.WriteAsync(results);
         }
+        private static async Task<StringContent> GetContentAsync<T>(this T value)
+        {
+            string temps = await js.SerializeObjectAsync(value!);
+            StringContent output = new(temps, Encoding.UTF8, "application/json");
+            return output;
+        }
         public static async Task<HttpResponseMessage> PostJsonAsync<T>(this HttpClient client, string uri, T value)
         {
-            string thisStr = await js.SerializeObjectAsync(value!); //take a risk here.
-            StringContent content = new (thisStr, Encoding.UTF8, "application/json");
+            StringContent content = await GetContentAsync(value);
             return await client.PostAsync(uri, content);
         }
         public static async Task<HttpResponseMessage> PostJsonAsync<T>(this HttpClient client, Uri uri, T value) //so you have a choice.
         {
-            string thisStr = await js.SerializeObjectAsync(value!); //take a risk here.
-            StringContent content = new (thisStr, Encoding.UTF8, "application/json");
+            StringContent content = await GetContentAsync(value);
             return await client.PostAsync(uri, content);
         }
         public static async Task<HttpResponseMessage> PutJsonAsync<T>(this HttpClient client, string uri, T value)
         {
-            string thisStr = await js.SerializeObjectAsync(value!);
-            StringContent content = new (thisStr, Encoding.UTF8, "application/json");
+            StringContent content = await GetContentAsync(value);
             return await client.PutAsync(uri, content);
         }
         /// <summary>
@@ -64,32 +59,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static async Task<HttpResponseMessage> PutCustomJsonAsync<T>(this HttpClient client, string uri, T value)
         {
             string thisStr = await js.SerializeObjectAsync(value!);
-            StringContent content = new (thisStr);
+            StringContent content = new(thisStr); //this is exception.
             return await client.PutAsync(uri, content);
         }
-        public static async Task<T> GetJsonAsync<T>(this HttpClient client, Uri uri, string errorMessage = "Failed to get async json data.  Rethink") //looks like delete is no problem.  not sure what patch is about anyways.
+       
+        private static async Task<T> GetJsonAsync<T>(this HttpResponseMessage response, string errorMessage = "Failed to get async json data.  Rethink")
         {
-
-            HttpResponseMessage response = await client.GetAsync(uri);
-            if (response.IsSuccessStatusCode == false)
-            {
-                throw new CustomBasicException(errorMessage);
-            }
-            string res = await response.Content.ReadAsStringAsync();
-            response.Dispose();
-            try
-            {
-                return await js.DeserializeObjectAsync<T>(res);
-            }
-            catch (Exception ex)
-            {
-                throw new CustomBasicException($"Failed to get the json. Error was {ex.Message}");
-            }
-        }
-        public static async Task<T> GetJsonAsync<T>(this HttpClient client, string uri, string errorMessage = "Failed to get async json data.  Rethink") //looks like delete is no problem.  not sure what patch is about anyways.
-        {
-
-            HttpResponseMessage response = await client.GetAsync(uri);
             if (response.IsSuccessStatusCode == false)
             {
                 throw new CustomBasicException(errorMessage);
@@ -104,6 +79,17 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             {
                 throw new CustomBasicException($"Failed to get the json.  Error was {ex.Message}");
             }
+        }
+        public static async Task<T> GetJsonAsync<T>(this HttpClient client, Uri uri, string errorMessage = "Failed to get async json data.  Rethink")
+        {
+            HttpResponseMessage response = await client.GetAsync(uri);
+            return await response.GetJsonAsync<T>(errorMessage);
+        }
+        public static async Task<T> GetJsonAsync<T>(this HttpClient client, string uri, string errorMessage = "Failed to get async json data.  Rethink") //looks like delete is no problem.  not sure what patch is about anyways.
+        {
+
+            HttpResponseMessage response = await client.GetAsync(uri);
+            return await response.GetJsonAsync<T>(errorMessage);
         }
     }
 }

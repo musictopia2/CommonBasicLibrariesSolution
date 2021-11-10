@@ -11,7 +11,6 @@
     public interface IConsole
     {
         bool ExtraSpaces { get; } //test requires special things.
-
         void WriteLine(object thisObject);
     }
 }

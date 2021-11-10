@@ -1,5 +1,4 @@
-﻿using System;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
 {
     public class DateUtils //needs to be public because of unit testing
     {
@@ -14,7 +13,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             var unixTimeStampInTicks = (dateTime.ToUniversalTime() - unixStart).Ticks;
             return (double)unixTimeStampInTicks / TimeSpan.TicksPerSecond;
         }
-
         /// <summary>
         /// Converts Unix timestamp to the <see cref="DateTime"/> object.
         /// </summary>

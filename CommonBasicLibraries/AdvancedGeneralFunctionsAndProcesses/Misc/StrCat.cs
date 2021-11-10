@@ -1,9 +1,8 @@
-﻿using System.Text;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
 {
     public class StrCat
     {
-        private StringBuilder _atoms = new ();
+        private StringBuilder _atoms = new();
         public void ClearString()
         {
             _atoms = new StringBuilder();

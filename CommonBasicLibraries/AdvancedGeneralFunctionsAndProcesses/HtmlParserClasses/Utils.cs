@@ -1,8 +1,5 @@
-﻿using System;
-using System.IO;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses
 {
-    //since i don't have too much parsing, i should not for now make it async.  that could change though.
     internal static class Utils
     {
         public static bool WriteContentToFile(string path, string content)
@@ -54,7 +51,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
             finally
             {
             }
-
             return to_ret;
         }
         public static bool DeleteFile(string file_name)

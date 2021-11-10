@@ -1,11 +1,4 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ConfigProcesses;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions.FileFunctions;
+﻿using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions.FileFunctions;
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ConfigProcesses
 {
     public class SimpleTabDelimitedConfigClass : ISimpleConfig
@@ -27,7 +20,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ConfigProces
                 throw new CustomBasicException(@"Only text files are supported.  Rethink");
             }
             BasicList<string> firstList = await ReadAllLinesAsync(path);
-            Dictionary<string, string> output = new ();
+            Dictionary<string, string> output = new();
             firstList.ForEach(row =>
             {
                 BasicList<string> nextList = row.Split(Constants.VBTab).ToBasicList();

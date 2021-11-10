@@ -1,23 +1,19 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-using CommonBasicLibraries.DatabaseHelpers.ConditionClasses;
-using System.Linq;
-using cs = CommonBasicLibraries.DatabaseHelpers.ConditionClasses.ConditionOperators;
-namespace CommonBasicLibraries.DatabaseHelpers.Extensions
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Extensions
 {
     public static class ConditionExtensions
     {
         public static BasicList<ICondition> AppendCondition(this BasicList<ICondition> tempList, string property, object value)
         {
-            return tempList.AppendCondition(property, cs.Equals, value);
+            return tempList.AppendCondition(property, co.Equals, value);
         }
         public static BasicList<ICondition> AppendRangeCondition(this BasicList<ICondition> tempList, string property,
             object lowRange, object highRange)
         {
-            return tempList.AppendCondition(property, cs.GreaterOrEqual, lowRange).AppendCondition(property, cs.LessThanOrEqual, highRange);
+            return tempList.AppendCondition(property, co.GreaterOrEqual, lowRange).AppendCondition(property, co.LessThanOrEqual, highRange);
         }
         public static BasicList<ICondition> AppendCondition(this BasicList<ICondition> tempList, string property, string toperator, object value)
         {
-            AndCondition thisCon = new ();
+            AndCondition thisCon = new();
             thisCon.Property = property;
             thisCon.Operator = toperator;
             thisCon.Value = value;
@@ -33,14 +29,14 @@ namespace CommonBasicLibraries.DatabaseHelpers.Extensions
 
         public static BasicList<ICondition> AppendContains(this BasicList<ICondition> tempList, BasicList<int> containList)
         {
-            SpecificListCondition thisCon = new ();
+            SpecificListCondition thisCon = new();
             thisCon.ItemList = containList;
             tempList.Add(thisCon);
             return tempList;
         }
         public static BasicList<ICondition> AppendsNot(this BasicList<ICondition> tempList, BasicList<int> notList)
         {
-            NotListCondition thiscon = new ();
+            NotListCondition thiscon = new();
             thiscon.ItemList = notList;
             tempList.Add(thiscon);
             return tempList;

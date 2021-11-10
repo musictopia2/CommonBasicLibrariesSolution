@@ -1,11 +1,4 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
 {
     public partial class RandomGenerator
     {
@@ -31,7 +24,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
                     ("November", "Nov", "11", 30),
                     ("December", "Dec", "12", 31)
                 };
-            public static readonly BasicList<string> Tlds = new ()
+            public static readonly BasicList<string> Tlds = new()
             {
                 "com",
                 "org",
@@ -77,7 +70,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
                 ("View", "Vw"),
                 ("Way", "Way")
             };
-            public static readonly BasicList<(string Company, string Abb, string Code, int Digits)> CcTypes = new ()
+            public static readonly BasicList<(string Company, string Abb, string Code, int Digits)> CcTypes = new()
             {
                 ("American Express", "amex", "37", 15),
                 ("Discover Card", "discover", "6011", 16),
@@ -86,5 +79,4 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             };
         }
     }
-    
 }

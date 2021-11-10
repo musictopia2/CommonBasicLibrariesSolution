@@ -1,5 +1,4 @@
-﻿using static CommonBasicLibraries.BasicDataSettingsAndProcesses.VBCompat;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class Characters
     {
@@ -7,7 +6,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         {
             if (AscW(thisChar) >= 97 && AscW(thisChar) <= 122)
             {
-                return true;// because lower case
+                return true;//
             }
             if (AscW(thisChar) >= 65 && AscW(thisChar) <= 90)
             {

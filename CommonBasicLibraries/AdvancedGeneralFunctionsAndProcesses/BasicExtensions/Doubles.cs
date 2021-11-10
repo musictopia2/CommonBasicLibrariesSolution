@@ -1,7 +1,4 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.Linq;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class Doubles
     {
@@ -27,7 +24,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             decimal diffs;
             diffs = tempAmount - totalUsed;
             lefts = Math.Abs(diffs);
-            lefts *= 100; // i think this
+            lefts *= 100;
             decimal addAmount;
             if (diffs < 0)
             {

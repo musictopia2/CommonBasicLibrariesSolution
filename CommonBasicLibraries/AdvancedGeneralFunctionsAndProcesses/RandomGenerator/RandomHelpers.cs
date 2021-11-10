@@ -2,20 +2,16 @@
 {
     public static class RandomHelpers
     {
-        //public static IRandomGenerator Randoms { get; }
-
         private static IRandomGenerator? _rs;
         private static IRandomData? _data;
         public static void SetUpRandom(IRandomGenerator random)
         {
             _rs = random;
         }
-
         public static void SetUpData(IRandomData data)
         {
             _data = data; //it should be okay to be static.
         }
-
         public static IRandomGenerator GetRandomGenerator()
         {
             if (_data == null)

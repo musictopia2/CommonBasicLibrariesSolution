@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-namespace CommonBasicLibraries.CollectionClasses
+﻿namespace CommonBasicLibraries.CollectionClasses
 {
     public class BlankListBehavior<T> : IListModifiers<T>
     {

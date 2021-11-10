@@ -1,5 +1,4 @@
-﻿using aa = CommonBasicLibraries.BasicDataSettingsAndProcesses.ApplicationPath;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions
 {
     public static class FileLocator
     {

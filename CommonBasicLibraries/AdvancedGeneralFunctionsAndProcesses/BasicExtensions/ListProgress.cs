@@ -1,7 +1,4 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class ListProgress
     {

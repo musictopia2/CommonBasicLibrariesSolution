@@ -1,11 +1,4 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.CollectionClasses;
-using CommonBasicLibraries.DatabaseHelpers.EntityInterfaces;
-using CommonBasicLibraries.DatabaseHelpers.MiscClasses;
-using System.Collections.Generic;
-using System.Linq;
-using static CommonBasicLibraries.DatabaseHelpers.MiscClasses.SortInfo;
-namespace CommonBasicLibraries.DatabaseHelpers.Extensions
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Extensions
 {
     public static class ListExtensions
     {
@@ -39,7 +32,7 @@ namespace CommonBasicLibraries.DatabaseHelpers.Extensions
             sortList.Add(new SortInfo() { Property = property, OrderBy = orderBy });
             return sortList;
         }
-        public static BasicList<UpdateFieldInfo> Append(this BasicList<UpdateFieldInfo> tempList, string thisProperty) //if it needs to be something else. rethink
+        public static BasicList<UpdateFieldInfo> Append(this BasicList<UpdateFieldInfo> tempList, string thisProperty)
         {
             tempList.Add(new UpdateFieldInfo(thisProperty));
             return tempList;
@@ -53,7 +46,7 @@ namespace CommonBasicLibraries.DatabaseHelpers.Extensions
             });
             return tempList;
         }
-        public static BasicList<UpdateEntity> Append(this BasicList<UpdateEntity> tempList, string thisProperty, object value) //if it needs to be something else. rethink
+        public static BasicList<UpdateEntity> Append(this BasicList<UpdateEntity> tempList, string thisProperty, object value)
         {
             tempList.Add(new UpdateEntity(thisProperty, value));
             return tempList;

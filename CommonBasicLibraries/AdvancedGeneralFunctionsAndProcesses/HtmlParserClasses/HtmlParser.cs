@@ -1,10 +1,4 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using dd = CommonBasicLibraries.BasicDataSettingsAndProcesses.Constants;
+﻿using System.Text.RegularExpressions; //not common enough
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses
 {
     public class HtmlParser
@@ -16,6 +10,15 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
         public string EndTag { get; set; } = "";
         public HtmlParser() { }
         public HtmlParser(string body) { Body = body; }
+        public void RemoveReturnCarriages()
+        {
+            if (Body == "")
+            {
+                throw new CustomBasicException("Needs body populated before you can remove the carriages");
+            }
+            Body = Body.Replace(dd.VBCR, "");
+            Body = Body.Replace(dd.VBLF, "");
+        }
         public BasicList<string> GetList(string strFirst, bool showErrors = true)
         {
             string tempStr;
@@ -37,7 +40,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
                 tGetList.Add(GetTopInfo(strFirst));
                 Body = GetBottomInfo(strFirst, true);
             }
-            while (true);// try this
+            while (true);
         }
         public BasicList<string> GetList(string strFirst, string strSecond, bool showErrors = true)
         {
@@ -71,18 +74,24 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
         public bool DoesExist(string strFirst, string strSecond = "")
         {
             if (Body.Length == 0)
+            {
                 return false;
+            }
             string strTempBody = Body.ToLower();
             string strTmpFirst = strFirst.ToLower();
             string strTmpSecond = strSecond.ToLower();
             int first_pos = strTempBody.IndexOf(strTmpFirst);
             if (first_pos < 0)
+            {
                 return false;
+            }
             if (strTmpSecond.Length > 0)
             {
                 int second_pos = strTempBody.IndexOf(strTmpSecond, first_pos + strTmpFirst.Length);
                 if (second_pos < 0)
+                {
                     return false;
+                }
             }
             bool to_ret = true;
             return to_ret;
@@ -94,7 +103,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
                 thisList.ForEach(Items =>
                 {
                     if (DoesExist(Items) == true)
+                    {
                         Body = GetTopInfo(Items);
+                    }
                 });
             });
         }
@@ -102,7 +113,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
         public string GetTopInfo(bool bIncludeThis = false)
         {
             if (EndTag == "")
+            {
                 throw new MissingTags(EnumLocation.Ending);
+            }
             return GetTopInfo(EndTag, bIncludeThis);
         }
         public string GetTopInfo(string strTagEnd, bool bIncludeThis = false)
@@ -124,15 +137,21 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
             strTmpBody = Body;
             string to_ret;
             if (bIncludeThis)
+            {
                 to_ret = strTmpBody.Substring(0, n_find + strTagEnd.Length);
+            }
             else
+            {
                 to_ret = strTmpBody.Substring(0, n_find);
+            }
             return to_ret;
         }
         private void CheckStartTag()
         {
             if (StartTag == "")
+            {
                 throw new MissingTags(EnumLocation.Beginning);
+            }
         }
         public string GetBottomInfo(bool bTakeOutBody = false, bool bIncludeThis = false)
         {
@@ -158,26 +177,32 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
             }
             strTmpBody = Body;
             if (bIncludeThis)
+            {
                 to_ret = strTmpBody.Substring(n_find, strTmpBody.Length - n_find);
+            }
             else
+            {
                 to_ret = strTmpBody.Substring(n_find + strStartTag.Length, strTmpBody.Length - n_find - strStartTag.Length);
+            }
             if (bTakeOutBody)
+            {
                 Body = to_ret;
+            }
             return to_ret;
         }
         public string GetSomeInfo(bool bTakeOutBody = false, bool bIncludeFirst = false, bool bIncludeLast = false)
         {
             CheckStartTag();
             if (EndTag == "")
+            {
                 throw new MissingTags(EnumLocation.Ending);
+            }
             return GetSomeInfo(StartTag, EndTag, bTakeOutBody, bIncludeFirst, bIncludeLast);
         }
-
         public string GetQuoteInfo(string tagBeforeQuote, bool bTakeOutBody = false, bool bIncludeFirst = false, bool bIncludeLast = false)
         {
             return GetSomeInfo($"{tagBeforeQuote}{dd.DoubleQuote}", dd.DoubleQuote, bTakeOutBody, bIncludeFirst, bIncludeLast);
         }
-
         public string GetSomeInfo(string bstrStartTag, string bstrEndTag, bool bTakeOutBody = false, bool bIncludeFirst = false, bool bIncludeLast = false)
         {
             if (Body.Length == 0)
@@ -198,9 +223,13 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
             strTempBody = Body;
             int nDeletePos;
             if (bIncludeFirst)
+            {
                 nDeletePos = n_find;
+            }
             else
+            {
                 nDeletePos = n_find + bstrStartTag.Length;
+            }
             strTempBody = strTempBody.Substring(nDeletePos, strTempBody.Length - nDeletePos);
             string strEndTag = bstrEndTag.ToLower();
             string strTempBody2 = strTempBody.ToLower();
@@ -212,22 +241,34 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
                 throw new ParserException(_error, EnumMethod.GetSomeInfo) { FirstTag = bstrStartTag, SecondTag = bstrEndTag, OriginalBody = Body, RemainingHtml = strTempBody2 };
             }
             if (bTakeOutBody)
+            {
                 if (bIncludeLast)
+                {
                     Body = strTempBody.Substring(n_find + strEndTag.Length, strTempBody.Length - n_find - strEndTag.Length);
+                }
                 else
+                {
                     Body = strTempBody.Substring(n_find, strTempBody.Length - n_find);
+                }
+            }
             string to_ret;
             if (bIncludeLast)
+            {
                 to_ret = strTempBody.Substring(0, n_find + strEndTag.Length);
+            }
             else
+            {
                 to_ret = strTempBody.Substring(0, n_find);
+            }
             return to_ret;
         }
         public string TextWithLinks()
         {
             string to_ret = "";
             if (Body.Length == 0)
+            {
                 return to_ret;
+            }
             try
             {
                 string str_tmp_body = "";
@@ -238,9 +279,13 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
                 {
                     int body_end = str_lower_body.IndexOf("</body", body_start);
                     if (body_end < 0)
+                    {
                         str_body = Body.Substring(body_start, Body.Length - body_start);
+                    }
                     else
+                    {
                         str_body = Body.Substring(body_start, body_end - body_start);
+                    }
                     str_lower_body = str_body.ToLower();
                 }
                 RemoveAllTags(ref str_body, ref str_lower_body, "script");
@@ -257,7 +302,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
                 do
                 {
                     while (curPos < str_tmp_body.Length && (str_tmp_body[curPos] == ' ' || str_tmp_body[curPos].ToString() == Constants.VBLF || str_tmp_body[curPos].ToString() == Constants.VBCR || str_tmp_body[curPos].ToString() == Constants.VBTab))
+                    {
                         curPos += 1;
+                    }
                     start_pos = curPos;
                     string strToken = PickWord(ref curPos, ref str_tmp_body, _dEFAULT_WORD_SEPARATORS);
                     if (strToken.Length == 0)
@@ -268,18 +315,28 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
                     string to_replace_with = "";
                     string strLowerToken = strToken.ToLower();
                     if (Substr(ref strLowerToken, 0, 7) == "http://" || Substr(ref strLowerToken, 0, 8) == "https://" || Substr(ref strLowerToken, 0, 6) == "ftp://")
+                    {
                         to_replace_with = string.Format("<a href=\"{0}\">{1}</a>", strToken, strToken);
+                    }
                     else if (Substr(ref strLowerToken, 0, 4) == "www.")
+                    {
                         to_replace_with = string.Format("<a href=\"http://{0}\">{1}</a>", strToken, strToken);
+                    }
                     else if (ValidEmailAddressFormat(strLowerToken))
+                    {
                         to_replace_with = string.Format("<a href=\"mailto:{0}\">{1}</a>", strToken, strToken);
+                    }
                     if (to_replace_with.Length > 0)
                     {
                         int flag_pos;
                         if (curPos > 0)
+                        {
                             flag_pos = curPos - strToken.Length;
+                        }
                         else
+                        {
                             flag_pos = str_tmp_body.Length - strToken.Length;
+                        }
                         str_tmp_body = str_tmp_body.Remove(flag_pos, strToken.Length);
                         str_tmp_body = str_tmp_body.Insert(flag_pos, to_replace_with);
                         curPos = flag_pos + to_replace_with.Length;
@@ -306,11 +363,13 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
         {
             bool to_ret = false;
             if (strEmailAddress.Length == 0)
+            {
                 return to_ret;
+            }
             try
             {
                 string strRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" + @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" + @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
-                Regex re = new (strRegex);
+                Regex re = new(strRegex);
                 if (re.IsMatch(strEmailAddress))
                 {
                     return true;
@@ -362,7 +421,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
         private void SaveError(string errorMessage)
         {
             if (ErrorPath == "")
+            {
                 return;
+            }
             File.Delete(ErrorPath);
             string newMessage;
             newMessage = errorMessage + Constants.VBCrLf + Constants.VBCrLf + Body;
@@ -394,10 +455,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
             string end_tag = string.Format("</{0}>", tag);
             start = strSrc.IndexOf(start_tag, crt_pos);
             if (start < 0)
+            {
                 return false;
+            }
             end = strSrc.IndexOf(end_tag, start);
             if (end < 0)
+            {
                 return false;
+            }
             end += end_tag.Length;
             return true;
         }
@@ -410,13 +475,17 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
             while (k < sz_dest_len)
             {
                 if (strToStrip[k] == '<')
+                {
                     in_tag = true;
-
+                }
                 if (!in_tag)
+                {
                     to_ret += strToStrip[k];
-
+                }
                 if (strToStrip[k] == '>' && in_tag)
+                {
                     in_tag = false;
+                }
                 k += 1;
             }
             return to_ret;
@@ -425,19 +494,27 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserCl
         {
             string to_ret = "";
             if (start >= strSrc.Length)
+            {
                 return to_ret;
+            }
             int next_pos = strSrc.IndexOfAny(strDelim.ToCharArray(), start);
             if (next_pos < 0)
+            {
                 to_ret = strSrc.Substring(start, strSrc.Length - start);
+            }
             else
+            {
                 to_ret = strSrc.Substring(start, next_pos - start);
+            }
             start = next_pos;
             return to_ret;
         }
         private static string Substr(ref string str, int index, int count)
         {
             if (index + count > str.Length)
+            {
                 return str;
+            }
             return str.Substring(index, count);
         }
     }

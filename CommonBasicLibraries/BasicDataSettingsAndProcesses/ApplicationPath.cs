@@ -1,16 +1,12 @@
-﻿using System;
-namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
+﻿namespace CommonBasicLibraries.BasicDataSettingsAndProcesses;
+public static class ApplicationPath
 {
-    public static class ApplicationPath
+    public static string GetApplicationPath() // this is the path the application is in
     {
-
-        public static string GetApplicationPath() // this is the path the application is in
-        {
-            return AppDomain.CurrentDomain.BaseDirectory;
-        }
-        public static bool IsDebug()
-        {
-            return System.Diagnostics.Debugger.IsAttached;
-        }
+        return AppDomain.CurrentDomain.BaseDirectory;
+    }
+    public static bool IsDebug()
+    {
+        return System.Diagnostics.Debugger.IsAttached;
     }
 }

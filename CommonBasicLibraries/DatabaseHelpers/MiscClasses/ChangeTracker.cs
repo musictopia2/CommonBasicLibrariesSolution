@@ -1,16 +1,8 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.CollectionClasses;
-using CommonBasicLibraries.DatabaseHelpers.Attributes;
-using CommonBasicLibraries.DatabaseHelpers.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
 {
     public class ChangeTracker
     {
-        private Dictionary<string, object> _originalValues = new ();
+        private Dictionary<string, object> _originalValues = new();
         public void PopulateOriginalDictionary(Dictionary<string, object> savedOriginal) //the server has to put in the original dictionary
         {
             _originalValues = savedOriginal;
@@ -23,9 +15,10 @@ namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
         {
             //you are on your own if you mess up unfortunately.
             _originalValues.Clear();
-            var tempList = _thisType.GetProperties().Where(Items => Items.CanMapToDatabase() == true && Items.Name != "ID"); //id can never be tracked
-            tempList = tempList.Where(Items => Items.HasAttribute<ExcludeUpdateListenerAttribute>() == false);
-            tempList = tempList.Where(Items => Items.HasAttribute<ForeignKeyAttribute>() == false); //because the foreigns would never be updated obviously.
+            //for now, still needs reflection.  could eventually do source generators (not now though).
+            var tempList = _thisType.GetProperties().Where(xx => xx.CanMapToDatabase() == true && xx.Name != "ID"); //id can never be tracked
+            tempList = tempList.Where(xx => xx.HasAttribute<ExcludeUpdateListenerAttribute>() == false);
+            tempList = tempList.Where(xx => xx.HasAttribute<ForeignKeyAttribute>() == false); //because the foreigns would never be updated obviously.
             foreach (PropertyInfo property in tempList)
             {
                 _originalValues.Add(property.Name, property.GetValue(_thisObject, null)!);
@@ -40,7 +33,7 @@ namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
         }
         public BasicList<string> GetChanges()
         {
-            BasicList<string> output = new ();
+            BasicList<string> output = new();
             foreach (var thisValue in _originalValues)
             {
                 PropertyInfo property = _thisType.GetProperties().Where(Items => Items.Name == thisValue.Key).Single();
@@ -62,11 +55,7 @@ namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
             {
                 return true;
             }
-            if (thisValue.Equals(newValue) == false)
-            {
-                return true;
-            }
-            return false;
+            return thisValue.Equals(newValue) == false;
         }
     }
 }

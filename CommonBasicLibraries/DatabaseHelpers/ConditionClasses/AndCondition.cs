@@ -1,5 +1,4 @@
-﻿using CommonBasicLibraries.DatabaseHelpers.MiscInterfaces;
-namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
 {
     public class AndCondition : ICondition, IProperty
     {

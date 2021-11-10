@@ -1,5 +1,4 @@
-﻿using CommonBasicLibraries.DatabaseHelpers.MiscClasses;
-using System.Data;
+﻿using System.Data; //not common enough
 namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces
 {
     /// <summary>

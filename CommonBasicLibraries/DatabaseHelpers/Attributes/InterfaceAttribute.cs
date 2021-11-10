@@ -1,5 +1,4 @@
-﻿using System;
-namespace CommonBasicLibraries.DatabaseHelpers.Attributes
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes
 {
     /// <summary>
     /// The purpose of this would be to map to an interface.

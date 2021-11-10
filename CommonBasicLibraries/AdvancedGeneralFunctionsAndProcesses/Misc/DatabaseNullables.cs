@@ -1,6 +1,4 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using System;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
 {
     public static class DatabaseNullables
     {

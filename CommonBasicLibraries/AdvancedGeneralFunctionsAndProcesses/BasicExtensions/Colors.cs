@@ -1,12 +1,7 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-using cs = CommonBasicLibraries.BasicDataSettingsAndProcesses.SColorString;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class Colors
     {
-        //i think should be here.
         public static string ToWebColor(this string color)
         {
             if (color == cs.Transparent)
@@ -326,7 +321,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     }
                     else
                     {
-                        return ""; //this means none.
+                        return "";
                     }
             }
         }
@@ -343,12 +338,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static BasicList<E> GetColorList<E>(this E thisEnum) where E : Enum
         {
             var firsts = Enum.GetValues(thisEnum.GetType());
-            BasicList<E> output = new(); //decided to be basiclist.  because something else is the custom type
+            BasicList<E> output = new();
             foreach (var thisItem in firsts)
             {
                 if (thisItem.ToString()!.HasColor<E>() == true)
                 {
-                    output.Add((E)thisItem); //hopefully that works.
+                    output.Add((E)thisItem);
                 }
             }
             return output;

@@ -1,11 +1,4 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
-
+﻿using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions; //this is still needed though because its completely static.
 namespace CommonBasicLibraries.CollectionClasses
 {
     //there are some processes that still need this interface (sometimes game package needs to do functions on top of it.

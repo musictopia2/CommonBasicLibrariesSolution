@@ -1,11 +1,4 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using CommonBasicLibraries.DatabaseHelpers.Attributes;
-using System;
-using System.Linq;
-using System.Reflection;
-namespace CommonBasicLibraries.DatabaseHelpers.Extensions
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Extensions
 {
     public static class ReflectionDatabase
     {
@@ -15,7 +8,7 @@ namespace CommonBasicLibraries.DatabaseHelpers.Extensions
             string secondName;
             Type secondType = typeof(D);
             secondName = secondType.Name;
-            BasicList<PropertyInfo> thisList = firstType.GetPropertiesWithAttribute<ForeignKeyAttribute>().ToBasicList();
+            BasicList<PropertyInfo> thisList = firstType.GetPublicPropertiesWithAttribute<ForeignKeyAttribute>().ToBasicList();
             BasicList<PropertyInfo> newList = thisList.Where(items =>
             {
                 ForeignKeyAttribute thisKey = items.GetCustomAttribute<ForeignKeyAttribute>()!;
@@ -50,12 +43,11 @@ namespace CommonBasicLibraries.DatabaseHelpers.Extensions
             }
             if (property.PropertyType.IsNullableEnum() == true)
             {
-                return true; //because i broke the television otherwise.  nullable enums is not simple type anymore but if exception, has to include.
+                return true;
             }
-            //don't remember but there was a case where i could not consider nullableenums.
             return property.IsSimpleType();
         }
-        public static string GetTableName<E>() //decided to put here even though you start with no parameters.
+        public static string GetTableName<E>()
         {
             Type thisType = typeof(E);
             return thisType.GetTableName();
@@ -95,11 +87,11 @@ namespace CommonBasicLibraries.DatabaseHelpers.Extensions
             {
                 return thisInterface.InterfaceName;
             }
-            return ""; //sometimes this is not necessary
+            return "";
         }
         public static BasicList<PropertyInfo> GetJoinedColumns(this Type thisType)
         {
-            return thisType.GetPropertiesWithAttribute<PrimaryJoinedDataAttribute>().ToBasicList();
+            return thisType.GetPublicPropertiesWithAttribute<PrimaryJoinedDataAttribute>().ToBasicList();
         }
         public static bool IsAutoIncremented<E>()
         {

@@ -1,7 +1,4 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.UIHelpers;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using System.Diagnostics;
-using System.Timers;
+﻿using System.Timers; //not common enough to put under globals
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
 {
     public class CustomStopWatchCP
@@ -18,12 +15,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
         public CustomStopWatchCP()
         {
             _thisStop = new Stopwatch();
-            _timer = new Timer();
-            _timer.Interval = 50;
-            _timer.AutoReset = false;
+            _timer = new()
+            {
+                Interval = 50,
+                AutoReset = false
+            };
             _timer.Elapsed += TimerElapsed;
         }
-        private void TimerElapsed(object sender, ElapsedEventArgs e)
+        private void TimerElapsed(object? sender, ElapsedEventArgs e)
         {
             if (_thisStop.IsRunning == false)
             {

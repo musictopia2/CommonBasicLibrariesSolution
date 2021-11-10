@@ -1,11 +1,4 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class Lists
     {
@@ -49,12 +42,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         }
         public static BasicList<string> CastIntegerListToStringList(this BasicList<int> thisList)
         {
-            BasicList<string> newList = new ();
+            BasicList<string> newList = new();
             thisList.ForEach(x => newList.Add(x.ToString()));
             return newList;
         }
 
-        public static void IncrementIntegers<T>(this BasicList<T> thisList, UpdateFunct<T> selector, int startAt = 1)
+        public static void IncrementIntegers<T>(this BasicList<T> thisList, bb.UpdateFunct<T> selector, int startAt = 1)
         {
             thisList.ForEach(thisItem =>
             {
@@ -88,7 +81,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         }
         public static BasicList<ConditionActionPair<T>> Append<T>(this BasicList<ConditionActionPair<T>> tempList, Predicate<T> match, Action<T, string> action, string value = "") //if it needs to be something else. rethink
         {
-            ConditionActionPair<T> ThisC = new (match, action, value);
+            ConditionActionPair<T> ThisC = new(match, action, value);
             tempList.Add(ThisC);
             return tempList;
         }
@@ -98,7 +91,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         }
         public static bool HasDuplicates<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
         {
-            HashSet<TKey> seenKeys = new ();
+            HashSet<TKey> seenKeys = new();
             foreach (var item in source)
             {
                 if (seenKeys.Add(keySelector(item)) == false)
@@ -110,7 +103,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         }
         public static bool HasOnlyOne<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
         {
-            HashSet<TKey> seenKeys = new ();
+            HashSet<TKey> seenKeys = new();
             if (source.Count == 0)
             {
                 return false; //because there are none.
@@ -153,7 +146,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         }
         public static BasicList<TSource> GetDuplicates<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
         {
-            HashSet<TKey> seenKeys = new ();
+            HashSet<TKey> seenKeys = new();
             BasicList<TSource> output = new();
             foreach (var item in source)
             {
@@ -168,7 +161,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         {
             if (source.Count() != other.Count())
                 return false; //because not even the same count.
-            HashSet<TKey> seenKeys = new ();
+            HashSet<TKey> seenKeys = new();
             foreach (var item in source)
             {
                 seenKeys.Add(keySelector(item));
@@ -233,7 +226,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static int DistinctCount<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             int count = 0;
-            HashSet<TKey> seenKeys = new ();
+            HashSet<TKey> seenKeys = new();
             foreach (TSource element in source)
             {
                 if (seenKeys.Add(keySelector(element)))
@@ -247,7 +240,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static IEnumerable<TSource> DistinctBy<TSource, TKey> //2 choices
     (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
-            HashSet<TKey> seenKeys = new ();
+            HashSet<TKey> seenKeys = new();
             foreach (TSource element in source)
             {
                 if (seenKeys.Add(keySelector(element)))
@@ -259,7 +252,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         public static BasicList<TKey> DistinctItems<TSource, TKey>
             (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
-            HashSet<TKey> seenKeys = new ();
+            HashSet<TKey> seenKeys = new();
             BasicList<TKey> output = new();
             foreach (TSource element in source)
             {

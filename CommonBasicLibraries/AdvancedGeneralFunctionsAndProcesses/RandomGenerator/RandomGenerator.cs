@@ -1,27 +1,13 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.RandomGenerator.Data;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
 {
-    //this means i can break up into separate as needed.
-    //
     public partial class RandomGenerator : IRandomGenerator
     {
         public static EnumFormula Formula => EnumFormula.TwisterStandard;
         private readonly IRandomData _data;
-        //can't quite use the di.
-        //because otherwise, the custom basic list would not work since i use the random functions through there as well.
-        //random cannot use the off the shelf di because otherwise would hurt the custom basic list.
         public RandomGenerator()
         {
             _data = RandomHelpers.GetRandomDataClass;
         }
-
         /// <summary>
         /// Casing rules.
         /// </summary>
@@ -42,7 +28,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             /// </summary>
             MixedCase
         }
-
         private readonly object _thisObj = new(); //so it has to lock when initializing.
         private bool _dids = false;
         private int _privateID;
@@ -60,7 +45,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
                 _dids = true;
             }
         }
-
         private void SetUpRandom()
         {
             if (Formula == EnumFormula.Original)
@@ -296,7 +280,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             }
             return thisList;
         }
-
         public BasicList<int> GenerateRandomNumberList(int maximumNumber, int howMany, int startingPoint = 0, int increments = 1)
         {
             BasicList<int> firstList;
@@ -353,7 +336,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             RandomPasswordParameterClass thisPassword = new();
             return GenerateRandomPassword(thisPassword);
         }
-
         public string GenerateRandomPassword(RandomPasswordParameterClass thisPassword)
         {
             DoRandomize();
@@ -426,7 +408,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             }
             return resultString;
         }
-
         public int GetRandomNumber(int maxNumber, int startingPoint = 1, BasicList<int>? previousList = null)
         {
             if (previousList != null)
@@ -477,7 +458,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
         {
             return _privateID;
         }
-
         public BasicList<string> GetSeveralUniquePeople(int howMany)
         {
             HashSet<string> firstList = new();
@@ -503,7 +483,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             };
             return GetRandomNumber(range[1], range[0]);
         }
-
         public string NextAnyName()
         {
             BasicList<string> allList = _data.FirstNamesFemale;
@@ -517,13 +496,11 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             {
                 throw new ArgumentOutOfRangeException(nameof(likelihood), "Likelihood accepts values from 0 to 100.");
             }
-            DoRandomize(); //maybe has to be here.
+            DoRandomize();
             return _r!() * 100 < likelihood;
         }
-
         public string NextCity()
         {
-            //for this version, i want to use the new data stuff.
             BasicList<CityStateClass> cities = _data.Cities;
             cities._rs = this;
             return cities.GetRandomItem().City;
@@ -574,9 +551,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             {
                 throw new ArgumentException("Cannot specify both syllablesCount AND length.");
             }
-
             var text = "";
-
             if (length.HasValue)
             {
                 do
@@ -593,7 +568,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
                     text += NextSyllable();
                 }
             }
-
             if (capitalize)
             {
                 text = text.Capitalize();
@@ -615,7 +589,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             const string all = consonats + vowels;
             var text = "";
             var chr = -1;
-
             for (var i = 0; i < length; i++)
             {
                 if (i == 0)
@@ -633,15 +606,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
 
                 text += (char)chr;
             }
-
             if (capitalize)
             {
                 text = text.Capitalize();
             }
-
             return text;
         }
-
         /// <summary>
         /// Returns a random character.
         /// </summary>
@@ -654,12 +624,10 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
         {
             const string s = "!@#$%^&*()[]";
             string letters, p;
-
             if (alpha && symbols)
             {
                 throw new ArgumentException("Cannot specify both alpha and symbols.");
             }
-
             if (casing == EnumCasingRules.LowerCase)
             {
                 letters = CharsLower;
@@ -672,7 +640,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             {
                 letters = CharsLower + CharsUpper;
             }
-
             if (!string.IsNullOrEmpty(pool))
             {
                 p = pool;
@@ -693,8 +660,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             list._rs = this;
             return list.GetRandomItem();
         }
-
-
         #region Finance
         private static (string Company, string Abb, string Code, int Digits) CcType(string? name = null)
         {
@@ -720,8 +685,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             var (_, _, Code, Digits) = CcType(cardType);
             var toGenerate = Digits - Code.Length - 1;
             var number = Code;
-            //number += string.Join("", NextList<int>(new Func<int, int, int>(NextInt), toGenerate, 0, 9));
-
             string group = GetDigits(toGenerate);
             number += group;
             number += CreditCardUtils.LuhnCalcualte(long.Parse(number));
@@ -729,36 +692,40 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             return long.Parse(number);
         }
         #endregion
-
-        public DateTime NextDate(DateTime? min = null, DateTime? max = null, bool simple = false)
+        public DateOnly NextDateOnly(DateOnly? min = null, DateOnly? max = null)
+        {
+            //can't be simple anymore because its dateonly now.
+            if (min.HasValue && max.HasValue)
+            {
+                DateTime tempmin = new(min.Value.Year, min.Value.Month, min.Value.Day);
+                DateTime tempmax = new(max.Value.Year, max.Value.Month, max.Value.Day);
+                //chose to do this way so i don't have to rethink the function that i found that don't know how i can modify without problems.
+                DateTime tempDate = DateUtils.UnixTimestampToDateTime(NextLong((long)DateUtils.DateTimeToUnixTimestamp(tempmin),
+                    (long)DateUtils.DateTimeToUnixTimestamp(tempmax)));
+                return DateOnly.FromDateTime(tempDate);
+            }
+            var m = GetRandomNumber(12, 1);
+            var d = GetRandomNumber(Months[m - 1].Day, 1);
+            var y = NextYear();
+            return new DateOnly(y, m, d);
+        }
+        public DateTime NextDateTime(DateTime? min = null, DateTime? max = null)
         {
             if (min.HasValue && max.HasValue)
             {
                 DateTime tempDate = DateUtils.UnixTimestampToDateTime(NextLong((long)DateUtils.DateTimeToUnixTimestamp(min.Value),
                     (long)DateUtils.DateTimeToUnixTimestamp(max.Value)));
-                if (simple == false)
-                {
-                    return tempDate;
-                }
-                return new DateTime(tempDate.Year, tempDate.Month, tempDate.Day);
+                return tempDate;
             }
             var m = GetRandomNumber(12, 1);
             var d = GetRandomNumber(Months[m - 1].Day, 1);
             var y = NextYear();
-            if (simple == true)
-            {
-                return new DateTime(y, m, d);
-            }
             return new DateTime(y, m, d, NextHour(), NextMinute(),
                 NextSecond(), NextMillisecond());
         }
-
         public string NextDomainName(string? tld = null) => NextWord() + "." + (tld ?? NextTopLevelDomain());
-
         public string NextTopLevelDomain() => Tlds.GetRandomItem();
-
         public string NextEmail(string? domain = null, int length = 7) => NextWord(length: length, syllablesCount: null) + "@" + (domain ?? NextDomainName());
-
         public string NextFirstName(bool isFemale = false)
         {
             BasicList<string> listToUse;
@@ -769,23 +736,19 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             listToUse._rs = this;
             return listToUse.GetRandomItem();
         }
-
         public FullNameClass NextFullName()
         {
             BasicList<FullNameClass> list = _data.FullNames;
             list._rs = this;
             return list.GetRandomItem();
         }
-
         public string NextGender()
         {
             BasicList<string> thisList = new() { "Male", "Female" };
             thisList._rs = this;
             return thisList.GetRandomItem();
         }
-
         public string NextGeohash(int length = 7) => NextString(length, "0123456789bcdefghjkmnpqrstuvwxyz");
-
         public string NextGUID(int version = 5)
         {
             const string guidPool = "abcdef1234567890";
@@ -799,9 +762,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
                    strFn(guidPool, 3) + "-" +
                    strFn(guidPool, 12);
         }
-
         public string NextHashtag() => $"#{NextWord()}";
-
         /// <summary>
         /// Generates a random hour.
         /// </summary>
@@ -819,25 +780,20 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             {
                 throw new ArgumentOutOfRangeException(nameof(min), "min cannot be less than 0.");
             }
-
             if (twentyfourHours && max > 23)
             {
                 throw new ArgumentOutOfRangeException(nameof(max), "max cannot be greater than 23 for twentyfourHours option.");
             }
-
             if (!twentyfourHours && max > 12)
             {
                 throw new ArgumentOutOfRangeException(nameof(max), "max cannot be greater than 12.");
             }
-
             if (min > max)
             {
                 throw new ArgumentOutOfRangeException(nameof(min), "min cannot be greater than max.");
             }
-
             min ??= (twentyfourHours ? 0 : 1);
             max ??= (twentyfourHours ? 23 : 12);
-
             return GetRandomNumber(max.Value, min.Value);
         }
         /// <summary>
@@ -894,17 +850,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             {
                 throw new ArgumentOutOfRangeException(nameof(min), "min cannot be less than 0.");
             }
-
             if (max > 59)
             {
                 throw new ArgumentOutOfRangeException(nameof(max), "max cannot be greater than 59.");
             }
-
             if (min > max)
             {
                 throw new ArgumentOutOfRangeException(nameof(min), "min cannot be greater than max.");
             }
-
             return GetRandomNumber(max, min);
         }
         /// <summary>
@@ -922,17 +875,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             {
                 throw new ArgumentOutOfRangeException(nameof(min), "min cannot be less than 1.");
             }
-
             if (max > 12)
             {
                 throw new ArgumentOutOfRangeException(nameof(max), "max cannot be greater than 12.");
             }
-
             if (min > max)
             {
                 throw new ArgumentOutOfRangeException(nameof(min), "min cannot be greater than max.");
             }
-
             var firsts = Months.Skip(min - 1).Take(max - 1).ToBasicList();
             return firsts.GetRandomItem().Month;
         }
@@ -963,7 +913,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
 
             return ssn;
         }
-
         private static (string Name, string Abb) StreetSuffix() => StreetSuffixes.GetRandomItem();
 
         /// <summary>
@@ -1038,7 +987,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
             zip += others;
             return zip;
         }
-
         public void SetRandomSeed(int value) //this can come from anywhere.  saved data, etc.
         {
             _privateID = value; //so it can be saved and used for testing (to more easily replay the game).

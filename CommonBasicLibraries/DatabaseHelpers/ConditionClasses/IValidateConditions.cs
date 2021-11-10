@@ -1,5 +1,4 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
 {
     public interface IValidateConditions
     {

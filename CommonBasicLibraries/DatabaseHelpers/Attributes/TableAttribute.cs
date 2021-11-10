@@ -1,5 +1,4 @@
-﻿using System;
-namespace CommonBasicLibraries.DatabaseHelpers.Attributes
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class TableAttribute : Attribute

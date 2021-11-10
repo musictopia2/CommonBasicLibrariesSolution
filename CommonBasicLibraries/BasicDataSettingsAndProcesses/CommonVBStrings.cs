@@ -1,5 +1,4 @@
-﻿using System;
-namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
+﻿namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
 {
     public static class VBCompat
     {
@@ -7,7 +6,7 @@ namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
         {
             return Convert.ToInt32(str[0]);
         }
-        public static int AscW(char character )
+        public static int AscW(char character)
         {
             return Convert.ToInt32(character);
         }
@@ -15,7 +14,5 @@ namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
         {
             return Convert.ToChar(key).ToString();
         }
-        //stop will not be supported anymore.
-        //did not work that great anyways.
     }
 }

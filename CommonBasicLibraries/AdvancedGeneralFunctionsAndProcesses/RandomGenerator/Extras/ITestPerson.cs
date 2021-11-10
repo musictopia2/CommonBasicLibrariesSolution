@@ -1,5 +1,4 @@
-﻿using System;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
 {
     public interface ITestPerson
     {
@@ -12,7 +11,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
         string SSN { get; set; }  //decided to not worry about phone number for now.
         int Age { get; set; }
         long CreditCardNumber { get; set; }
-        DateTime LastDate { get; set; }
+        DateOnly LastDate { get; set; } //i like the idea of dateonly now.
         bool IsActive { get; set; } //since i have this, might as well use it.
         string EmailAddress { get; set; }
     }

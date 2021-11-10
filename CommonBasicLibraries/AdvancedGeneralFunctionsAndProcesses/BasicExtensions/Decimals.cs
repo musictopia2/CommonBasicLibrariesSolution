@@ -1,13 +1,7 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class Decimals
     {
-        //if we need integer or double extensions, still needed
-        //we can go ahead and do custom list now.
         public static BasicList<decimal> SplitMoney(this decimal amount, int howManyToSplitBy)
         {
             decimal splits = amount / howManyToSplitBy;
@@ -29,7 +23,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             decimal diffs;
             diffs = amount - totalUsed;
             Lefts = Math.Abs(diffs);
-            Lefts *= 100; // i think this
+            Lefts *= 100;
             decimal addAmount;
             if (diffs < 0)
             {
@@ -62,16 +56,15 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
         {
             if (centAmount >= 1)
             {
-                throw new Exception("Must be less than 1 dollar");
+                throw new CustomBasicException("Must be less than 1 dollar");
             }
             if (centAmount < 0)
             {
-                throw new Exception("Must be at least 0");
+                throw new CustomBasicException("Must be at least 0");
             }
             var newPrice = thisPrice - 1;
             var thisStr = newPrice.ToString("##0.00");
             int newSearch;
-            // Dim ThisStr = NewPrice.ToString
             if (thisStr.Contains(".") == false)
             {
                 newSearch = -1;
@@ -112,7 +105,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     return y - 1;
                 }
             }
-            return y; // maybe will be y by itself in this case
+            return y;
         }
         public static (int Pounds, int Ounces) PoundsOunces(float grossWeight)
         {
@@ -142,9 +135,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             return tempHowMuch * perPoundCharge;
         }
-        public static string ToCurrency(this decimal thisDec, int decimalPlaces = 2)
+        public static string ToCurrency(this decimal thisDec, int decimalPlaces = 2, bool useDollarSign = true)
         {
-            return thisDec.ToString("c" + decimalPlaces);
+            string output = thisDec.ToString("c" + decimalPlaces);
+            if (useDollarSign)
+            {
+                return output;
+            }
+            return output.Substring(1);
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Text;
+﻿using System.Net.Sockets;
+using System.Text; //not common enough to put under globals
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
 {
     public class NetworkStreamHelpers
@@ -38,7 +36,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
             byte[] separator = new byte[1];
             separator[0] = 4;
             byte[] datalength = Encoding.UTF8.GetBytes(Convert.ToString(data.Length));
-            MemoryStream ms = new ();
+            MemoryStream ms = new();
             ms.Write(initialize, 0, initialize.Length);
             ms.Write(datalength, 0, datalength.Length);
             ms.Write(separator, 0, separator.Length);

@@ -1,5 +1,4 @@
-﻿using System;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses
 {
     public class OpenedZipFile
     {

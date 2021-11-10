@@ -1,5 +1,4 @@
-﻿using System;
-namespace CommonBasicLibraries.DatabaseHelpers.Attributes
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class ForeignKeyAttribute : Attribute

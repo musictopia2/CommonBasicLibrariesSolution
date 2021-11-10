@@ -1,5 +1,4 @@
-﻿using System;
-namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
+﻿namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
 {
     public class CustomBasicException : Exception
     {

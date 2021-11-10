@@ -1,15 +1,4 @@
-﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions;
-using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
-using ff = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions.FileFunctions;
-using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using System;
-using System.Collections.Generic;
-//using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
     public static class TextSerializers
     {
@@ -33,7 +22,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 StrCat cats = new();
                 properties.ForEach(p =>
                 {
-                    //if item is null, then will be empty.
                     var value = p.GetValue(item);
                     if (value != null)
                     {
@@ -46,30 +34,23 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 });
                 list.Add(cats.GetInfo());
             }
-
             StrCat fins = new();
             list.ForEach(x => fins.AddToString(x, Constants.VBCrLf));
             return fins.GetInfo();
         }
-
         public static void SaveText<T>(this BasicList<T> payLoad, string path, string delimiter = ",")
         {
             string content = payLoad.SerializeText(delimiter);
             ff.WriteAllText(path, content, Encoding.UTF8);
         }
-
         public static async Task SaveTextAsync<T>(this BasicList<T> payLoad, string path, string delimiter = ",")
         {
-            //will be utf8
             string content = payLoad.SerializeText<T>(delimiter);
             await ff.WriteAllTextAsync(path, content, Encoding.UTF8);
-
         }
-
         private static BasicList<PropertyInfo> GetProperties<T>()
         {
             Type type = typeof(T);
-            //first check to see if there is anything i can't handle.
             BasicList<PropertyInfo> output = type.GetProperties().ToBasicList();
             if (output.Exists(x => x.IsSimpleType()) == false)
             {
@@ -105,19 +86,16 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             });
             return output;
         }
-
         private static object? GetValue(string item, Type type)
         {
             if (type == typeof(int))
             {
-                //try to parse to integers.
                 bool rets = int.TryParse(item, out int y);
                 if (rets == false)
                 {
                     throw new CustomBasicException($"When trying to parse dictionary to integer.  Means corruption");
                 }
                 return y;
-                //p.SetValue(row, y); //hopefully this simple.
             }
             else if (type == typeof(int?))
                 if (item == "")
@@ -142,7 +120,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 }
                 return y;
             }
-
             else if (type.IsNullableEnum())
                 if (item == "")
                 {
@@ -166,7 +143,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     throw new CustomBasicException($"When trying to parse to parse to boolean.  Means corruption");
                 }
                 return y;
-
             }
             else if (type == typeof(bool?))
                 if (item == "")
@@ -265,6 +241,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
 
             }
             else if (type == typeof(DateTime?))
+            {
                 if (item == "")
                 {
                     return null;
@@ -278,7 +255,34 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     }
                     return y;
                 }
-            else if (type == typeof(DateTimeOffset))
+            }
+            else if (type == typeof(DateOnly))
+            {
+                bool rets = DateOnly.TryParse(item, out DateOnly y);
+                if (rets == false)
+                {
+                    throw new CustomBasicException($"When trying to parse to datetime.  Means corruption");
+                }
+                return y;
+
+            }
+            else if (type == typeof(DateOnly?))
+            {
+                if (item == "")
+                {
+                    return null;
+                }
+                else
+                {
+                    bool rets = DateOnly.TryParse(item, out DateOnly y);
+                    if (rets == false)
+                    {
+                        throw new CustomBasicException($"When trying to parse to datetime.  Means corruption");
+                    }
+                    return y;
+                }
+            }
+            else if (type == typeof(DateTimeOffset)) //no dateonlyoffset though
             {
                 bool rets = DateTimeOffset.TryParse(item, out DateTimeOffset y);
                 if (rets == false)
@@ -318,7 +322,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
 
                 }
                 else
-            {
+                {
                     bool rets = Guid.TryParse(item, out Guid y);
                     if (rets == false)
                     {
@@ -502,7 +506,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 return new Dictionary<TKey, TValue>();
             }
             var lines = await ff.ReadAllLinesAsync(path);
-
             Dictionary<TKey, TValue> output = new();
             foreach (var line in lines)
             {
@@ -527,26 +530,21 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             }
             return output;
         }
-
         public static async Task<BasicList<T>> LoadTextListFromResourceAsync<T>(this Assembly assembly, string name, string delimiter = ",")
         {
             string content = await assembly.ResourcesAllTextFromFileAsync(name);
             return content.DeserializeDelimitedTextList<T>(delimiter);
         }
-
         public static BasicList<T> LoadTextFromListResource<T>(this Assembly assembly, string name, string delimiter = ",")
         {
             string content = assembly.ResourcesAllTextFromFile(name);
             return content.DeserializeDelimitedTextList<T>(delimiter);
         }
-
-        //return Activator.CreateInstance(thisType, args);
-
+        //eventually can do source generators but not yet.
         public static BasicList<T> DeserializeDelimitedTextList<T>(this string content, string delimiter = ",")
         {
-            //has to convert to a list first.
             BasicList<T> output;
-            Type key = typeof(T); //if this works, then i can have a list of numbers, etc.
+            Type key = typeof(T);
             if (key.IsSimpleType())
             {
                 var temps = content.Split(delimiter).ToBasicList();
@@ -563,11 +561,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException("Text file corrupted because the delimiter count don't match the properties");
                 }
-                //if i decide to ignore, then won't be a problem.  don't worry for now.
                 int x = 0;
                 object temp = Activator.CreateInstance(typeof(T))!;
                 T row = (T)temp;
-                //T row = new T();
                 properties.ForEach(p =>
                 {
                     string item = items[x];
@@ -615,18 +611,16 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
             output = content.DeserializeDelimitedTextList<T>(delimiter);
             return output;
         }
-
         private static void PopulateValue<T>(string item, T row, PropertyInfo p)
         {
             if (p.PropertyType == typeof(int))
             {
-                //try to parse to integers.
                 bool rets = int.TryParse(item, out int y);
                 if (rets == false)
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to integer.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple.
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(int?))
             {
@@ -641,10 +635,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to integer.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple.
+                    p.SetValue(row, y);
                 }
             }
-
             else if (p.PropertyType.IsEnum)
             {
                 bool rets = int.TryParse(item, out int y);
@@ -652,9 +645,8 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to enum.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
             }
-
             else if (p.PropertyType.IsNullableEnum())
             {
                 if (item == "")
@@ -668,7 +660,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to enum.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             }
             else if (p.PropertyType == typeof(bool))
@@ -678,8 +670,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to boolean.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
-
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(bool?))
             {
@@ -694,10 +685,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to boolean.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             }
-
             else if (p.PropertyType == typeof(decimal))
             {
                 bool rets = decimal.TryParse(item, out decimal y);
@@ -705,8 +695,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to decimal.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
-
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(decimal?))
             {
@@ -719,7 +708,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to decimal.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             }
             else if (p.PropertyType == typeof(float))
@@ -729,8 +718,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to float.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
-
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(float?))
             {
@@ -745,10 +733,9 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to float.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             }
-
             else if (p.PropertyType == typeof(double))
             {
                 bool rets = double.TryParse(item, out double y);
@@ -756,8 +743,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to double.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
-
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(double?))
                 if (item == "")
@@ -771,7 +757,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to double.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             else if (p.PropertyType == typeof(DateTime))
             {
@@ -780,7 +766,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to datetime.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
 
             }
             else if (p.PropertyType == typeof(DateTime?))
@@ -795,7 +781,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to datetime.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             else if (p.PropertyType == typeof(DateTimeOffset))
             {
@@ -804,8 +790,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to datetimeoffset.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
-
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(DateTimeOffset?))
                 if (item == "")
@@ -819,7 +804,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to datetimeoffset.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             else if (p.PropertyType == typeof(Guid))
             {
@@ -828,7 +813,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to guid.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(Guid?))
                 if (item == "")
@@ -842,7 +827,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to guid.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             else if (p.PropertyType == typeof(char))
             {
@@ -851,7 +836,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to char.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(char?))
                 if (item == "")
@@ -865,7 +850,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to char.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             else if (p.PropertyType == typeof(short))
             {
@@ -874,7 +859,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to short.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(short?))
                 if (item == "")
@@ -888,7 +873,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to short.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             else if (p.PropertyType == typeof(ushort))
             {
@@ -897,7 +882,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to ushort.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(ushort?))
                 if (item == "")
@@ -911,7 +896,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to ushort.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             else if (p.PropertyType == typeof(uint))
             {
@@ -920,7 +905,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to uint.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(uint?))
             {
@@ -935,7 +920,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to uint.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             }
             else if (p.PropertyType == typeof(long))
@@ -945,7 +930,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to long.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(long?))
                 if (item == "")
@@ -959,7 +944,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to long.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             else if (p.PropertyType == typeof(ulong))
             {
@@ -968,7 +953,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                 {
                     throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to ulong.  Means corruption");
                 }
-                p.SetValue(row, y); //hopefully this simple (?)
+                p.SetValue(row, y);
             }
             else if (p.PropertyType == typeof(ulong?))
             {
@@ -983,12 +968,12 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensi
                     {
                         throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to ulong.  Means corruption");
                     }
-                    p.SetValue(row, y); //hopefully this simple (?)
+                    p.SetValue(row, y);
                 }
             }
             else if (p.PropertyType == typeof(string))
             {
-                p.SetValue(row, item); //easiest part
+                p.SetValue(row, item);
             }
             else
             {

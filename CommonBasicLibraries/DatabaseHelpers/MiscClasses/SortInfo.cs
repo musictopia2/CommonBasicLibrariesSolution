@@ -1,5 +1,4 @@
-﻿using CommonBasicLibraries.DatabaseHelpers.MiscInterfaces;
-namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
 {
     public class SortInfo : IProperty
     {

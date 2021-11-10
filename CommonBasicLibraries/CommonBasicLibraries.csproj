@@ -3,8 +3,33 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
+  <ItemGroup>
+	  <Using Include="System.Diagnostics" />
+	  <Using Include="CommonBasicLibraries.CollectionClasses" />
+	  <Using Include="CommonBasicLibraries.BasicUIProcesses" />
+	  <Using Include="CommonBasicLibraries.BasicDataSettingsAndProcesses" />
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions" />
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ConfigProcesses" />
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator" />
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.MiscInterfaces"/>
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.MiscClasses"/>
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.Attributes"/>
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.Extensions"/>
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.ConditionClasses"/>
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.EntityInterfaces"/>
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc"/>
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions"/>
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses"/>
+	  <Using Include="Newtonsoft.Json"/>
+	  <Using Include="System.Reflection"/>
+	  <Using Include="System.Text"/>
+	  <!--
+	  Eventually figure out how to not do reflection via source generators (not yet though)
+	  -->
+	  <Using Remove="System.Threading" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>

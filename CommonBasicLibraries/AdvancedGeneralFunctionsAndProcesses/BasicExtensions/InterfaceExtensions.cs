@@ -1,13 +1,6 @@
-﻿using CommonBasicLibraries.BasicDataSettingsAndProcesses;
-using CommonBasicLibraries.CollectionClasses;
-using Newtonsoft.Json;
-using System;
-using System.Linq;
-using System.Reflection;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions
 {
-    //still needed.  was used for the meal planner to automap models.
-    //can almost automap lists.
+    //eventually can do without reflection but not now.
     public static class InterfaceExtensions
     {
         public static T AutoMap<T>(this IMappable payLoad)

@@ -1,6 +1,4 @@
-﻿using CommonBasicLibraries.CollectionClasses;
-using System.Linq;
-namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
 {
     public class ValidationConditions : IValidateConditions
     {

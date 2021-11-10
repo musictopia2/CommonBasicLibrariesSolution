@@ -1,8 +1,5 @@
-﻿using CommonBasicLibraries.CollectionClasses; //i really want people to use my new custom class for the lists
-using System.Threading.Tasks;
-namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
+﻿namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
 {
-    //was going to do separate.  However, this part can be here.  so i can have one library to implement this as well.
     public interface INugetSettings
     {
         /// <summary>

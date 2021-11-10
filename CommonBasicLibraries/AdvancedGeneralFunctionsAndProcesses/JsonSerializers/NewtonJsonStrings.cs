@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Threading.Tasks;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers
 {
     public static class NewtonJsonStrings
     {
@@ -8,14 +6,28 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
         {
             string thisStr = "";
             JsonSettingsGlobals.PopulateSettings();
-            await Task.Run(() => thisStr = JsonConvert.SerializeObject(thisObj, JsonSettingsGlobals._jsonSettingsData));
+            if (JsonSettingsGlobals.NeedsReferences)
+            {
+                await Task.Run(() => thisStr = JsonConvert.SerializeObject(thisObj, settings: JsonSettingsGlobals._jsonSettingsData));
+            }
+            else
+            {
+                await Task.Run(() => thisStr = JsonConvert.SerializeObject(thisObj, Formatting.Indented, new JsonDateOnlyConverter()));
+            }
             return thisStr;
         }
         public static async Task<T> DeserializeObjectAsync<T>(string thisStr)
         {
             T thisT = default!;
             JsonSettingsGlobals.PopulateSettings();
-            await Task.Run(() => thisT = JsonConvert.DeserializeObject<T>(thisStr, JsonSettingsGlobals._jsonSettingsData)!);
+            if (JsonSettingsGlobals.NeedsReferences)
+            {
+                await Task.Run(() => thisT = JsonConvert.DeserializeObject<T>(thisStr, JsonSettingsGlobals._jsonSettingsData)!);
+            }
+            else
+            {
+                thisT = JsonConvert.DeserializeObject<T>(thisStr, new JsonDateOnlyConverter())!;
+            }
             return thisT!;
         }
         public static T ConvertObject<T>(object thisObj)
@@ -26,13 +38,23 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
         public static string SerializeObject(object thisObj)
         {
             JsonSettingsGlobals.PopulateSettings();
-            return JsonConvert.SerializeObject(thisObj, JsonSettingsGlobals._jsonSettingsData);
+            if (JsonSettingsGlobals.NeedsReferences)
+            {
+                return JsonConvert.SerializeObject(thisObj, JsonSettingsGlobals._jsonSettingsData);
+            }
+            return JsonConvert.SerializeObject(thisObj, Formatting.Indented, new JsonDateOnlyConverter());
         }
-
         public static T DeserializeObject<T>(string thisStr)
         {
             JsonSettingsGlobals.PopulateSettings();
-            return JsonConvert.DeserializeObject<T>(thisStr, JsonSettingsGlobals._jsonSettingsData)!;
+            if (JsonSettingsGlobals.NeedsReferences)
+            {
+                return JsonConvert.DeserializeObject<T>(thisStr, JsonSettingsGlobals._jsonSettingsData)!;
+            }
+            else
+            {
+                return JsonConvert.DeserializeObject<T>(thisStr, new JsonDateOnlyConverter())!;
+            }
         }
         public static async Task<T> ConvertObjectAsync<T>(object thisObj)
         {

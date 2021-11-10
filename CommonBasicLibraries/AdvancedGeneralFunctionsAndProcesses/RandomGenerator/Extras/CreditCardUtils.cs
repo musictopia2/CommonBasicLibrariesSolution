@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator
 {
     public static class CreditCardUtils
     {
@@ -30,9 +28,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenera
 
             return sum * 9 % 10;
         }
-
-        //needs this part for unit testing.
-
         /// <summary>
         /// Checks whether the given credit card number is valid.
         /// </summary>
