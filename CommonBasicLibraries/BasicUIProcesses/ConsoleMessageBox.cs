@@ -1,5 +1,5 @@
 ﻿namespace CommonBasicLibraries.BasicUIProcesses;
-internal class ConsoleMessageBox : IMessageBox
+public class ConsoleMessageBox : IMessageBox
 {
     Task IMessageBox.ShowMessageAsync(string message)
     {

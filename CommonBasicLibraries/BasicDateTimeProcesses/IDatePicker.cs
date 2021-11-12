@@ -1,5 +1,5 @@
 ﻿namespace CommonBasicLibraries.BasicDateTimeProcesses;
-internal interface IDatePicker
+public interface IDatePicker
 {
     DateTime GetCurrentDate { get; }
 }
