@@ -8,8 +8,7 @@
 	  <Company>None</Company>
 	  <Authors>musictopia</Authors>
 	  <Description>
-		  This has lots of common standard libraries like MVVM Helpers, New Collection Classes, Extensions, Exceptions,
-		  and cross platform converters.
+		  This has lots of common standard libraries  New Collection Classes, Extensions, Exceptions, and Random Functions
 	  </Description>
 	  <RepositoryUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</PackageProjectUrl>
