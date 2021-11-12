@@ -4,6 +4,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 	<ImplicitUsings>enable</ImplicitUsings>
+	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	  <Company>None</Company>
+	  <Authors>musictopia</Authors>
+	  <Description>
+		  This has lots of common standard libraries like MVVM Helpers, New Collection Classes, Extensions, Exceptions,
+		  and cross platform converters.
+	  </Description>
+	  <RepositoryUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</RepositoryUrl>
+	  <PackageProjectUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</PackageProjectUrl>
+	  <PackageTags>Collections Extensions ExceptionHandling FileHelpers Random </PackageTags>
+	  <Version>4.0.1</Version>
   </PropertyGroup>
   <ItemGroup>
 	  <Using Include="System.Diagnostics" />
@@ -36,4 +47,5 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
+	
 </Project>
