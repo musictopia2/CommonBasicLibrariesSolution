@@ -10,12 +10,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.TemplateHelp
         public async Task SaveAsync()
         {
             await _templateCreater.CreateTemplateAsync(AppName!, PathDestination!);
-            UIPlatform.ExitApp();
+            _exit.ExitApp(); //has to be all or nothing now.
         }
         private readonly ITemplateCreater _templateCreater;
-        public CreateTemplateViewModel(ITemplateCreater templateCreater)
+        private readonly IExit _exit;
+        public CreateTemplateViewModel(ITemplateCreater templateCreater, IExit exit)
         {
             _templateCreater = templateCreater;
+            _exit = exit;
         }
     }
 }
