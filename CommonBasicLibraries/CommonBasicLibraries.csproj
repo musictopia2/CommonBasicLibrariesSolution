@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -13,7 +13,7 @@
 	  <RepositoryUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</PackageProjectUrl>
 	  <PackageTags>Collections Extensions ExceptionHandling FileHelpers Random </PackageTags>
-	  <Version>4.0.2</Version>
+	  <Version>4.0.3</Version>
   </PropertyGroup>
   <ItemGroup>
 	  <Using Include="System.Diagnostics" />
@@ -23,18 +23,18 @@
 	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions" />
 	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ConfigProcesses" />
 	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator" />
-	  <Using Include="CommonBasicLibraries.DatabaseHelpers.MiscInterfaces"/>
-	  <Using Include="CommonBasicLibraries.DatabaseHelpers.MiscClasses"/>
-	  <Using Include="CommonBasicLibraries.DatabaseHelpers.Attributes"/>
-	  <Using Include="CommonBasicLibraries.DatabaseHelpers.Extensions"/>
-	  <Using Include="CommonBasicLibraries.DatabaseHelpers.ConditionClasses"/>
-	  <Using Include="CommonBasicLibraries.DatabaseHelpers.EntityInterfaces"/>
-	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc"/>
-	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions"/>
-	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses"/>
-	  <Using Include="Newtonsoft.Json"/>
-	  <Using Include="System.Reflection"/>
-	  <Using Include="System.Text"/>
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.MiscInterfaces" />
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.MiscClasses" />
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.Attributes" />
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.Extensions" />
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.ConditionClasses" />
+	  <Using Include="CommonBasicLibraries.DatabaseHelpers.EntityInterfaces" />
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc" />
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions" />
+	  <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses" />
+	  <Using Include="Newtonsoft.Json" />
+	  <Using Include="System.Reflection" />
+	  <Using Include="System.Text" />
 	  <!--
 	  Eventually figure out how to not do reflection via source generators (not yet though)
 	  -->
