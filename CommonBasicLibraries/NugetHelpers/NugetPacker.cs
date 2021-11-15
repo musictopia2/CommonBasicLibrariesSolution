@@ -2,7 +2,7 @@
 {
     public class NugetPacker : INugetPacker
     {
-        async Task<bool> INugetPacker.CreateNugetPackageAsync(INugetModel project)
+        async Task<bool> INugetPacker.CreateNugetPackageAsync(INugetModel project, bool useVsVersioning)
         {
             Console.WriteLine($"Creating Package For {project.ProjectDirectory}");
             await ff.DeleteSeveralFilesAsync(project.NugetPath, ".nupkg");
@@ -12,12 +12,23 @@
             if (rets == false)
             {
                 starts.FileName = "dotnet";
-                starts.Arguments = "pack -c release --no-build";
+                if (useVsVersioning)
+                {
+                    starts.Arguments = "pack -c release --no-build";
+                }
+                else
+                {
+                    starts.Arguments = $"pack -c release --no-build -p:PackageVersion={project.LastVersion}";
+                }
             }
             else
             {
+                if (useVsVersioning == false)
+                {
+                    throw new CustomBasicException("Com objects has to use visual studio's versioning system.  Updates to those libraries should not be that common anyways");
+                }
                 starts.FileName = "nuget";
-                starts.Arguments = @"pack -Properties Configuration=Release -OutputDirectory bin\Release";
+                starts.Arguments = @"pack -Properties Configuration=Release -OutputDirectory bin\Release"; //since com is not that common, just do from vs project file
             }
             starts.CreateNoWindow = true;
             starts.WindowStyle = ProcessWindowStyle.Hidden;

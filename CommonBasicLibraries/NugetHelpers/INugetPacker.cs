@@ -2,6 +2,6 @@
 {
     public interface INugetPacker
     {
-        Task<bool> CreateNugetPackageAsync(INugetModel project);
+        Task<bool> CreateNugetPackageAsync(INugetModel project, bool useVsVersioning);
     }
 }
