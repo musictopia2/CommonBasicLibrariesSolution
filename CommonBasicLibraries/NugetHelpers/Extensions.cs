@@ -39,7 +39,7 @@
             BasicList<string> output = payLoad.Split(".").ToBasicList();
             return int.Parse(output.Last());
         }
-        public static string IncrementMinorVersion(string payLoad)
+        public static string IncrementMinorVersion(this string payLoad)
         {
             int minor = GetMinorVersion(payLoad);
             int major = GetMajorVersion(payLoad);
