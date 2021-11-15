@@ -2,8 +2,7 @@
 {
     public static class Extensions
     {
-       
-        public static async Task<string> GetCsProj(this string directoryPath) => await ff.GetSpecificFileAsync(directoryPath, ".csproj");
+        public static async Task<string> GetCsProjAsync(this string directoryPath) => await ff.GetSpecificFileAsync(directoryPath, ".csproj");
         public static DateTime GetDateModified(this string dllPath)
         {
             var file = ff.GetFile(dllPath);
