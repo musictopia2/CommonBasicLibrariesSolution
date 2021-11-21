@@ -35,6 +35,7 @@
                 typeof(char),
                 typeof(Guid),
                 typeof(DateTime),
+                typeof(DateOnly),
                 typeof(DateTimeOffset),
                 typeof(short?),
                 typeof(ushort?),
@@ -49,6 +50,7 @@
                 typeof(char?),
                 typeof(Guid?),
                 typeof(DateTime?),
+                typeof(DateOnly?),
                 typeof(DateTimeOffset?)
             };
             if (type.IsEnum == true)
