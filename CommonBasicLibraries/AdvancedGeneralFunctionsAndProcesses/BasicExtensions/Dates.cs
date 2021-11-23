@@ -2,7 +2,7 @@
 {
     public static class Dates
     {
-        public static DateTime ToDateTime(this DateTime date) => new (date.Year, date.Month, date.Day); //hopefully this simple.
+        public static DateTime ToDateTime(this DateOnly date) => new (date.Year, date.Month, date.Day); //hopefully this simple.
         public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
         public static TimeOnly ToTimeOnly(this DateTime date) => TimeOnly.FromDateTime(date);
         //try to do as dateonly.  if i really need datetime, rethink
