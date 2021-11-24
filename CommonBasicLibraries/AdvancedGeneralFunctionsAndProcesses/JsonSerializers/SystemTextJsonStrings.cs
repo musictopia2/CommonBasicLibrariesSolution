@@ -12,6 +12,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
                 _options.WriteIndented = true;
                 _options.Converters.Add(new JsonDateOnlyConverter());
                 _options.Converters.Add(new LimitedMappableConverter());
+                _options.Converters.Add(new JsonTimeOnlyConverter());
             }
             return _options;
         }
