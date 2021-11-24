@@ -12,3 +12,4 @@ global using aa = CommonBasicLibraries.BasicDataSettingsAndProcesses.Application
 global using bb = CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
 global using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.RandomGenerator.Data;
 global using System.Text.Json;
+global using System.Text.Json.Serialization;

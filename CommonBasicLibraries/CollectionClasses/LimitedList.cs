@@ -8,7 +8,7 @@ namespace CommonBasicLibraries.CollectionClasses
     /// will show the newest one added first.
     /// but if there are too many, then deletes the oldest one.
     /// </summary>
-    public class LimitedList<T> : IEnumerable<T>
+    public class LimitedList<T> : IEnumerable<T>, ICollection<T>
     {
         private readonly T[] _values;
         private int _upTo;
@@ -113,14 +113,41 @@ namespace CommonBasicLibraries.CollectionClasses
         }
         public T MostRecent => this[0];
         public T OldestItem => this[MaximumAllowed - 1];
+
+        int ICollection<T>.Count { get; }
+        bool ICollection<T>.IsReadOnly { get; }
+
         public IEnumerator GetEnumerator()
         {
             return new Enumerator(this);
         }
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
+            return new Enumerator(this);
+            //throw new NotImplementedException();
+        }
+
+        void ICollection<T>.Clear()
+        {
             throw new NotImplementedException();
         }
+
+        bool ICollection<T>.Contains(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Serializable]
         internal struct Enumerator : IEnumerator<T>
         {
             public Enumerator(LimitedList<T> list)

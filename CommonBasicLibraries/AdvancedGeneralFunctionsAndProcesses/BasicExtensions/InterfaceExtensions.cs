@@ -13,6 +13,7 @@
             Type originals = typeof(IViewModelBase);
             if (originals.IsAssignableFrom(payType))
             {
+                //eventually try to use source generators.
                 BasicList<PropertyInfo> oldProperties = payType.GetMappableProperties();
                 Type newType = typeof(T);
                 BasicList<PropertyInfo> newProperties = newType.GetMappableProperties(); //i think if new ones has some not mappable, will ignore.
@@ -29,10 +30,8 @@
             }
             else
             {
-                throw new CustomBasicException("Needs to finish json stuff");
-                //string results = JsonConvert.SerializeObject(payLoad);
-                //return JsonConvert.DeserializeObject<T>(results)!;
-
+                string results = js.SerializeObject(payLoad);
+                return js.DeserializeObject<T>(results);
             }
         }
     }

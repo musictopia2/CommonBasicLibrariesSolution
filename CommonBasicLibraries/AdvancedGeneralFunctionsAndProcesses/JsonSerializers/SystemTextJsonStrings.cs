@@ -11,7 +11,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
                 _options = new ();
                 _options.WriteIndented = true;
                 _options.Converters.Add(new JsonDateOnlyConverter());
-                //i can do all my converters here when ready.
+                _options.Converters.Add(new LimitedMappableConverter());
             }
             return _options;
         }
@@ -23,17 +23,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
             {
                 thisStr = tt.Serialize(thisObj, GetCustomJsonSerializerOptions());
             });
-            //eventually figure out the advanced json stuff.
-
-            //JsonSettingsGlobals.PopulateSettings();
-            //if (JsonSettingsGlobals.NeedsReferences)
-            //{
-            //    await Task.Run(() => thisStr = JsonConvert.SerializeObject(thisObj, settings: JsonSettingsGlobals._jsonSettingsData));
-            //}
-            //else
-            //{
-            //    await Task.Run(() => thisStr = JsonConvert.SerializeObject(thisObj, Formatting.Indented, new JsonDateOnlyConverter()));
-            //}
             return thisStr;
         }
         public static async Task<T> DeserializeObjectAsync<T>(string thisStr)
@@ -43,16 +32,6 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
             {
                 thisT = tt.Deserialize<T>(thisStr, GetCustomJsonSerializerOptions())!;
             });
-
-            //JsonSettingsGlobals.PopulateSettings();
-            //if (JsonSettingsGlobals.NeedsReferences)
-            //{
-            //    await Task.Run(() => thisT = JsonConvert.DeserializeObject<T>(thisStr, JsonSettingsGlobals._jsonSettingsData)!);
-            //}
-            //else
-            //{
-            //    thisT = JsonConvert.DeserializeObject<T>(thisStr, new JsonDateOnlyConverter())!;
-            //}
             return thisT!;
         }
         public static T ConvertObject<T>(object thisObj)
@@ -63,25 +42,10 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
         public static string SerializeObject(object thisObj)
         {
             return tt.Serialize(thisObj, GetCustomJsonSerializerOptions());
-            //JsonSettingsGlobals.PopulateSettings();
-            //if (JsonSettingsGlobals.NeedsReferences)
-            //{
-            //    return JsonConvert.SerializeObject(thisObj, JsonSettingsGlobals._jsonSettingsData);
-            //}
-            //return JsonConvert.SerializeObject(thisObj, Formatting.Indented, new JsonDateOnlyConverter());
         }
         public static T DeserializeObject<T>(string thisStr)
         {
             return tt.Deserialize<T>(thisStr, GetCustomJsonSerializerOptions())!;
-            //JsonSettingsGlobals.PopulateSettings();
-            //if (JsonSettingsGlobals.NeedsReferences)
-            //{
-            //    return JsonConvert.DeserializeObject<T>(thisStr, JsonSettingsGlobals._jsonSettingsData)!;
-            //}
-            //else
-            //{
-            //    return JsonConvert.DeserializeObject<T>(thisStr, new JsonDateOnlyConverter())!;
-            //}
         }
         public static async Task<T> ConvertObjectAsync<T>(object thisObj)
         {

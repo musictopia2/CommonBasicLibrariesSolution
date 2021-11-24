@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers
 {
     public class JsonDateOnlyConverter : JsonConverter<DateOnly>
     {
