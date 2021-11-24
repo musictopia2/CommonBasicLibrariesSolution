@@ -2,10 +2,15 @@
 using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
 namespace CommonBasicLibraries.CollectionClasses
 {
-    //i like the idea this time of leaving out the custom.
-    public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection, ISimpleList<T>, IBasicList<T> //needs inheritance still because game package needs it.
+    //has to implement the ilist after all now.
+    public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection, ISimpleList<T>, IBasicList<T>, IList<T> //needs inheritance still because game package needs it.
     {
         protected List<T> PrivateList;
+        public BasicList() //try this to make it supported by the system.text.json serializer system.
+        {
+            PrivateList = new(5);
+            LoadBehavior();
+        }
         public BasicList(int initCapacity = 5)
         {
 
@@ -59,6 +64,9 @@ namespace CommonBasicLibraries.CollectionClasses
             }
         }
         public int Count => PrivateList.Count;
+
+        bool ICollection<T>.IsReadOnly { get; }
+
         internal IRandomGenerator? _rs;
         public void Add(T value)
         {
@@ -605,6 +613,21 @@ namespace CommonBasicLibraries.CollectionClasses
             int oldIndex = PrivateList.IndexOf(item);
             PrivateList.RemoveAt(oldIndex);
             PrivateList.Insert(newIndex, item);
+        }
+
+        void IList<T>.Insert(int index, T item)
+        {
+            PrivateList.Insert(index, item);
+        }
+
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        {
+            PrivateList.CopyTo(array, arrayIndex); //go ahead and allow.  a person can only use if specifically using the interface.
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            return PrivateList.Remove(item);
         }
     }
 }
