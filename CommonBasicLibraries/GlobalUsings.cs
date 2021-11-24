@@ -2,7 +2,7 @@
 global using co = CommonBasicLibraries.DatabaseHelpers.ConditionClasses.ConditionOperators;
 global using cs = CommonBasicLibraries.BasicDataSettingsAndProcesses.SColorString;
 global using static CommonBasicLibraries.BasicDataSettingsAndProcesses.VBCompat;
-global using js = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers.NewtonJsonStrings;
+global using js = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers.SystemTextJsonStrings;
 global using jf = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers.FileHelpers;
 //global using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
 global using ff = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions.FileFunctions;
@@ -11,3 +11,4 @@ global using dd = CommonBasicLibraries.BasicDataSettingsAndProcesses.Constants;
 global using aa = CommonBasicLibraries.BasicDataSettingsAndProcesses.ApplicationPath;
 global using bb = CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
 global using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.RandomGenerator.Data;
+global using System.Text.Json;

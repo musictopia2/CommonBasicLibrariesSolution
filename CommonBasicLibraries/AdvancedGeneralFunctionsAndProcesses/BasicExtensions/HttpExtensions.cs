@@ -9,12 +9,12 @@
         /// <param name="uri"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> PostCustomJsonAsync(this HttpClient client, string uri, object value) //needs to be async.
-        {
-            string thisStr = JsonConvert.SerializeObject(value);
-            StringContent content = new(thisStr);
-            return await client.PostAsync(uri, content);
-        }
+        //public static async Task<HttpResponseMessage> PostCustomJsonAsync(this HttpClient client, string uri, object value) //needs to be async.
+        //{
+        //    string thisStr = JsonConvert.SerializeObject(value);
+        //    StringContent content = new(thisStr);
+        //    return await client.PostAsync(uri, content);
+        //}
         public static async Task SaveDownloadFileAsync(this HttpClient client, string requesturi, string path) //so if it fails, you will know
         {
             //i like download file better.  this is when it does the standard way.  if using custom, then i can still do custom way.

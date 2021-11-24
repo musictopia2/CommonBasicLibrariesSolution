@@ -29,8 +29,9 @@
             }
             else
             {
-                string results = JsonConvert.SerializeObject(payLoad);
-                return JsonConvert.DeserializeObject<T>(results)!;
+                throw new CustomBasicException("Needs to finish json stuff");
+                //string results = JsonConvert.SerializeObject(payLoad);
+                //return JsonConvert.DeserializeObject<T>(results)!;
 
             }
         }
