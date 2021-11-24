@@ -35,10 +35,10 @@
                 throw new CustomBasicException(errorMessage);
             }
         }
-        protected async Task<T> GetResults<T>(string extras, string errorMessage)
-        {
-            Uri finalAddress = new(BaseAddress!, extras);
-            return await Client.GetJsonAsync<T>(finalAddress, errorMessage);
-        }
+        //protected async Task<T> GetResults<T>(string extras, string errorMessage)
+        //{
+        //    Uri finalAddress = new(BaseAddress!, extras);
+        //    return await Client.GetJsonAsync<T>(finalAddress, errorMessage);
+        //}
     }
 }
