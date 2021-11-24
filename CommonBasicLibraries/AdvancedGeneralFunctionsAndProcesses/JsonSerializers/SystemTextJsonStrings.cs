@@ -10,6 +10,7 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
             {
                 _options = new ();
                 _options.WriteIndented = true;
+                _options.Converters.Add(new JsonDateOnlyConverter());
                 //i can do all my converters here when ready.
             }
             return _options;
