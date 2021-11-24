@@ -7,7 +7,14 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
             where T: JsonSerializerContext, new()
         {
             JsonSerializerOptions options = GetCustomJsonSerializerOptions();
+            
             options.AddContext<T>();
+        }
+
+        public static void SetCustomJsonSerializingOptions(this JsonSerializerOptions options)
+        {
+            options.AddConvertersAndIndent();
+            _options = options;
         }
 
         private static JsonSerializerOptions? _options;
@@ -16,10 +23,8 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
             if (_options == null)
             {
                 _options = new ();
-                _options.WriteIndented = true;
-                _options.Converters.Add(new JsonDateOnlyConverter());
-                _options.Converters.Add(new LimitedMappableConverter());
-                _options.Converters.Add(new JsonTimeOnlyConverter());
+                _options.AddConvertersAndIndent();
+               
             }
             return _options;
         }
