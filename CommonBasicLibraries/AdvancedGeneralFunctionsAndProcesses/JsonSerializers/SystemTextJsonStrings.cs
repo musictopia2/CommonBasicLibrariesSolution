@@ -3,6 +3,13 @@ namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializ
 {
     public static class SystemTextJsonStrings
     {
+        public static void AddContext<T>()
+            where T: JsonSerializerContext, new()
+        {
+            JsonSerializerOptions options = GetCustomJsonSerializerOptions();
+            options.AddContext<T>();
+        }
+
         private static JsonSerializerOptions? _options;
         public static JsonSerializerOptions GetCustomJsonSerializerOptions()
         {
