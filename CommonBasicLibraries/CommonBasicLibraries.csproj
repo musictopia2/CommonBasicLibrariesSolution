@@ -13,7 +13,7 @@
 	  <RepositoryUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</PackageProjectUrl>
 	  <PackageTags>Collections Extensions ExceptionHandling FileHelpers Random </PackageTags>
-	  <Version>4.0.9</Version>
+	  <Version>5.0.1</Version>
   </PropertyGroup>
   <ItemGroup>
 	  <Using Include="System.Diagnostics" />

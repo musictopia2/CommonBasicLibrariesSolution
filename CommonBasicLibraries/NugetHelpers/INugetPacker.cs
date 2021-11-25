@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.NugetHelpers
+﻿namespace CommonBasicLibraries.NugetHelpers;
+public interface INugetPacker
 {
-    public interface INugetPacker
-    {
-        Task<bool> CreateNugetPackageAsync(INugetModel project, bool useVsVersioning);
-    }
+    Task<bool> CreateNugetPackageAsync(INugetModel project, bool useVsVersioning);
 }

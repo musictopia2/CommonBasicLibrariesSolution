@@ -1,8 +1,6 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes;
+[AttributeUsage(AttributeTargets.Property)]
+public class PrimaryJoinedDataAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class PrimaryJoinedDataAttribute : Attribute
-    {
-        
-    }
+
 }

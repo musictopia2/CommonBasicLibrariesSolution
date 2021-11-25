@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.NugetHelpers
+﻿namespace CommonBasicLibraries.NugetHelpers;
+public enum EnumStatus
 {
-    public enum EnumStatus
-    {
-        None, New, NeedCreate, NeedsToUpload, ChangeDetected //added eventually changedtected so if there is a watcher, then can watch for this and act accordingly.
-    }
+    None, New, NeedCreate, NeedsToUpload, ChangeDetected //added eventually changedtected so if there is a watcher, then can watch for this and act accordingly.
 }

@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses;
+public class SpecificListCondition : BaseListCondition, ICondition
 {
-    public class SpecificListCondition : BaseListCondition, ICondition
-    {
-        EnumConditionCategory ICondition.ConditionCategory => EnumConditionCategory.ListInclude;
-    }
+    EnumConditionCategory ICondition.ConditionCategory => EnumConditionCategory.ListInclude;
 }

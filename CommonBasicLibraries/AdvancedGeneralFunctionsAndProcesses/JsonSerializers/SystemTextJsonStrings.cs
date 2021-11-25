@@ -1,69 +1,64 @@
 ﻿using tt = System.Text.Json.JsonSerializer;
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
+public static class SystemTextJsonStrings
 {
-    public static class SystemTextJsonStrings
+    public static void AddContext<T>()
+        where T : JsonSerializerContext, new()
     {
-        public static void AddContext<T>()
-            where T: JsonSerializerContext, new()
-        {
-            JsonSerializerOptions options = GetCustomJsonSerializerOptions();
-            
-            options.AddContext<T>();
-        }
+        JsonSerializerOptions options = GetCustomJsonSerializerOptions();
 
-        public static void SetCustomJsonSerializingOptions(this JsonSerializerOptions options)
+        options.AddContext<T>();
+    }
+    public static void SetCustomJsonSerializingOptions(this JsonSerializerOptions options)
+    {
+        options.AddConvertersAndIndent();
+        _options = options;
+    }
+    private static JsonSerializerOptions? _options;
+    public static JsonSerializerOptions GetCustomJsonSerializerOptions()
+    {
+        if (_options == null)
         {
-            options.AddConvertersAndIndent();
-            _options = options;
-        }
+            _options = new();
+            _options.AddConvertersAndIndent();
 
-        private static JsonSerializerOptions? _options;
-        public static JsonSerializerOptions GetCustomJsonSerializerOptions()
-        {
-            if (_options == null)
-            {
-                _options = new ();
-                _options.AddConvertersAndIndent();
-               
-            }
-            return _options;
         }
-        public static async Task<string> SerializeObjectAsync(object thisObj)
+        return _options;
+    }
+    public static async Task<string> SerializeObjectAsync(object thisObj)
+    {
+        string thisStr = "";
+        await Task.Run(() =>
         {
-            string thisStr = "";
-
-            await Task.Run(() =>
-            {
-                thisStr = tt.Serialize(thisObj, GetCustomJsonSerializerOptions());
-            });
-            return thisStr;
-        }
-        public static async Task<T> DeserializeObjectAsync<T>(string thisStr)
+            thisStr = tt.Serialize(thisObj, GetCustomJsonSerializerOptions());
+        });
+        return thisStr;
+    }
+    public static async Task<T> DeserializeObjectAsync<T>(string thisStr)
+    {
+        T thisT = default!;
+        await Task.Run(() =>
         {
-            T thisT = default!;
-            await Task.Run(() =>
-            {
-                thisT = tt.Deserialize<T>(thisStr, GetCustomJsonSerializerOptions())!;
-            });
-            return thisT!;
-        }
-        public static T ConvertObject<T>(object thisObj)
-        {
-            string thisStr = SerializeObject(thisObj);
-            return DeserializeObject<T>(thisStr);
-        }
-        public static string SerializeObject(object thisObj)
-        {
-            return tt.Serialize(thisObj, GetCustomJsonSerializerOptions());
-        }
-        public static T DeserializeObject<T>(string thisStr)
-        {
-            return tt.Deserialize<T>(thisStr, GetCustomJsonSerializerOptions())!;
-        }
-        public static async Task<T> ConvertObjectAsync<T>(object thisObj)
-        {
-            string thisStr = await SerializeObjectAsync(thisObj);
-            return await DeserializeObjectAsync<T>(thisStr);
-        }
+            thisT = tt.Deserialize<T>(thisStr, GetCustomJsonSerializerOptions())!;
+        });
+        return thisT!;
+    }
+    public static T ConvertObject<T>(object thisObj)
+    {
+        string thisStr = SerializeObject(thisObj);
+        return DeserializeObject<T>(thisStr);
+    }
+    public static string SerializeObject(object thisObj)
+    {
+        return tt.Serialize(thisObj, GetCustomJsonSerializerOptions());
+    }
+    public static T DeserializeObject<T>(string thisStr)
+    {
+        return tt.Deserialize<T>(thisStr, GetCustomJsonSerializerOptions())!;
+    }
+    public static async Task<T> ConvertObjectAsync<T>(object thisObj)
+    {
+        string thisStr = await SerializeObjectAsync(thisObj);
+        return await DeserializeObjectAsync<T>(thisStr);
     }
 }

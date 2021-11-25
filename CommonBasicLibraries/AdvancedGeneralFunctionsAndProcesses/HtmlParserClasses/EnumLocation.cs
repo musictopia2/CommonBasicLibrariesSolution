@@ -1,8 +1,6 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses;
+public enum EnumLocation
 {
-    public enum EnumLocation
-    {
-        Beginning = 1,
-        Ending = 2
-    }
+    Beginning = 1,
+    Ending = 2
 }

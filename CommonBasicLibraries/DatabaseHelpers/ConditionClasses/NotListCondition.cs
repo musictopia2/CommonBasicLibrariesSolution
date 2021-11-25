@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses;
+public class NotListCondition : BaseListCondition, ICondition
 {
-    public class NotListCondition : BaseListCondition, ICondition
-    {
-        EnumConditionCategory ICondition.ConditionCategory => EnumConditionCategory.ListNot;
-    }
+    EnumConditionCategory ICondition.ConditionCategory => EnumConditionCategory.ListNot;
 }

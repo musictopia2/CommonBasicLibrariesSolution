@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.BasicDataSettingsAndProcesses
+﻿namespace CommonBasicLibraries.BasicDataSettingsAndProcesses;
+public interface ISQLServer
 {
-    public interface ISQLServer
-    {
-        string GetConnectionString(string databaseOrPath); //this way if implemented, then you can easily get the sql server connection. 
-    }
+    string GetConnectionString(string databaseOrPath); //this way if implemented, then you can easily get the sql server connection. 
 }

@@ -1,69 +1,67 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses;
+public static class StaticHelpers
 {
-    public static class StaticHelpers
+    public static BasicList<ICondition> StartConditionWithID(int id)
     {
-        public static BasicList<ICondition> StartConditionWithID(int id)
+        BasicList<ICondition> list = new();
+        AndCondition condition = new();
+        condition.Property = nameof(ISimpleDapperEntity.ID);
+        condition.Value = id;
+        list.Add(condition);
+        return list;
+    }
+    public static BasicList<ICondition> StartWithOneCondition(string property, object value)
+    {
+        BasicList<ICondition> list = new();
+        AndCondition condition = new();
+        condition.Property = property;
+        condition.Value = value;
+        list.Add(condition);
+        return list;
+    }
+    public static BasicList<ICondition> StartWithNullCondition(string property, string operation)
+    {
+        BasicList<ICondition> list = new();
+        AndCondition condition = new();
+        condition.Property = property;
+        if (operation != co.IsNotNull && operation != co.IsNull)
         {
-            BasicList<ICondition> list = new();
-            AndCondition condition = new();
-            condition.Property = nameof(ISimpleDapperEntity.ID);
-            condition.Value = id;
-            list.Add(condition);
-            return list;
+            throw new CustomBasicException("Only null or is not null is allowed when starting with null conditions");
         }
-        public static BasicList<ICondition> StartWithOneCondition(string property, object value)
+        //this was needed for the tv shows.
+        condition.Operator = operation;
+        list.Add(condition);
+        return list;
+    }
+    public static BasicList<ICondition> StartWithOneCondition(string property, string operation, object value)
+    {
+        BasicList<ICondition> list = new();
+        AndCondition condition = new();
+        condition.Property = property;
+        condition.Value = value;
+        condition.Operator = operation;
+        list.Add(condition);
+        return list;
+    }
+    public static BasicList<SortInfo> StartSorting(string property)
+    {
+        SortInfo sort = new();
+        sort.Property = property;
+        return new() { sort };
+    }
+    public static BasicList<SortInfo> StartSorting(string property, EnumOrderBy order)
+    {
+        SortInfo sort = new();
+        sort.Property = property;
+        sort.OrderBy = order;
+        return new() { sort };
+    }
+    public static BasicList<UpdateEntity> StartUpdate(string property, object value)
+    {
+        BasicList<UpdateEntity> output = new()
         {
-            BasicList<ICondition> list = new();
-            AndCondition condition = new();
-            condition.Property = property;
-            condition.Value = value;
-            list.Add(condition);
-            return list;
-        }
-        public static BasicList<ICondition> StartWithNullCondition(string property, string operation)
-        {
-            BasicList<ICondition> list = new();
-            AndCondition condition = new();
-            condition.Property = property;
-            if (operation != co.IsNotNull && operation != co.IsNull)
-            {
-                throw new CustomBasicException("Only null or is not null is allowed when starting with null conditions");
-            }
-            //this was needed for the tv shows.
-            condition.Operator = operation;
-            list.Add(condition);
-            return list;
-        }
-        public static BasicList<ICondition> StartWithOneCondition(string property, string operation, object value)
-        {
-            BasicList<ICondition> list = new();
-            AndCondition condition = new();
-            condition.Property = property;
-            condition.Value = value;
-            condition.Operator = operation;
-            list.Add(condition);
-            return list;
-        }
-        public static BasicList<SortInfo> StartSorting(string property)
-        {
-            SortInfo sort = new();
-            sort.Property = property;
-            return new() { sort };
-        }
-        public static BasicList<SortInfo> StartSorting(string property, EnumOrderBy order)
-        {
-            SortInfo sort = new();
-            sort.Property = property;
-            sort.OrderBy = order;
-            return new() { sort };
-        }
-        public static BasicList<UpdateEntity> StartUpdate(string property, object value)
-        {
-            BasicList<UpdateEntity> output = new()
-            {
-                new UpdateEntity(property, value)
-            };
-            return output;
-        }
+            new UpdateEntity(property, value)
+        };
+        return output;
     }
 }

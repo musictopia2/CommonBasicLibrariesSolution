@@ -1,12 +1,10 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes;
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class TableAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class TableAttribute : Attribute
+    public TableAttribute(string tableName)
     {
-        public TableAttribute(string tableName)
-        {
-            TableName = tableName;
-        }
-        public string TableName { get; private set; }
+        TableName = tableName;
     }
+    public string TableName { get; private set; }
 }

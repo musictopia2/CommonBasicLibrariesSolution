@@ -1,8 +1,6 @@
-﻿namespace CommonBasicLibraries.CollectionClasses
+﻿namespace CommonBasicLibraries.CollectionClasses;
+//this is needed so the contact manager can cast something for getting count alone.
+public interface ICountCollection
 {
-    //this is needed so the contact manager can cast something for getting count alone.
-    public interface ICountCollection
-    {
-        int Count { get; }
-    }
+    int Count { get; }
 }

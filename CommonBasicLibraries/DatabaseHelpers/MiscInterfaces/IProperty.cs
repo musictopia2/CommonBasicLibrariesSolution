@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces
+﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces;
+public interface IProperty
 {
-    public interface IProperty
-    {
-        string Property { get; set; }
-    }
+    string Property { get; set; }
 }

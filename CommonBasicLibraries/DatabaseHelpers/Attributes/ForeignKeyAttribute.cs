@@ -1,12 +1,10 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes
+﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes;
+[AttributeUsage(AttributeTargets.Property)]
+public class ForeignKeyAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class ForeignKeyAttribute : Attribute
+    public ForeignKeyAttribute(string className)
     {
-        public ForeignKeyAttribute(string className)
-        {
-            ClassName = className;
-        }
-        public string ClassName { get; private set; }
+        ClassName = className;
     }
+    public string ClassName { get; private set; }
 }

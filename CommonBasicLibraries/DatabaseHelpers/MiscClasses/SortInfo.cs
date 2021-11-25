@@ -1,12 +1,10 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses;
+public class SortInfo : IProperty
 {
-    public class SortInfo : IProperty
+    public enum EnumOrderBy
     {
-        public enum EnumOrderBy
-        {
-            Ascending, Descending
-        }
-        public string Property { get; set; } = "";
-        public EnumOrderBy OrderBy { get; set; } = EnumOrderBy.Ascending;
+        Ascending, Descending
     }
+    public string Property { get; set; } = "";
+    public EnumOrderBy OrderBy { get; set; } = EnumOrderBy.Ascending;
 }

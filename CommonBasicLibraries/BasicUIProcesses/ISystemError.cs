@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.BasicUIProcesses
+﻿namespace CommonBasicLibraries.BasicUIProcesses;
+public interface ISystemError
 {
-    public interface ISystemError
-    {
-        void ShowSystemError(string message);
-    }
+    void ShowSystemError(string message);
 }

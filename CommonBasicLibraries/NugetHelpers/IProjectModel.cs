@@ -1,8 +1,6 @@
-﻿namespace CommonBasicLibraries.NugetHelpers
+﻿namespace CommonBasicLibraries.NugetHelpers;
+public interface IProjectModel
 {
-    public interface IProjectModel
-    {
-        string CSPath { get; set; }
-        string LastVersion { get; set; }
-    }
+    string CSPath { get; set; }
+    string LastVersion { get; set; }
 }

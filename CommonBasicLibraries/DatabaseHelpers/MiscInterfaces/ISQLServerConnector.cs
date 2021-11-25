@@ -1,6 +1,4 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces
+﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces;
+public interface ISQLServerConnector : IDbConnector
 {
-    public interface ISQLServerConnector : IDbConnector
-    {
-    }
 }

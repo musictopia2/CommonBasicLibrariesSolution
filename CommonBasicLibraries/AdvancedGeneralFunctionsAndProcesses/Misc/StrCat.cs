@@ -1,23 +1,21 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
+public class StrCat
 {
-    public class StrCat
+    private StringBuilder _atoms = new();
+    public void ClearString()
     {
-        private StringBuilder _atoms = new();
-        public void ClearString()
+        _atoms = new StringBuilder();
+    }
+    public void AddToString(string info, string delimiter = "")
+    {
+        if (_atoms.Length > 0)
         {
-            _atoms = new StringBuilder();
+            _atoms.Append(delimiter);
         }
-        public void AddToString(string info, string delimiter = "")
-        {
-            if (_atoms.Length > 0)
-            {
-                _atoms.Append(delimiter);
-            }
-            _atoms.Append(info);
-        }
-        public string GetInfo()
-        {
-            return _atoms.ToString();
-        }
+        _atoms.Append(info);
+    }
+    public string GetInfo()
+    {
+        return _atoms.ToString();
     }
 }

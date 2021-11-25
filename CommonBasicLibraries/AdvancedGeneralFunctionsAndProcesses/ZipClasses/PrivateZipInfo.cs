@@ -1,8 +1,6 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses;
+public class PrivateZipInfo
 {
-    public class PrivateZipInfo
-    {
-        public string Path { get; set; } = "";
-        public string Folder { get; set; } = "";
-    }
+    public string Path { get; set; } = "";
+    public string Folder { get; set; } = "";
 }

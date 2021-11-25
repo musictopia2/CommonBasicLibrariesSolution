@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses;
+public interface IValidateConditions
 {
-    public interface IValidateConditions
-    {
-        bool IsValid(BasicList<ICondition> conditionList, out string message);
-    }
+    bool IsValid(BasicList<ICondition> conditionList, out string message);
 }

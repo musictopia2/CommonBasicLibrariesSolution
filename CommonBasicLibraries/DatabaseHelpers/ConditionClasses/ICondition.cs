@@ -1,7 +1,5 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses
+﻿namespace CommonBasicLibraries.DatabaseHelpers.ConditionClasses;
+public interface ICondition
 {
-    public interface ICondition
-    {
-        EnumConditionCategory ConditionCategory { get; }
-    }
+    EnumConditionCategory ConditionCategory { get; }
 }
