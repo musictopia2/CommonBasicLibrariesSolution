@@ -9,4 +9,4 @@ dotnet_diagnostic.CA1069.severity = none
 
 # Default severity for analyzer diagnostics with category 'Usage'
 dotnet_analyzer_diagnostic.category-Usage.severity = none
-csharp_style_namespace_declarations=block_scoped:silent
+csharp_style_namespace_declarations=block_scoped:error
