@@ -1,4 +1,5 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ConfigProcesses;
+﻿#if NET6_0_OR_GREATER
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ConfigProcesses;
 public class SimpleTabDelimitedConfigClass : ISimpleConfig
 {
     private readonly IConfigLocation _locator;
@@ -35,3 +36,4 @@ public class SimpleTabDelimitedConfigClass : ISimpleConfig
         return output[key];
     }
 }
+#endif

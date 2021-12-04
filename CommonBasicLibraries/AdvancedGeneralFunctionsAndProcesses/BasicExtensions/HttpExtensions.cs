@@ -10,7 +10,12 @@ public static class HttpExtensions
         }
         using FileStream stream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
         var results = await output.Content.ReadAsByteArrayAsync();
+#if NET6_0_OR_GREATER
         await stream.WriteAsync(results);
+#endif
+#if NETSTANDARD2_0
+await stream.WriteAsync(results, 0, results.Length);
+#endif
     }
     private static async Task<StringContent> GetContentAsync<T>(this T value) //hopefully still this simple.
     {

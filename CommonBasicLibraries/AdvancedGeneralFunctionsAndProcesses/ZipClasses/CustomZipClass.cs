@@ -1,4 +1,5 @@
-﻿using System.IO.Compression; //not common enough.
+﻿#if NET6_0_OR_GREATER
+using System.IO.Compression; //not common enough.
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses;
 public class CustomZipClass
 {
@@ -113,3 +114,4 @@ public class CustomZipClass
         });
     }
 }
+#endif

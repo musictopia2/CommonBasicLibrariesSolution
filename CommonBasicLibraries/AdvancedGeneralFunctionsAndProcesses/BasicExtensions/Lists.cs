@@ -9,6 +9,12 @@ public static class Lists
     {
         return thisList.Values.ToBasicList().GetRandomItem();
     }
+#if NETSTANDARD2_0
+    public static HashSet<T> ToHashSet<T>(this IEnumerable<T> TempList)
+    {
+        return new HashSet<T>(TempList);
+    }
+#endif
     public static BasicList<T> ToBasicList<T>(this IEnumerable<T> tempList)
     {
         return new BasicList<T>(tempList);

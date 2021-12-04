@@ -82,6 +82,7 @@ public static class FileExtensions
         stream.Close();
         return Convert.ToBase64String(bb);
     }
+#if NET6_0_OR_GREATER
     public static async Task<string> ResourcesBinaryTextFromFileAsync(this Assembly assembly, string fileName)
     {
         using var stream = await GetStreamAsync(assembly, fileName);
@@ -90,6 +91,8 @@ public static class FileExtensions
         stream.Close();
         return Convert.ToBase64String(bb);
     }
+#endif
+
     public static async Task<string> ResourcesAllTextFromFileAsync(this Assembly thisAssembly, string fileName)
     {
         using var thisStream = await GetStreamAsync(thisAssembly, fileName);
@@ -131,6 +134,7 @@ public static class FileExtensions
         }
         return thisStream;
     }
+#if NET6_0_OR_GREATER
     public async static Task SaveBinaryDataAsync(this string data, string path)
     {
         using var fins = new FileStream(path, FileMode.Create);
@@ -138,4 +142,5 @@ public static class FileExtensions
         await fins.WriteAsync(Bytes);
         await fins.FlushAsync();
     }
+#endif
 }

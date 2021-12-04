@@ -41,6 +41,7 @@ public static class Strings
             }
         return possNum;
     }
+#if NET6_0_OR_GREATER
     public static BasicList<string> SplitStringEliminateMonth(this string thisStr)
     {
         thisStr = thisStr.Trim();
@@ -60,6 +61,7 @@ public static class Strings
         }
         return newList;
     }
+#endif
     public static int GetMonthID(this string monthString)
     {
 
@@ -260,12 +262,10 @@ public static class Strings
         }
         throw new CustomBasicException("Not sure");
     }
-    //will use the new dateonly for this.  no reason for time if we are entering date alone.
-    public static bool IsValidDate(this string dateStr, out DateOnly? newDate) // can't use nothing as a variable type.  too bad the function did not allow that.  can try one more thing
+#if NET6_0_OR_GREATER
+    public static bool IsValidDate(this string dateStr, out DateOnly? newDate)
     {
-
-        DateOnly temps;
-        bool rets = DateOnly.TryParseExact(dateStr, "mmddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
+        bool rets = DateOnly.TryParseExact(dateStr, "mmddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly temps);
         if (rets)
         {
             newDate = temps;
@@ -277,9 +277,41 @@ public static class Strings
             newDate = temps;
             return true;
         }
+        rets = DateOnly.TryParse(dateStr, out temps);
+        if (rets)
+        {
+            newDate = temps;
+            return true;
+        }
         newDate = null;
         return false;
     }
+#endif
+#if NETSTANDARD2_0
+public static bool IsValidDate(this string dateStr, out DateTime? newDate)
+    {
+        bool rets = DateTime.TryParseExact(dateStr, "mmddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime temps);
+        if (rets)
+        {
+            newDate = temps;
+            return true;
+        }
+        rets = DateTime.TryParseExact(dateStr, "mmddyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
+        if (rets)
+        {
+            newDate = temps;
+            return true;
+        }
+        rets = DateTime.TryParse(dateStr, out temps);
+        if (rets)
+        {
+            newDate = temps;
+            return true;
+        }
+        newDate = null;
+        return false;
+    }
+#endif
     public static BasicList<Tuple<string, int?>> GetStringIntegerCombos(this string thisStr)
     {
         BasicList<Tuple<string, int?>> thisList = new();
@@ -634,22 +666,25 @@ public static class Strings
         FileStream.Flush();
         FileStream.Close();
     }
+#if NET6_0_OR_GREATER
     public async static Task SaveFileAsync(this string data, string path)
     {
-        byte[] Bytes = Convert.FromBase64String(data);
+        byte[] bytes = Convert.FromBase64String(data);
         using FileStream fileStream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-        await fileStream.WriteAsync(Bytes);
+        await fileStream.WriteAsync(bytes);
         await fileStream.FlushAsync();
         fileStream.Close();
     }
+#endif
     public static string GetFileData(this string path)
     {
         using FileStream fileStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-        byte[] Bytes = new byte[fileStream.Length - 1 + 1];
-        fileStream.Read(Bytes, 0, (int)fileStream.Length);
+        byte[] bytes = new byte[fileStream.Length - 1 + 1];
+        fileStream.Read(bytes, 0, (int)fileStream.Length);
         fileStream.Close();
-        return Convert.ToBase64String(Bytes);
+        return Convert.ToBase64String(bytes);
     }
+#if NET6_0_OR_GREATER
     public async static Task<string> GetFileDataAsync(this string path)
     {
         using FileStream fileStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
@@ -658,6 +693,7 @@ public static class Strings
         fileStream.Close();
         return Convert.ToBase64String(Bytes);
     }
+#endif
     public static BasicList<string> GenerateSentenceList(this string entireText)
     {
         return entireText.Split(Constants.VBCrLf).ToBasicList();

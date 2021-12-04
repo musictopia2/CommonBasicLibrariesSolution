@@ -535,18 +535,23 @@ public static class FileFunctions
     {
         File.WriteAllLines(bb.GetCleanedPath(filePath), lines);
     }
+#if NET6_0_OR_GREATER
     public static async Task WriteAllLinesAsync(string filePath, BasicList<string> lines)
     {
         await File.WriteAllLinesAsync(bb.GetCleanedPath(filePath), lines);
     }
+#endif
+
     public static void WriteAllLines(string filePath, BasicList<string> lines, Encoding encoding)
     {
         File.WriteAllLines(bb.GetCleanedPath(filePath), lines, encoding);
     }
+#if NET6_0_OR_GREATER
     public static async Task WriteAllLinesAsync(string filePath, BasicList<string> lines, Encoding encoding)
     {
         await File.WriteAllLinesAsync(bb.GetCleanedPath(filePath), lines, encoding);
     }
+#endif
     public static async Task FileCopyAsync(string originalFile, string newFile)
     {
         await Task.Run(() => File.Copy(bb.GetCleanedPath(originalFile), bb.GetCleanedPath(newFile), true));
@@ -601,11 +606,21 @@ public static class FileFunctions
     {
         await Task.Run(() => Directory.Move(bb.GetCleanedPath(oldDirectory), bb.GetCleanedPath(newName)));
     }
+#if NET6_0_OR_GREATER
     public static async Task<BasicList<string>> ReadAllLinesAsync(string filePath)
     {
         var temps = await File.ReadAllLinesAsync(bb.GetCleanedPath(filePath));
         return temps.ToBasicList();
     }
+#endif
+#if NETSTANDARD2_0
+    public static async  Task<BasicList<string>> TextFromFileListAsync(string path)
+    {
+        BasicList<string> list = new ();
+        await Task.Run(() => list = File.ReadAllLines(path).ToBasicList());
+        return list;
+    }
+#endif
     /// <summary>
     /// This will copy the folder and all sub folders and files.
     /// if the destination already exist, then will exit since this cannot replace.

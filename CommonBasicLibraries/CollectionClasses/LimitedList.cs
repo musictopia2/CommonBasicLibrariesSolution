@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if NET6_0_OR_GREATER
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 namespace CommonBasicLibraries.CollectionClasses;
 /// <summary>
@@ -185,3 +186,4 @@ public class LimitedList<T> : IEnumerable<T>, ICollection<T> //could be buggy.  
         }
     }
 }
+#endif

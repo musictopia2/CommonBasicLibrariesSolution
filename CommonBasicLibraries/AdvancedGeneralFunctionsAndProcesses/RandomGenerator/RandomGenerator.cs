@@ -641,7 +641,7 @@ public partial class RandomGenerator : IRandomGenerator
         }
         if (!string.IsNullOrEmpty(pool))
         {
-            p = pool;
+            p = pool!;
         }
         else if (alpha)
         {
@@ -691,6 +691,7 @@ public partial class RandomGenerator : IRandomGenerator
         return long.Parse(number);
     }
     #endregion
+#if NET6_0_OR_GREATER
     public DateOnly NextDateOnly(DateOnly? min = null, DateOnly? max = null)
     {
         //can't be simple anymore because its dateonly now.
@@ -708,6 +709,7 @@ public partial class RandomGenerator : IRandomGenerator
         var y = NextYear();
         return new DateOnly(y, m, d);
     }
+#endif
     public DateTime NextDateTime(DateTime? min = null, DateTime? max = null)
     {
         if (min.HasValue && max.HasValue)

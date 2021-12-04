@@ -16,6 +16,7 @@ public static class Reflections
         var attributeName = typeof(TAttribute).Name;
         return method.GetCustomAttributes(true).Any(attr => attr.GetType().Name == attributeName);
     }
+#if NET6_0_OR_GREATER
     public static bool IsSimpleType(this Type type)
     {
         var simpleTypesList = new List<Type>
@@ -60,6 +61,50 @@ public static class Reflections
         }
         return simpleTypesList.Contains(type);
     }
+#endif
+#if NETSTANDARD2_0
+public static bool IsSimpleType(this Type type)
+    {
+        var simpleTypesList = new List<Type>
+            {
+                typeof(short),
+                typeof(ushort),
+                typeof(int),
+                typeof(uint),
+                typeof(long),
+                typeof(ulong),
+                typeof(float),
+                typeof(double),
+                typeof(decimal),
+                typeof(bool),
+                typeof(string),
+                typeof(char),
+                typeof(Guid),
+                typeof(DateTime),
+                typeof(DateTimeOffset),
+                typeof(short?),
+                typeof(ushort?),
+                typeof(int?),
+                typeof(uint?),
+                typeof(long?),
+                typeof(ulong?),
+                typeof(float?),
+                typeof(double?),
+                typeof(decimal?),
+                typeof(bool?),
+                typeof(char?),
+                typeof(Guid?),
+                typeof(DateTime?),
+                typeof(DateTimeOffset?)
+            };
+        if (type.IsEnum == true)
+        {
+            return true;
+        }
+        return simpleTypesList.Contains(type);
+    }
+#endif
+
     public static bool IsDateType(this PropertyInfo property)
     {
         if (typeof(DateTime).IsAssignableFrom(property.PropertyType))
@@ -70,6 +115,7 @@ public static class Reflections
         {
             return true;
         }
+#if NET6_0_OR_GREATER
         if (typeof(DateOnly).IsAssignableFrom(property.PropertyType)) //to better support the dateonly.
         {
             return true;
@@ -78,6 +124,7 @@ public static class Reflections
         {
             return true;
         }
+#endif
         return false;
     }
     public static bool IsIntegerType(this PropertyInfo property)

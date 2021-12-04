@@ -1,4 +1,5 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
+﻿#if NET6_0_OR_GREATER
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public class LimitedMappableConverter : JsonConverter<LimitedList<IMappable>>
 {
     //this should be writeonly for this.
@@ -16,3 +17,4 @@ public class LimitedMappableConverter : JsonConverter<LimitedList<IMappable>>
         writer.WriteEndArray();
     }
 }
+#endif

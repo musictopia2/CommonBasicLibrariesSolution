@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations; //not common enough.
+﻿#if NET6_0_OR_GREATER
+using System.ComponentModel.DataAnnotations; //not common enough.
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.TemplateHelpers;
 public class CreateTemplateViewModel : ICreateTemplateViewModel
 {
@@ -19,3 +20,4 @@ public class CreateTemplateViewModel : ICreateTemplateViewModel
         _exit = exit;
     }
 }
+#endif
