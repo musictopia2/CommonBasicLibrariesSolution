@@ -1,4 +1,5 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
+﻿using System.Runtime.InteropServices; //not common enough to use for globals.
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class Lists
 {
     public static void Add<T>(this Dictionary<int, T> thisDict, T thisItem)
@@ -14,6 +15,9 @@ public static class Lists
     {
         return new HashSet<T>(TempList);
     }
+#endif
+#if NET6_0_OR_GREATER
+    public static Span<T> AsSpan<T>(this BasicList<T>? list) => list is null ? default : CollectionsMarshal.AsSpan(list.GetInternalList); //hopefully this will allow me to use the built in asspan even for my custom list.
 #endif
     public static BasicList<T> ToBasicList<T>(this IEnumerable<T> tempList)
     {
