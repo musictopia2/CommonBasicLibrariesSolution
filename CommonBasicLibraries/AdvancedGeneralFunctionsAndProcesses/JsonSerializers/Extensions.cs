@@ -1,7 +1,7 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public static class Extensions
 {
-    public static void AddConvertersAndIndent(this JsonSerializerOptions options)
+    public static void AddDateTimeConvertersAndIndent(this JsonSerializerOptions options)
     {
 #if NET6_0_OR_GREATER
         options.Converters.Add(new LimitedMappableConverter());

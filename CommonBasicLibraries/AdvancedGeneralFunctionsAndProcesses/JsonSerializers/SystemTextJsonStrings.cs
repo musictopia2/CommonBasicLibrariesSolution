@@ -2,35 +2,28 @@
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public static class SystemTextJsonStrings
 {
-    public static void AddContext<T>()
-        where T : JsonSerializerContext, new()
+    public static JsonSerializerOptions GetOptionsForAspnetCore()
     {
-        JsonSerializerOptions options = GetCustomJsonSerializerOptions();
-
-        options.AddContext<T>();
+        var options = new JsonSerializerOptions();
+        options.AddDateTimeConvertersAndIndent();
+        MultipleContextHelpers.PopulateConverters(options);
+        return options;
     }
-    public static void SetCustomJsonSerializingOptions(this JsonSerializerOptions options)
+    //decided to make it public.  this means if i am doing from client and want the proper options (including using custom source generators, can do).  in this case, has to know the type to use.
+    public static JsonSerializerOptions GetCustomJsonSerializerOptions<T>()
     {
-        options.AddConvertersAndIndent();
-        _options = options;
+        var options = new JsonSerializerOptions();
+        options.AddDateTimeConvertersAndIndent();
+        MultipleContextHelpers.PopulateOptions<T>(options);
+        return options;
     }
-    private static JsonSerializerOptions? _options;
-    public static JsonSerializerOptions GetCustomJsonSerializerOptions()
-    {
-        if (_options == null)
-        {
-            _options = new();
-            _options.AddConvertersAndIndent();
-
-        }
-        return _options;
-    }
-    public static async Task<string> SerializeObjectAsync(object thisObj)
+    public static async Task<string> SerializeObjectAsync<T>(T thisObj)
     {
         string thisStr = "";
         await Task.Run(() =>
         {
-            thisStr = tt.Serialize(thisObj, GetCustomJsonSerializerOptions());
+            JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
+            thisStr = tt.Serialize(thisObj, options);
         });
         return thisStr;
     }
@@ -39,24 +32,27 @@ public static class SystemTextJsonStrings
         T thisT = default!;
         await Task.Run(() =>
         {
-            thisT = tt.Deserialize<T>(thisStr, GetCustomJsonSerializerOptions())!;
+            JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
+            thisT = tt.Deserialize<T>(thisStr, options)!;
         });
         return thisT!;
     }
-    public static T ConvertObject<T>(object thisObj)
+    public static D ConvertObject<D, S>(S thisObj)
     {
-        string thisStr = SerializeObject(thisObj);
-        return DeserializeObject<T>(thisStr);
+        string thisStr = SerializeObject<S>(thisObj!);
+        return DeserializeObject<D>(thisStr);
     }
-    public static string SerializeObject(object thisObj)
+    public static string SerializeObject<T>(T thisObj)
     {
-        return tt.Serialize(thisObj, GetCustomJsonSerializerOptions());
+        JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
+        return tt.Serialize(thisObj, options)!;
     }
     public static T DeserializeObject<T>(string thisStr)
     {
-        return tt.Deserialize<T>(thisStr, GetCustomJsonSerializerOptions())!;
+        JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
+        return tt.Deserialize<T>(thisStr, options)!;
     }
-    public static async Task<T> ConvertObjectAsync<T>(object thisObj)
+    public static async Task<T> ConvertObjectAsync<T>(T thisObj)
     {
         string thisStr = await SerializeObjectAsync(thisObj);
         return await DeserializeObjectAsync<T>(thisStr);
