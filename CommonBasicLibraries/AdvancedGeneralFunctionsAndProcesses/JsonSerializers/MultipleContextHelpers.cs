@@ -1,8 +1,8 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public static class MultipleContextHelpers
 {
-    private static Dictionary<Type, Action<JsonSerializerOptions>> _contexts = new();
-    private static HashSet<JsonConverter> _converters = new();
+    private readonly static Dictionary<Type, Action<JsonSerializerOptions>> _contexts = new();
+    private readonly static HashSet<JsonConverter> _converters = new();
     public static void AddConverter<T>()
         where T : JsonConverter, new()
     {
