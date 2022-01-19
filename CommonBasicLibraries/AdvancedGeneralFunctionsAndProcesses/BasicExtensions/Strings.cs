@@ -8,16 +8,8 @@ public static class Strings
         string output = payLoad.TrimEnd(new char[] { '0' });
         return output;
     }
-
+#if NET6_0_OR_GREATER
     private static string _monthReplace = "";
-    public static BasicList<string> CommaDelimitedList(string payLoad)
-    {
-        return payLoad.Split(",").ToBasicList(); //comma alone.
-    }
-    public static bool IsNumeric(this string thisStr)
-    {
-        return int.TryParse(thisStr, out _); //you are forced to assign variable no matter what now.
-    }
     public static int FindMonthInStringLine(this string thisStr) // will return a number  this will assume that there is never a case where 2 months appear
     {
         BasicList<string> possList = new() { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
@@ -41,6 +33,16 @@ public static class Strings
             }
         return possNum;
     }
+#endif
+    public static BasicList<string> CommaDelimitedList(string payLoad)
+    {
+        return payLoad.Split(",").ToBasicList(); //comma alone.
+    }
+    public static bool IsNumeric(this string thisStr)
+    {
+        return int.TryParse(thisStr, out _); //you are forced to assign variable no matter what now.
+    }
+    
 #if NET6_0_OR_GREATER
     public static BasicList<string> SplitStringEliminateMonth(this string thisStr)
     {
@@ -265,13 +267,13 @@ public static class Strings
 #if NET6_0_OR_GREATER
     public static bool IsValidDate(this string dateStr, out DateOnly? newDate)
     {
-        bool rets = DateOnly.TryParseExact(dateStr, "mmddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly temps);
+        bool rets = DateOnly.TryParseExact(dateStr, "MMddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly temps);
         if (rets)
         {
             newDate = temps;
             return true;
         }
-        rets = DateOnly.TryParseExact(dateStr, "mmddyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
+        rets = DateOnly.TryParseExact(dateStr, "MMddyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
         if (rets)
         {
             newDate = temps;
@@ -556,7 +558,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         var tempList = thisWord.ToBasicList();
         int x = 0;
         string newText = "";
-        if (thisWord.Contains(" ") == true)
+        if (thisWord.Contains(' ') == true)
         {
             throw new CustomBasicException(thisWord + " cannot contain spaces already");
         }
