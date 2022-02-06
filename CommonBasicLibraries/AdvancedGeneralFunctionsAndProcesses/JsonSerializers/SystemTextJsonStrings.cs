@@ -6,24 +6,41 @@ public static class SystemTextJsonStrings
     {
         var options = new JsonSerializerOptions();
         options.AddDateTimeConvertersAndIndent();
-        MultipleContextHelpers.PopulateConverters(options);
+        ConvertersHelpers.PopulateConverters(options);
         return options;
     }
     //decided to make it public.  this means if i am doing from client and want the proper options (including using custom source generators, can do).  in this case, has to know the type to use.
     public static JsonSerializerOptions GetCustomJsonSerializerOptions<T>()
     {
+        if (JsonOptionsHelpers<T>.Options is not null)
+        {
+            return JsonOptionsHelpers<T>.Options;
+        }
         var options = new JsonSerializerOptions();
         options.AddDateTimeConvertersAndIndent();
-        MultipleContextHelpers.PopulateOptions<T>(options);
-        return options;
+        ConvertersHelpers.PopulateConverters(options);
+        Action<JsonSerializerOptions>? action = MultipleContextHelpers<T>.ContextAction;
+        if (action is not null)
+        {
+            action.Invoke(options);
+        }
+        JsonOptionsHelpers<T>.Options = options;
+        return JsonOptionsHelpers<T>.Options;
     }
     public static async Task<string> SerializeObjectAsync<T>(T thisObj)
     {
         string thisStr = "";
         await Task.Run(() =>
         {
-            JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
-            thisStr = tt.Serialize(thisObj, options);
+            if (CustomSerializeHelpers<T>.MasterContext is not null)
+            {
+                thisStr =  CustomSerializeHelpers<T>.MasterContext.Serialize(thisObj);
+            }
+            else
+            {
+                JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
+                thisStr = tt.Serialize(thisObj, options);
+            } 
         });
         return thisStr;
     }
@@ -32,25 +49,44 @@ public static class SystemTextJsonStrings
         T thisT = default!;
         await Task.Run(() =>
         {
-            JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
-            thisT = tt.Deserialize<T>(thisStr, options)!;
+            if (CustomSerializeHelpers<T>.MasterContext is not null)
+            {
+                thisT = CustomSerializeHelpers<T>.MasterContext.Deserialize(thisStr);
+            }
+            else
+            {
+                JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
+                thisT = tt.Deserialize<T>(thisStr, options)!;
+            }
         });
         return thisT!;
     }
     public static D ConvertObject<D, S>(S thisObj)
     {
-        string thisStr = SerializeObject<S>(thisObj!);
+        string thisStr = SerializeObject(thisObj!);
         return DeserializeObject<D>(thisStr);
     }
     public static string SerializeObject<T>(T thisObj)
     {
+        string thisStr;
+        if (CustomSerializeHelpers<T>.MasterContext is not null)
+        {
+            return CustomSerializeHelpers<T>.MasterContext.Serialize(thisObj);
+        }
         JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
-        return tt.Serialize(thisObj, options)!;
+        thisStr = tt.Serialize(thisObj, options);
+        return thisStr;
     }
     public static T DeserializeObject<T>(string thisStr)
     {
+        if (CustomSerializeHelpers<T>.MasterContext is not null)
+        {
+            return CustomSerializeHelpers<T>.MasterContext.Deserialize(thisStr);
+        }
+        T thisT;
         JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
-        return tt.Deserialize<T>(thisStr, options)!;
+        thisT = tt.Deserialize<T>(thisStr, options)!;
+        return thisT;
     }
     public static async Task<T> ConvertObjectAsync<T>(T thisObj)
     {
