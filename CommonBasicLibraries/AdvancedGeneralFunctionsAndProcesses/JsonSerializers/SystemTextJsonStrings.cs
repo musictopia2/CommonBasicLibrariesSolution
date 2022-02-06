@@ -2,6 +2,7 @@
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public static class SystemTextJsonStrings
 {
+    public static bool RequireCustomSerialization { get; set; } //if you set to true (like for a game package), then if not set, then will raise exception.
     public static JsonSerializerOptions GetOptionsForAspnetCore()
     {
         var options = new JsonSerializerOptions();
@@ -36,6 +37,10 @@ public static class SystemTextJsonStrings
             {
                 thisStr =  CustomSerializeHelpers<T>.MasterContext.Serialize(thisObj);
             }
+            else if (RequireCustomSerialization)
+            {
+                throw new CustomBasicException($"Requires custom serialization.  The type you are trying to serialize was {typeof(T)}");
+            }
             else
             {
                 JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
@@ -52,6 +57,10 @@ public static class SystemTextJsonStrings
             if (CustomSerializeHelpers<T>.MasterContext is not null)
             {
                 thisT = CustomSerializeHelpers<T>.MasterContext.Deserialize(thisStr);
+            }
+            else if (RequireCustomSerialization)
+            {
+                throw new CustomBasicException($"Requires custom serialization.  The type you are trying to serialize was {typeof(T)}");
             }
             else
             {
@@ -73,6 +82,10 @@ public static class SystemTextJsonStrings
         {
             return CustomSerializeHelpers<T>.MasterContext.Serialize(thisObj);
         }
+        else if (RequireCustomSerialization)
+        {
+            throw new CustomBasicException($"Requires custom serialization.  The type you are trying to serialize was {typeof(T)}");
+        }
         JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
         thisStr = tt.Serialize(thisObj, options);
         return thisStr;
@@ -82,6 +95,10 @@ public static class SystemTextJsonStrings
         if (CustomSerializeHelpers<T>.MasterContext is not null)
         {
             return CustomSerializeHelpers<T>.MasterContext.Deserialize(thisStr);
+        }
+        else if (RequireCustomSerialization)
+        {
+            throw new CustomBasicException($"Requires custom serialization.  The type you are trying to serialize was {typeof(T)}");
         }
         T thisT;
         JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
