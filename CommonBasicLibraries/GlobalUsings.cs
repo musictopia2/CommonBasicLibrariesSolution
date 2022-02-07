@@ -13,3 +13,4 @@ global using bb = CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFu
 global using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.RandomGenerator.Data;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
+global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.MapHelpers;

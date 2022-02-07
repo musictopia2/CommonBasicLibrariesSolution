@@ -1,4 +1,6 @@
 ﻿#if NET6_0_OR_GREATER
+using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.MapHelpers;
+
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public class LimitedMappableConverter : JsonConverter<LimitedList<IMappable>>
 {
