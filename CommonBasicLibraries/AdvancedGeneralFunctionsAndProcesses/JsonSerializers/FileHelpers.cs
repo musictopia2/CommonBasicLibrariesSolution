@@ -1,12 +1,12 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public static class FileHelpers
 {
-    public static async Task SaveObjectAsync(string path, object thisObject)
+    public static async Task SaveObjectAsync<T>(string path, T thisObject) //needs generics so it knows that somebody handles the serializing now.
     {
         string thisText = await js.SerializeObjectAsync(thisObject);
         await ff.WriteTextAsync(path, thisText!, false);
     }
-    public static void SaveObject(string path, object thisObject)
+    public static void SaveObject<T>(string path, T thisObject)
     {
         string text = js.SerializeObject(thisObject);
         ff.WriteText(path, text!, false);
