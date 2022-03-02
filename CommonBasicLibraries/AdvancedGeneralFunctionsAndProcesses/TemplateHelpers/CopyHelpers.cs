@@ -16,16 +16,19 @@ public static class CopyHelpers
         await folders.ForEachAsync(async oldFolder =>
         {
             string nextPath = Path.Combine(currentFile.OldPath, oldFolder);
-            FileInfo updated = new();
-            updated.NewName = currentFile.NewName;
-            updated.OldPath = nextPath;
-            updated.NewPath = Path.Combine(currentFile.NewPath, oldFolder);
-            var fileList = await ff.FileListAsync(updated.OldPath);
-            await ff.CreateFolderAsync(updated.NewPath);
-            await fileList.ForEachAsync(async oldFile =>
+            if (ff.DirectoryExists(nextPath) == true)
             {
-                await CopyFileAsync(oldFile, templateName, updated);
-            });
+                FileInfo updated = new(); //looks like we can have a folder that either is there or is not there.
+                updated.NewName = currentFile.NewName;
+                updated.OldPath = nextPath;
+                updated.NewPath = Path.Combine(currentFile.NewPath, oldFolder);
+                var fileList = await ff.FileListAsync(updated.OldPath);
+                await ff.CreateFolderAsync(updated.NewPath);
+                await fileList.ForEachAsync(async oldFile =>
+                {
+                    await CopyFileAsync(oldFile, templateName, updated);
+                });
+            }
         });
     }
     public static async Task CopyExtraFilesAsync(string fileLocation, string templateName, FileInfo currentFile)
