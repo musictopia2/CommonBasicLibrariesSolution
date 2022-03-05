@@ -1,7 +1,7 @@
 ﻿namespace CommonBasicLibraries.NugetHelpers;
 public class NugetPacker : INugetPacker
 {
-    async Task<bool> INugetPacker.CreateNugetPackageAsync(INugetModel project, bool useVsVersioning)
+    async Task<bool> INugetPacker.CreateNugetPackageAsync(INugetModel project, bool useVsVersioning, bool noBuild)
     {
         Console.WriteLine($"Creating Package For {project.ProjectDirectory}");
         await ff.DeleteSeveralFilesAsync(project.NugetPath, ".nupkg");
@@ -13,11 +13,26 @@ public class NugetPacker : INugetPacker
             starts.FileName = "dotnet";
             if (useVsVersioning)
             {
-                starts.Arguments = "pack -c release --no-build";
+                if (noBuild)
+                {
+                    starts.Arguments = "pack -c release --no-build";
+                }
+                else
+                {
+                    starts.Arguments = "pack -c release";
+                }
+                
             }
             else
             {
-                starts.Arguments = $"pack -c release --no-build -p:PackageVersion={project.LastVersion}";
+                if (noBuild)
+                {
+                    starts.Arguments = $"pack -c release --no-build -p:PackageVersion={project.LastVersion}";
+                }
+                else
+                {
+                    starts.Arguments = $"pack -c release -p:PackageVersion={project.LastVersion}";
+                }
             }
         }
         else
