@@ -14,7 +14,7 @@
 	  <RepositoryUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</PackageProjectUrl>
 	  <PackageTags>Collections Extensions ExceptionHandling FileHelpers Random </PackageTags>
-	  <Version>7.0.1</Version>
+	  <Version>7.0.2</Version>
   </PropertyGroup>
   <ItemGroup>
 	  <Using Include="System.Diagnostics" />
