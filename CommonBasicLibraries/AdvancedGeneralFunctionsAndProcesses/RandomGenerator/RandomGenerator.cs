@@ -517,7 +517,7 @@ public partial class RandomGenerator : IRandomGenerator
         {
             throw new ArgumentException("Min cannot be greater than Max.", nameof(min));
         }
-
+        DoRandomize(); //i think i need this in order to make it work for randomizing longs which could help with dates (?)
         return (long)Math.Floor(_r!() * (max - min + 1) + min);
     }
     internal double NextDouble(double min = double.MinValue + 1.0, double max = double.MaxValue - 1.0, uint decimals = 4)
