@@ -3,7 +3,7 @@ public static class BasicDataFunctions
 {
     public enum EnumOS
     {
-        None, WindowsDT, Android, Linux, Macintosh, Wasm //this means can even account for webassembly.
+        None, WindowsDT, Android, Linux, Macintosh, Wasm, WindowsMaui //this means can even account for webassembly.  we even need windows maui because you may have to do something different in that situation (?)
     }
     //even containers can show windows desktop because its running on my desktop and using my resources.  that is why there is new function for docker.
     public static EnumOS OS { get; set; } = EnumOS.None; //now has to start with none.  can't assume anymore.
