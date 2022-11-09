@@ -19,7 +19,7 @@ await stream.WriteAsync(results, 0, results.Length);
     }
     private static async Task<StringContent> GetContentAsync<T>(this T value) //hopefully still this simple.
     {
-        string temps = await js.SerializeObjectAsync(value!);
+        string temps = await js1.SerializeObjectAsync(value!);
         StringContent output = new(temps, Encoding.UTF8, "application/json");
         return output;
     }
@@ -66,7 +66,7 @@ await stream.WriteAsync(results, 0, results.Length);
         response.Dispose();
         try
         {
-            return await js.DeserializeObjectAsync<T>(res);
+            return await js1.DeserializeObjectAsync<T>(res);
         }
         catch (Exception ex)
         {

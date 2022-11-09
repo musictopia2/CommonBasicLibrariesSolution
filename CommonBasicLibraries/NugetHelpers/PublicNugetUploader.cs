@@ -18,8 +18,8 @@ public class PublicNugetUploader : INugetUploader
     {
         Console.WriteLine($"Uploading Package {nugetPath}");
         string key = await _nugetKey.GetKeyAsync();
-        string filePath = await ff.GetSpecificFileAsync(nugetPath, ".nupkg");
-        string tempName = ff.FullFile(filePath);
+        string filePath = await ff1.GetSpecificFileAsync(nugetPath, ".nupkg");
+        string tempName = ff1.FullFile(filePath);
         ProcessStartInfo psi = new();
         psi.WorkingDirectory = nugetPath; //hopefully this works.
         psi.FileName = "dotnet";

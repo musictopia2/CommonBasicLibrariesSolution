@@ -38,7 +38,7 @@ public class CustomZipClass
         _zipList.ForEach(x =>
         {
             string relative;
-            string name = ff.FullFile(x.Path);
+            string name = ff1.FullFile(x.Path);
             if (x.Folder == "")
             {
                 relative = name;

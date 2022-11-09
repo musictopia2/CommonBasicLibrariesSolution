@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
+	<TargetFrameworks>net7.0;netstandard2.0</TargetFrameworks>
     <Nullable>enable</Nullable>
 	  <LangVersion>latest</LangVersion>
 	<ImplicitUsings>enable</ImplicitUsings>
@@ -14,7 +14,7 @@
 	  <RepositoryUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</PackageProjectUrl>
 	  <PackageTags>Collections Extensions ExceptionHandling FileHelpers Random </PackageTags>
-	  <Version>7.0.5</Version>
+	  <Version>7.0.7</Version>
   </PropertyGroup>
   <ItemGroup>
 	  <Using Include="System.Diagnostics" />

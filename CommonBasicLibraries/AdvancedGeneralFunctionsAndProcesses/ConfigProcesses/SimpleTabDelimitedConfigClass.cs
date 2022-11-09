@@ -10,7 +10,7 @@ public class SimpleTabDelimitedConfigClass : ISimpleConfig
     async Task<string> ISimpleConfig.GetStringAsync(string key)
     {
         string path = await _locator.GetConfigLocationAsync(); //this is intended to get from local disk;
-        if (ff.FileExists(path) == false)
+        if (ff1.FileExists(path) == false)
         {
             throw new CustomBasicException($"Path at {path} does not exist.");
         }
@@ -18,7 +18,7 @@ public class SimpleTabDelimitedConfigClass : ISimpleConfig
         {
             throw new CustomBasicException(@"Only text files are supported.  Rethink");
         }
-        BasicList<string> firstList = await ff.ReadAllLinesAsync(path);
+        BasicList<string> firstList = await ff1.ReadAllLinesAsync(path);
         Dictionary<string, string> output = new();
         firstList.ForEach(row =>
         {

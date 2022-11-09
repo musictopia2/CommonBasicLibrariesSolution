@@ -1,4 +1,4 @@
-﻿using tt = System.Text.Json.JsonSerializer;
+﻿using tt1 = System.Text.Json.JsonSerializer;
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public static class SystemTextJsonStrings
 {
@@ -21,10 +21,7 @@ public static class SystemTextJsonStrings
         options.AddDateTimeConvertersAndIndent();
         ConvertersHelpers.PopulateConverters(options);
         Action<JsonSerializerOptions>? action = MultipleContextHelpers<T>.ContextAction;
-        if (action is not null)
-        {
-            action.Invoke(options);
-        }
+        action?.Invoke(options);
         JsonOptionsHelpers<T>.Options = options;
         return JsonOptionsHelpers<T>.Options;
     }
@@ -44,7 +41,7 @@ public static class SystemTextJsonStrings
             else
             {
                 JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
-                thisStr = tt.Serialize(thisObj, options);
+                thisStr = tt1.Serialize(thisObj, options);
             } 
         });
         return thisStr;
@@ -65,7 +62,7 @@ public static class SystemTextJsonStrings
             else
             {
                 JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
-                thisT = tt.Deserialize<T>(thisStr, options)!;
+                thisT = tt1.Deserialize<T>(thisStr, options)!;
             }
         });
         return thisT!;
@@ -87,7 +84,7 @@ public static class SystemTextJsonStrings
             throw new CustomBasicException($"Requires custom serialization.  The type you are trying to serialize was {typeof(T)}");
         }
         JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
-        thisStr = tt.Serialize(thisObj, options);
+        thisStr = tt1.Serialize(thisObj, options);
         return thisStr;
     }
     public static T DeserializeObject<T>(string thisStr)
@@ -102,7 +99,7 @@ public static class SystemTextJsonStrings
         }
         T thisT;
         JsonSerializerOptions options = GetCustomJsonSerializerOptions<T>();
-        thisT = tt.Deserialize<T>(thisStr, options)!;
+        thisT = tt1.Deserialize<T>(thisStr, options)!;
         return thisT;
     }
     public static async Task<T> ConvertObjectAsync<T>(T thisObj)

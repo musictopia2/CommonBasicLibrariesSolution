@@ -1,44 +1,7 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class Decimals
 {
-    public static BasicList<decimal> SplitMoney(this decimal amount, int howManyToSplitBy)
-    {
-        decimal splits = amount / howManyToSplitBy;
-        splits = decimal.Round(splits, 2);
-        BasicList<decimal> thisList = new();
-        decimal totalUsed;
-        totalUsed = 0;
-        var loopTo = howManyToSplitBy;
-        for (var x = 1; x <= loopTo; x++)
-        {
-            totalUsed += splits;
-            thisList.Add(splits);
-        }
-        if (totalUsed == amount)
-        {
-            return thisList;
-        }
-        decimal Lefts;
-        decimal diffs;
-        diffs = amount - totalUsed;
-        Lefts = Math.Abs(diffs);
-        Lefts *= 100;
-        decimal addAmount;
-        if (diffs < 0)
-        {
-            addAmount = -0.01m;
-        }
-        else
-        {
-            addAmount = 0.01m;
-        }
-        var loopTo1 = Lefts;
-        for (var x = 1; x <= loopTo1; x++)
-        {
-            thisList[x - 1] += addAmount;
-        }
-        return thisList;
-    }
+    
     public static bool IsPaidInFull(this decimal amountPaid, decimal totalDue)
     {
         decimal remainingToPay = totalDue - amountPaid;
@@ -105,21 +68,6 @@ public static class Decimals
             }
         }
         return y;
-    }
-    public static (int Pounds, int Ounces) PoundsOunces(float grossWeight)
-    {
-        var thisItem = grossWeight.ToString();
-        if (thisItem.Contains(".") == true)
-        {
-            return ((int)grossWeight, 0);
-        }
-        int firsts;
-        firsts = int.Parse(thisItem.PartialString(".", true));
-        decimal seconds;
-        seconds = decimal.Parse("." + thisItem.PartialString(".", false));
-        int secFin;
-        secFin = (int)seconds * 16;
-        return (firsts, secFin);
     }
     public static decimal ChargeBy100s(this decimal declaredValue, decimal perPoundCharge, decimal maxValue, decimal howMuchFree = 0)
     {

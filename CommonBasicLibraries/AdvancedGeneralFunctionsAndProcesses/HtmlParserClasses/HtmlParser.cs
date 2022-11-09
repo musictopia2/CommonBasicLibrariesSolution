@@ -15,23 +15,29 @@ public class HtmlParser
         {
             throw new CustomBasicException("Needs body populated before you can remove the carriages");
         }
-        Body = Body.Replace(dd.VBCR, "");
-        Body = Body.Replace(dd.VBLF, "");
+        Body = Body.Replace(dd1.VBCR, "");
+        Body = Body.Replace(dd1.VBLF, "");
     }
     public BasicList<string> GetList(string strFirst, bool showErrors = true)
     {
         string tempStr;
         tempStr = Body;
         if (tempStr == "")
+        {
             throw new CustomBasicException("Blank list");
+        }
         var tGetList = new BasicList<string>();
         do
         {
             if (DoesExist(strFirst) == false)
             {
                 if (tGetList.Count == 0)
+                {
                     if (showErrors == true)
+                    {
                         throw new ParserException("There are no items on the list", EnumMethod.GetList) { OriginalBody = tempStr, RemainingHtml = Body, FirstTag = strFirst };
+                    }
+                }
                 tGetList.Add(Body);
                 Body = tempStr;
                 return tGetList;
@@ -46,7 +52,9 @@ public class HtmlParser
         string tempStr;
         tempStr = Body;
         if (tempStr == "")
+        {
             throw new CustomBasicException("Blank list");
+        }
         var tGetList = new BasicList<string>();
         string thisItem;
         do
@@ -54,8 +62,12 @@ public class HtmlParser
             if (DoesExist(strFirst, strSecond) == false)
             {
                 if (tGetList.Count == 0)
+                {
                     if (showErrors == true)
+                    {
                         throw new ParserException("There are no items on the list", EnumMethod.GetList) { OriginalBody = tempStr, RemainingHtml = Body, FirstTag = strFirst, SecondTag = strSecond };
+                    }
+                }
                 Body = tempStr;
                 return tGetList;
             }
@@ -200,7 +212,7 @@ public class HtmlParser
     }
     public string GetQuoteInfo(string tagBeforeQuote, bool bTakeOutBody = false, bool bIncludeFirst = false, bool bIncludeLast = false)
     {
-        return GetSomeInfo($"{tagBeforeQuote}{dd.DoubleQuote}", dd.DoubleQuote, bTakeOutBody, bIncludeFirst, bIncludeLast);
+        return GetSomeInfo($"{tagBeforeQuote}{dd1.DoubleQuote}", dd1.DoubleQuote, bTakeOutBody, bIncludeFirst, bIncludeLast);
     }
     public string GetSomeInfo(string bstrStartTag, string bstrEndTag, bool bTakeOutBody = false, bool bIncludeFirst = false, bool bIncludeLast = false)
     {

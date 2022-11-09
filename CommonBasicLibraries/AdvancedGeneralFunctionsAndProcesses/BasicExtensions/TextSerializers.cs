@@ -11,7 +11,7 @@ public static class TextSerializers
         {
             list.Add(p.GetValue(payLoad)!.ToString()!);
         });
-        await ff.WriteAllLinesAsync(path, list);
+        await ff1.WriteAllLinesAsync(path, list);
     }
     public static string SerializeText<T>(this BasicList<T> payLoad, string delimiter = ",")
     {
@@ -41,12 +41,12 @@ public static class TextSerializers
     public static void SaveText<T>(this BasicList<T> payLoad, string path, string delimiter = ",")
     {
         string content = payLoad.SerializeText(delimiter);
-        ff.WriteAllText(path, content, Encoding.UTF8);
+        ff1.WriteAllText(path, content, Encoding.UTF8);
     }
     public static async Task SaveTextAsync<T>(this BasicList<T> payLoad, string path, string delimiter = ",")
     {
         string content = payLoad.SerializeText<T>(delimiter);
-        await ff.WriteAllTextAsync(path, content, Encoding.UTF8);
+        await ff1.WriteAllTextAsync(path, content, Encoding.UTF8);
     }
     private static BasicList<PropertyInfo> GetProperties<T>()
     {
@@ -67,11 +67,11 @@ public static class TextSerializers
     public static async Task<T> LoadTextSingleAsync<T>(this string path) where T : new()
     {
         var properties = GetProperties<T>();
-        if (ff.FileExists(path) == false)
+        if (ff1.FileExists(path) == false)
         {
             return new T();
         }
-        var lines = await ff.ReadAllLinesAsync(path);
+        var lines = await ff1.ReadAllLinesAsync(path);
         if (lines.Count != properties.Count)
         {
             throw new CustomBasicException("Text file corrupted because the delimiter count don't match the properties");
@@ -485,7 +485,7 @@ public static class TextSerializers
         {
             output.Add($"{item.Key},{item.Value}");
         }
-        await ff.WriteAllLinesAsync(path, output, Encoding.UTF8);
+        await ff1.WriteAllLinesAsync(path, output, Encoding.UTF8);
     }
     public static async Task<Dictionary<TKey, TValue>> LoadTextDictionaryAsync<TKey, TValue>(this string path, string delimiter = ",")
         where TKey : notnull
@@ -501,11 +501,11 @@ public static class TextSerializers
         {
             throw new CustomBasicException("Second item is not simple for dictionary");
         }
-        if (ff.FileExists(path) == false)
+        if (ff1.FileExists(path) == false)
         {
             return new Dictionary<TKey, TValue>();
         }
-        var lines = await ff.ReadAllLinesAsync(path);
+        var lines = await ff1.ReadAllLinesAsync(path);
         Dictionary<TKey, TValue> output = new();
         foreach (var line in lines)
         {
@@ -584,11 +584,11 @@ public static class TextSerializers
     public static BasicList<T> LoadTextList<T>(this string path, string delimiter = ",")
     {
         BasicList<T> output = new();
-        if (ff.FileExists(path) == false)
+        if (ff1.FileExists(path) == false)
         {
             return output;
         }
-        string content = ff.AllText(path);
+        string content = ff1.AllText(path);
         output = content.DeserializeDelimitedTextList<T>(delimiter);
         return output;
     }
@@ -603,11 +603,11 @@ public static class TextSerializers
     public static async Task<BasicList<T>> LoadTextListAsync<T>(this string path, string delimiter = ",")
     {
         BasicList<T> output = new();
-        if (ff.FileExists(path) == false)
+        if (ff1.FileExists(path) == false)
         {
             return output;
         }
-        string content = await ff.AllTextAsync(path);
+        string content = await ff1.AllTextAsync(path);
         output = content.DeserializeDelimitedTextList<T>(delimiter);
         return output;
     }

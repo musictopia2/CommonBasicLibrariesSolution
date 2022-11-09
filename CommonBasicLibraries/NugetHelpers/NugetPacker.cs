@@ -4,7 +4,7 @@ public class NugetPacker : INugetPacker
     async Task<bool> INugetPacker.CreateNugetPackageAsync(INugetModel project, bool useVsVersioning, bool noBuild)
     {
         Console.WriteLine($"Creating Package For {project.ProjectDirectory}");
-        await ff.DeleteSeveralFilesAsync(project.NugetPath, ".nupkg");
+        await ff1.DeleteSeveralFilesAsync(project.NugetPath, ".nupkg");
         ProcessStartInfo starts = new();
         starts.WorkingDirectory = project.ProjectDirectory;
         bool rets = project.CSPath.HasCom();
@@ -55,7 +55,7 @@ public class NugetPacker : INugetPacker
         {
             throw new CustomBasicException("Failed To Create Nuget Package");
         }
-        rets = await ff.NewFileCreatedAsync(project.NugetPath, ".nupkg"); //double check to see if the file is there.
+        rets = await ff1.NewFileCreatedAsync(project.NugetPath, ".nupkg"); //double check to see if the file is there.
         return rets;
     }
 }

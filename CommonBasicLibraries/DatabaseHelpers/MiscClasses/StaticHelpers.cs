@@ -24,7 +24,7 @@ public static class StaticHelpers
         BasicList<ICondition> list = new();
         AndCondition condition = new();
         condition.Property = property;
-        if (operation != co.IsNotNull && operation != co.IsNull)
+        if (operation != co1.IsNotNull && operation != co1.IsNull)
         {
             throw new CustomBasicException("Only null or is not null is allowed when starting with null conditions");
         }

@@ -56,7 +56,7 @@ public static class Lists
         return newList;
     }
 
-    public static void IncrementIntegers<T>(this BasicList<T> thisList, bb.UpdateFunct<T> selector, int startAt = 1)
+    public static void IncrementIntegers<T>(this BasicList<T> thisList, bb1.UpdateFunct<T> selector, int startAt = 1)
     {
         thisList.ForEach(thisItem =>
         {
@@ -169,7 +169,9 @@ public static class Lists
     public static bool DoesReconcile<TSource, TKey>(this IEnumerable<TSource> source, IEnumerable<TSource> other, Func<TSource, TKey> keySelector)
     {
         if (source.Count() != other.Count())
+        {
             return false; //because not even the same count.
+        }
         HashSet<TKey> seenKeys = new();
         foreach (var item in source)
         {

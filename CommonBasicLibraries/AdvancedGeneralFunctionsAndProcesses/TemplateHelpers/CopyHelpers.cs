@@ -5,7 +5,7 @@ public static class CopyHelpers
     public static string DefaultReplacements(string original) => original; //so if somebody does not specify otherwise, will be default.
     public static async Task CopyInitialFilesAsync(FileInfo currentFile, string templateName)
     {
-        BasicList<string> fileList = await ff.FileListAsync(currentFile.OldPath);
+        BasicList<string> fileList = await ff1.FileListAsync(currentFile.OldPath);
         await fileList.ForEachAsync(async oldFile =>
         {
             await CopyFileAsync(oldFile, templateName, currentFile);
@@ -16,14 +16,14 @@ public static class CopyHelpers
         await folders.ForEachAsync(async oldFolder =>
         {
             string nextPath = Path.Combine(currentFile.OldPath, oldFolder);
-            if (ff.DirectoryExists(nextPath) == true)
+            if (ff1.DirectoryExists(nextPath) == true)
             {
                 FileInfo updated = new(); //looks like we can have a folder that either is there or is not there.
                 updated.NewName = currentFile.NewName;
                 updated.OldPath = nextPath;
                 updated.NewPath = Path.Combine(currentFile.NewPath, oldFolder);
-                var fileList = await ff.FileListAsync(updated.OldPath);
-                await ff.CreateFolderAsync(updated.NewPath);
+                var fileList = await ff1.FileListAsync(updated.OldPath);
+                await ff1.CreateFolderAsync(updated.NewPath);
                 await fileList.ForEachAsync(async oldFile =>
                 {
                     await CopyFileAsync(oldFile, templateName, updated);
@@ -33,7 +33,7 @@ public static class CopyHelpers
     }
     public static async Task CopyExtraFilesAsync(string fileLocation, string templateName, FileInfo currentFile)
     {
-        var files = await ff.FileListAsync(fileLocation);
+        var files = await ff1.FileListAsync(fileLocation);
         await files.ForEachAsync(async file =>
         {
             await CopyFileAsync(file, templateName, currentFile);
@@ -41,7 +41,7 @@ public static class CopyHelpers
     }
     private static async Task CopyFileAsync(string oldFile, string templateName, FileInfo currentFile)
     {
-        string oldName = ff.FullFile(oldFile);
+        string oldName = ff1.FullFile(oldFile);
         string ourName = oldName.Replace(templateName, currentFile.NewName);
         string newPath = Path.Combine(currentFile.NewPath, ourName);
         await CopyFileAsync(oldFile, templateName, currentFile.NewName, newPath);
@@ -50,13 +50,13 @@ public static class CopyHelpers
     {
         if (oldFile.ToLower().EndsWith("png") || oldFile.ToLower().EndsWith("ico"))
         {
-            await ff.FileCopyAsync(oldFile, newPath);
+            await ff1.FileCopyAsync(oldFile, newPath);
             return;
         }
-        string firstText = await ff.AllTextAsync(oldFile);
+        string firstText = await ff1.AllTextAsync(oldFile);
         firstText = firstText.Replace(templateName, newName);
         firstText = ExtraReplacements.Invoke(firstText);
-        await ff.WriteAllTextAsync(newPath, firstText);
+        await ff1.WriteAllTextAsync(newPath, firstText);
     }
     public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
     {

@@ -5,7 +5,7 @@ public static class FileLocator
     public static string GetLocation(string name)
     {
         string olds = MainLocation;
-        string path = aa.GetApplicationPath();
+        string path = aa1.GetApplicationPath();
         int finds = path.IndexOf(MainLocation);
         string modified = path.Substring(0, finds);
         modified += olds += @"\";

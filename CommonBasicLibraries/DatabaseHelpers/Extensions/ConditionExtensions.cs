@@ -3,12 +3,12 @@ public static class ConditionExtensions
 {
     public static BasicList<ICondition> AppendCondition(this BasicList<ICondition> tempList, string property, object value)
     {
-        return tempList.AppendCondition(property, co.Equals, value);
+        return tempList.AppendCondition(property, co1.Equals, value);
     }
     public static BasicList<ICondition> AppendRangeCondition(this BasicList<ICondition> tempList, string property,
         object lowRange, object highRange)
     {
-        return tempList.AppendCondition(property, co.GreaterOrEqual, lowRange).AppendCondition(property, co.LessThanOrEqual, highRange);
+        return tempList.AppendCondition(property, co1.GreaterOrEqual, lowRange).AppendCondition(property, co1.LessThanOrEqual, highRange);
     }
     public static BasicList<ICondition> AppendCondition(this BasicList<ICondition> tempList, string property, string toperator, object value)
     {
