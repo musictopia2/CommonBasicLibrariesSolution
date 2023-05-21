@@ -17,6 +17,11 @@ public static class FileLocator
         string modified = _originalPath.Substring(0, finds);
         modified += olds += @"\";
         modified += name;
+        string other = ff1.GetParentPath(modified);
+        if (ff1.DirectoryExists(other) == false)
+        {
+            return "";
+        }
         return modified;
     }
     private static string StartingPath()
