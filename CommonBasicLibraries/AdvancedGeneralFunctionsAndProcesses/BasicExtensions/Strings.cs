@@ -663,7 +663,8 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
     public static void SaveFile(this string data, string path)
     {
         byte[] Bytes = Convert.FromBase64String(data);
-        using FileStream FileStream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+
+        using FileStream FileStream = new(bb1.GetCleanedPath(path), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
         FileStream.Write(Bytes, 0, Bytes.Length);
         FileStream.Flush();
         FileStream.Close();
@@ -672,7 +673,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
     public async static Task SaveFileAsync(this string data, string path)
     {
         byte[] bytes = Convert.FromBase64String(data);
-        using FileStream fileStream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+        using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
         await fileStream.WriteAsync(bytes);
         await fileStream.FlushAsync();
         fileStream.Close();
@@ -680,7 +681,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
 #endif
     public static string GetFileData(this string path)
     {
-        using FileStream fileStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         byte[] bytes = new byte[fileStream.Length - 1 + 1];
         fileStream.Read(bytes, 0, (int)fileStream.Length);
         fileStream.Close();
@@ -689,7 +690,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
 #if NET6_0_OR_GREATER
     public async static Task<string> GetFileDataAsync(this string path)
     {
-        using FileStream fileStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         byte[] Bytes = new byte[fileStream.Length - 1 + 1];
         await fileStream.ReadAsync(Bytes.AsMemory(0, (int)fileStream.Length));
         fileStream.Close();

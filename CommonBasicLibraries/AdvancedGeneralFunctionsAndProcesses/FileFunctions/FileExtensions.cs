@@ -137,7 +137,7 @@ public static class FileExtensions
 #if NET6_0_OR_GREATER
     public async static Task SaveBinaryDataAsync(this string data, string path)
     {
-        using var fins = new FileStream(path, FileMode.Create);
+        using var fins = new FileStream(bb1.GetCleanedPath(path), FileMode.Create);
         byte[] Bytes = Convert.FromBase64String(data);
         await fins.WriteAsync(Bytes);
         await fins.FlushAsync();
