@@ -188,8 +188,12 @@ public static bool IsSimpleType(this Type type)
         bool output = false;
         Type[] firstList = property.PropertyType.GetInterfaces();
         foreach (var i in firstList)
+        {
             if (i.IsGenericType && i.GetGenericTypeDefinition().Equals(typeof(IEnumerable<>)))
+            {
                 output = true;
+            }
+        }
         return output;
     }
     private static bool CanMapProperty(this PropertyInfo property)

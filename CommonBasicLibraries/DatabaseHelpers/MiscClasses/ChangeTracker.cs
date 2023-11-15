@@ -1,7 +1,7 @@
 ﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscClasses;
 public class ChangeTracker
 {
-    private Dictionary<string, object> _originalValues = new();
+    private Dictionary<string, object> _originalValues = [];
     public void PopulateOriginalDictionary(Dictionary<string, object> savedOriginal) //the server has to put in the original dictionary
     {
         _originalValues = savedOriginal;
@@ -32,7 +32,7 @@ public class ChangeTracker
     }
     public BasicList<string> GetChanges()
     {
-        BasicList<string> output = new();
+        BasicList<string> output = [];
         foreach (var thisValue in _originalValues)
         {
             PropertyInfo property = _thisType.GetProperties().Where(Items => Items.Name == thisValue.Key).Single();
