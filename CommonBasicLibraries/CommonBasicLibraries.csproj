@@ -1,12 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	
   <PropertyGroup>
 	<TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
     <Nullable>enable</Nullable>
 	  <LangVersion>latest</LangVersion>
-	  
-	  <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
-	<ImplicitUsings>enable</ImplicitUsings>
+	  <!--
+	  	  <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
+
+	  -->
+	  <ImplicitUsings>enable</ImplicitUsings>
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	  <Company>None</Company>
 	  <Authors>musictopia</Authors>
