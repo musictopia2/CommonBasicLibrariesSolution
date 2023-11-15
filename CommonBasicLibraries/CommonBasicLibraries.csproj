@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+	
   <PropertyGroup>
-	<TargetFrameworks>net7.0;netstandard2.0</TargetFrameworks>
+	<TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
     <Nullable>enable</Nullable>
 	  <LangVersion>latest</LangVersion>
+	  
+	  <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
 	<ImplicitUsings>enable</ImplicitUsings>
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	  <Company>None</Company>
@@ -14,9 +16,10 @@
 	  <RepositoryUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/musictopia2/CommonBasicLibrariesSolution</PackageProjectUrl>
 	  <PackageTags>Collections Extensions ExceptionHandling FileHelpers Random </PackageTags>
-	  <Version>7.0.15</Version>
+	  <Version>8.0.1</Version>
   </PropertyGroup>
   <ItemGroup>
+	  
 	  <Using Include="System.Diagnostics" />
 	  <Using Include="CommonBasicLibraries.CollectionClasses" />
 	  <Using Include="CommonBasicLibraries.BasicUIProcesses" />

@@ -4,7 +4,6 @@ public static class Extensions
     public static void AddDateTimeConvertersAndIndent(this JsonSerializerOptions options)
     {
 #if NET6_0_OR_GREATER
-        options.Converters.Add(new LimitedMappableConverter());
         options.Converters.Add(new JsonDateOnlyConverter());
         options.Converters.Add(new JsonTimeOnlyConverter());
 #endif
