@@ -14,3 +14,4 @@ global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.MapHelpers;
 global using CommonBasicLibraries.MediaHelpers.Models;
+global using CommonBasicLibraries.MediaHelpers.Interfaces;
