@@ -14,14 +14,11 @@ public abstract class CustomWebAPIClient
     /// </summary>
     protected abstract string Key { get; }
     protected HttpClient Client;
-    public CustomWebAPIClient(ISimpleConfig sims, HttpClient client)
+    public CustomWebAPIClient(IConfiguration config, HttpClient client)
     {
         Client = client;
-        SetUp(sims);
-    }
-    private async void SetUp(ISimpleConfig sims)
-    {
-        string firstPart = await sims.GetStringAsync(Key);
+        //Microsoft.Extensions.Configuration.ConfigurationBinder
+        string firstPart = config.GetValue<string>(Key) ?? throw new CustomBasicException("Failed to get key from appsettings.  Use appsettings instead of ISimpleConfig");
         Uri secondPart = new(firstPart);
         BaseAddress = new(secondPart, ServicePath);
     }

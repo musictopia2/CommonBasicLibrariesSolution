@@ -7,8 +7,7 @@ public static class TextSerializers
         where T : IModel
     {
         var properties = GetProperties<T>();
-        BasicList<string> list = new();
-        IConfiguration
+        BasicList<string> list = [];
         properties.ForEach(p =>
         {
             list.Add(p.GetValue(payLoad)!.ToString()!);
@@ -18,7 +17,7 @@ public static class TextSerializers
     public static string SerializeText<T>(this BasicList<T> payLoad, string delimiter = ",")
     {
         var properties = GetProperties<T>();
-        BasicList<string> list = new();
+        BasicList<string> list = [];
         foreach (var item in payLoad)
         {
             StrCat cats = new();
@@ -100,6 +99,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(int?))
+        {
             if (item == "")
             {
                 return null;
@@ -113,6 +113,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type.IsEnum)
         {
             bool rets = int.TryParse(item, out int y);
@@ -123,6 +124,7 @@ public static class TextSerializers
             return y;
         }
         else if (type.IsNullableEnum())
+        {
             if (item == "")
             {
                 return null;
@@ -136,7 +138,7 @@ public static class TextSerializers
                 }
                 return y;
             }
-
+        }
         else if (type == typeof(bool))
         {
             bool rets = bool.TryParse(item, out bool y);
@@ -147,6 +149,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(bool?))
+        {
             if (item == "")
             {
                 return null;
@@ -160,6 +163,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(decimal))
         {
             bool rets = decimal.TryParse(item, out decimal y);
@@ -171,6 +175,7 @@ public static class TextSerializers
 
         }
         else if (type == typeof(decimal?))
+        {
             if (item == "")
             {
                 return null;
@@ -184,6 +189,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(float))
         {
             bool rets = float.TryParse(item, out float y);
@@ -195,6 +201,7 @@ public static class TextSerializers
 
         }
         else if (type == typeof(float?))
+        {
             if (item == "")
             {
                 return null;
@@ -208,6 +215,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(double))
         {
             bool rets = double.TryParse(item, out double y);
@@ -219,6 +227,7 @@ public static class TextSerializers
 
         }
         else if (type == typeof(double?))
+        {
             if (item == "")
             {
                 return null;
@@ -232,6 +241,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(DateTime))
         {
             bool rets = DateTime.TryParse(item, out DateTime y);
@@ -295,6 +305,7 @@ public static class TextSerializers
 
         }
         else if (type == typeof(DateTimeOffset?))
+        {
             if (item == "")
             {
                 return null;
@@ -308,6 +319,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(Guid))
         {
             bool rets = Guid.TryParse(item, out Guid y);
@@ -318,6 +330,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(Guid?))
+        {
             if (item == "")
             {
                 return null;
@@ -332,6 +345,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(char))
         {
             bool rets = char.TryParse(item, out char y);
@@ -342,6 +356,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(char?))
+        {
             if (item == "")
             {
                 return null;
@@ -355,6 +370,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(short))
         {
             bool rets = short.TryParse(item, out short y);
@@ -365,6 +381,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(short?))
+        {
             if (item == "")
             {
                 return null;
@@ -378,6 +395,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(ushort))
         {
             bool rets = ushort.TryParse(item, out ushort y);
@@ -388,6 +406,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(ushort?))
+        {
             if (item == "")
             {
                 return null;
@@ -401,6 +420,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(uint))
         {
             bool rets = uint.TryParse(item, out uint y);
@@ -411,6 +431,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(uint?))
+        {
             if (item == "")
             {
                 return null;
@@ -424,6 +445,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(long))
         {
             bool rets = long.TryParse(item, out long y);
@@ -434,6 +456,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(long?))
+        {
             if (item == "")
             {
                 return null;
@@ -447,6 +470,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(ulong))
         {
             bool rets = ulong.TryParse(item, out ulong y);
@@ -457,6 +481,7 @@ public static class TextSerializers
             return y;
         }
         else if (type == typeof(ulong?))
+        {
             if (item == "")
             {
                 return null;
@@ -470,6 +495,7 @@ public static class TextSerializers
                 }
                 return y;
             }
+        }
         else if (type == typeof(string))
         {
             return item;
@@ -482,7 +508,7 @@ public static class TextSerializers
     public static async Task SaveTextAsync<TKey, TValue>(this Dictionary<TKey, TValue> list, string path)
         where TKey : notnull
     {
-        BasicList<string> output = new();
+        BasicList<string> output = [];
         foreach (var item in list)
         {
             output.Add($"{item.Key},{item.Value}");
@@ -505,10 +531,10 @@ public static class TextSerializers
         }
         if (ff1.FileExists(path) == false)
         {
-            return new Dictionary<TKey, TValue>();
+            return [];
         }
         var lines = await ff1.ReadAllLinesAsync(path);
-        Dictionary<TKey, TValue> output = new();
+        Dictionary<TKey, TValue> output = [];
         foreach (var line in lines)
         {
             var fins = line.Split(delimiter);
@@ -518,16 +544,8 @@ public static class TextSerializers
             }
             string firstString = fins[0];
             string secondString = fins[1];
-            object? firstValue = GetValue(firstString, key);
-            if (firstValue == null)
-            {
-                throw new CustomBasicException("I don't think that key can be null for dictionary");
-            }
-            object? secondValue = GetValue(secondString, value);
-            if (secondValue == null)
-            {
-                throw new CustomBasicException("I don't think the value can be null for dictionary");
-            }
+            object? firstValue = GetValue(firstString, key) ?? throw new CustomBasicException("I don't think that key can be null for dictionary");
+            object? secondValue = GetValue(secondString, value) ?? throw new CustomBasicException("I don't think the value can be null for dictionary");
             output.Add((TKey)firstValue, (TValue)secondValue);
         }
         return output;
@@ -553,7 +571,7 @@ public static class TextSerializers
             output = temps.ToCastedList<T>();
             return output;
         }
-        output = new();
+        output = [];
         BasicList<string> lines = content.Split(Constants.VBCrLf).ToBasicList();
         var properties = GetProperties<T>();
         foreach (var line in lines)
@@ -585,7 +603,7 @@ public static class TextSerializers
     /// <returns></returns>
     public static BasicList<T> LoadTextList<T>(this string path, string delimiter = ",")
     {
-        BasicList<T> output = new();
+        BasicList<T> output = [];
         if (ff1.FileExists(path) == false)
         {
             return output;
@@ -604,7 +622,7 @@ public static class TextSerializers
     /// <returns></returns>
     public static async Task<BasicList<T>> LoadTextListAsync<T>(this string path, string delimiter = ",")
     {
-        BasicList<T> output = new();
+        BasicList<T> output = [];
         if (ff1.FileExists(path) == false)
         {
             return output;
@@ -702,7 +720,9 @@ public static class TextSerializers
         else if (p.PropertyType == typeof(decimal?))
         {
             if (item == "")
+            {
                 p.SetValue(row, null);
+            }
             else
             {
                 bool rets = decimal.TryParse(item, out decimal y);
@@ -748,6 +768,7 @@ public static class TextSerializers
             p.SetValue(row, y);
         }
         else if (p.PropertyType == typeof(double?))
+        {
             if (item == "")
             {
                 p.SetValue(row, null);
@@ -761,6 +782,7 @@ public static class TextSerializers
                 }
                 p.SetValue(row, y);
             }
+        }
         else if (p.PropertyType == typeof(DateTime))
         {
             bool rets = DateTime.TryParse(item, out DateTime y);
@@ -772,6 +794,7 @@ public static class TextSerializers
 
         }
         else if (p.PropertyType == typeof(DateTime?))
+        {
             if (item == "")
             {
                 p.SetValue(row, null);
@@ -785,6 +808,7 @@ public static class TextSerializers
                 }
                 p.SetValue(row, y);
             }
+        }
         else if (p.PropertyType == typeof(DateTimeOffset))
         {
             bool rets = DateTimeOffset.TryParse(item, out DateTimeOffset y);
@@ -795,6 +819,7 @@ public static class TextSerializers
             p.SetValue(row, y);
         }
         else if (p.PropertyType == typeof(DateTimeOffset?))
+        {
             if (item == "")
             {
                 p.SetValue(row, null);
@@ -808,6 +833,7 @@ public static class TextSerializers
                 }
                 p.SetValue(row, y);
             }
+        }
         else if (p.PropertyType == typeof(Guid))
         {
             bool rets = Guid.TryParse(item, out Guid y);
@@ -818,6 +844,7 @@ public static class TextSerializers
             p.SetValue(row, y);
         }
         else if (p.PropertyType == typeof(Guid?))
+        {
             if (item == "")
             {
                 p.SetValue(row, null);
@@ -831,6 +858,7 @@ public static class TextSerializers
                 }
                 p.SetValue(row, y);
             }
+        }
         else if (p.PropertyType == typeof(char))
         {
             bool rets = char.TryParse(item, out char y);
@@ -841,6 +869,7 @@ public static class TextSerializers
             p.SetValue(row, y);
         }
         else if (p.PropertyType == typeof(char?))
+        {
             if (item == "")
             {
                 p.SetValue(row, null);
@@ -854,6 +883,7 @@ public static class TextSerializers
                 }
                 p.SetValue(row, y);
             }
+        }
         else if (p.PropertyType == typeof(short))
         {
             bool rets = short.TryParse(item, out short y);
@@ -864,6 +894,7 @@ public static class TextSerializers
             p.SetValue(row, y);
         }
         else if (p.PropertyType == typeof(short?))
+        {
             if (item == "")
             {
                 p.SetValue(row, null);
@@ -877,6 +908,7 @@ public static class TextSerializers
                 }
                 p.SetValue(row, y);
             }
+        }
         else if (p.PropertyType == typeof(ushort))
         {
             bool rets = ushort.TryParse(item, out ushort y);
@@ -887,6 +919,7 @@ public static class TextSerializers
             p.SetValue(row, y);
         }
         else if (p.PropertyType == typeof(ushort?))
+        {
             if (item == "")
             {
                 p.SetValue(row, null);
@@ -900,6 +933,7 @@ public static class TextSerializers
                 }
                 p.SetValue(row, y);
             }
+        }
         else if (p.PropertyType == typeof(uint))
         {
             bool rets = uint.TryParse(item, out uint y);
@@ -935,6 +969,7 @@ public static class TextSerializers
             p.SetValue(row, y);
         }
         else if (p.PropertyType == typeof(long?))
+        {
             if (item == "")
             {
                 p.SetValue(row, null);
@@ -948,6 +983,7 @@ public static class TextSerializers
                 }
                 p.SetValue(row, y);
             }
+        }
         else if (p.PropertyType == typeof(ulong))
         {
             bool rets = ulong.TryParse(item, out ulong y);

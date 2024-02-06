@@ -1,7 +1,7 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 public abstract class CustomMinimumAPIClient : CustomWebAPIClient
 {
-    protected CustomMinimumAPIClient(ISimpleConfig sims, HttpClient client) : base(sims, client)
+    protected CustomMinimumAPIClient(IConfiguration config, HttpClient client) : base(config, client)
     {
     }
     protected sealed override string ServicePath => "";

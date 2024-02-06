@@ -33,7 +33,7 @@ public class TextStreamConfigurationProvider(StreamConfigurationSource source, s
             {
                 continue; //ignore because must have 2 items period.  to attempt to make more stable
             }
-            string valueToUse = "";
+            string valueToUse;
             string key;
             key = list.First();
             if (list.Count == 2)
