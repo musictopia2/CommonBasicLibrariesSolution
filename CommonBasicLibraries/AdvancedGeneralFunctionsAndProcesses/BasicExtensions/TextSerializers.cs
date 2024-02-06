@@ -1,4 +1,5 @@
 ﻿#if NET6_0_OR_GREATER
+
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class TextSerializers
 {
@@ -7,6 +8,7 @@ public static class TextSerializers
     {
         var properties = GetProperties<T>();
         BasicList<string> list = new();
+        IConfiguration
         properties.ForEach(p =>
         {
             list.Add(p.GetValue(payLoad)!.ToString()!);

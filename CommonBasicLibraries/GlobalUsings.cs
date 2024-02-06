@@ -15,3 +15,9 @@ global using System.Text.Json.Serialization;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.MapHelpers;
 global using CommonBasicLibraries.MediaHelpers.Models;
 global using CommonBasicLibraries.MediaHelpers.Interfaces;
+global using Microsoft.Extensions.Configuration;
+//decided to start using the configuration from microsoft.
+global using System.IO;
+global using Microsoft.Extensions.FileProviders;
+global using CommonBasicLibraries.BasicDataSettingsAndProcesses;
+global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
