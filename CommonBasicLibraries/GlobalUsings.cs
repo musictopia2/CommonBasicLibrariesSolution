@@ -23,5 +23,4 @@ global using CommonBasicLibraries.BasicDataSettingsAndProcesses;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 global using CommonBasicLibraries.CustomConfigurationProviders.Text;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.IConfigurationHelpers;
-global using Microsoft.Extensions.DependencyInjection;
 global using CommonBasicLibraries.DatabaseHelpers.AbstractStaticInterfaces;
