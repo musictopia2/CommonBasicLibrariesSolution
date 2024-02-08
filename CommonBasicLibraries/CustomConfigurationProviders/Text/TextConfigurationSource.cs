@@ -1,4 +1,4 @@
-﻿namespace CommonBasicLibraries.CustomConfigurationProviders;
+﻿namespace CommonBasicLibraries.CustomConfigurationProviders.Text;
 public class TextConfigurationSource : FileConfigurationSource
 {
     public string Delimiter { get; set; } = dd1.VBTab;

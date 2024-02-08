@@ -1,4 +1,4 @@
-﻿namespace CommonBasicLibraries.CustomConfigurationProviders;
+﻿namespace CommonBasicLibraries.CustomConfigurationProviders.Text;
 public class TextStreamConfigurationProvider(StreamConfigurationSource source, string delimiter) : StreamConfigurationProvider(source)
 {
     public override void Load(Stream stream)
