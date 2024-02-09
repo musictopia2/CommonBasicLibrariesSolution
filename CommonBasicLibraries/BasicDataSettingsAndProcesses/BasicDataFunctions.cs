@@ -30,11 +30,21 @@ public static class BasicDataFunctions
         backingStore = value;
         return true;
     }
-    public static void SetUpIConfiguration(Func<IAdvancedConfiguration, IAdvancedConfiguration> options)
+    public static void SetupIConfiguration(Func<IAdvancedConfiguration, IAdvancedConfiguration> options)
     {
         ConfigurationBuilder build = new();
         build.AddInMemoryCollection(options);
         Configuration = build.Build();
     }
-
+    public static void SetupIConfiguration(Func<ConfigurationBuilder, ConfigurationBuilder> options)
+    {
+        ConfigurationBuilder build = new();
+        build = options.Invoke(build);
+        Configuration = build.Build();
+    }
+    public static void SetupIConfiguration()
+    {
+        ConfigurationBuilder build = new();
+        Configuration = build.Build();
+    }
 }
