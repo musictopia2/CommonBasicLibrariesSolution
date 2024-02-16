@@ -23,4 +23,6 @@ global using CommonBasicLibraries.BasicDataSettingsAndProcesses;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 global using CommonBasicLibraries.CustomConfigurationProviders.Text;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.IConfigurationHelpers;
+#if NET7_0_OR_GREATER
 global using CommonBasicLibraries.DatabaseHelpers.AbstractStaticInterfaces;
+#endif
