@@ -8,8 +8,10 @@ public static class SimpleCommandLineHelpers
         StartAt.Times(arguments.RemoveFirstItem);
         int x = 0;
         int y = 1;
-
-
+        if (arguments.Count < 2)
+        {
+            return ""; //i think.
+        }
         do
         {
             string usedName = arguments[x];
