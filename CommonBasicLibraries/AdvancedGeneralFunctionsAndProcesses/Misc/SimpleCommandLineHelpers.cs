@@ -1,7 +1,7 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 public static class SimpleCommandLineHelpers
 {
-    public static int StartAt { get; set; }
+    public static int StartAt { get; set; } = 1; //i think its common to need to remove the first item (?)
     public static string GetValue(string commandName)
     {
         BasicList<string> arguments = Environment.GetCommandLineArgs().ToBasicList();
