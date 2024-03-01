@@ -39,6 +39,10 @@ public static class Extensions
     }
     public static string IncrementMinorVersion(this string payLoad)
     {
+        if (payLoad == "")
+        {
+            throw new CustomBasicException("For now, am unable to increment minor version because none is given.  May later do something else");
+        }
         int minor = GetMinorVersion(payLoad);
         int major = GetMajorVersion(payLoad);
         minor++;
@@ -64,6 +68,11 @@ public static class Extensions
     {
         HtmlParser parses = new();
         parses.Body = text;
+        string lookFor = "<Version>";
+        if (parses.DoesExist(lookFor) == false)
+        {
+            return ""; //this means blank.  so something else can decide what to do about it.
+        }
         return parses.GetSomeInfo("<Version>", "</Version>");
     }
 }
