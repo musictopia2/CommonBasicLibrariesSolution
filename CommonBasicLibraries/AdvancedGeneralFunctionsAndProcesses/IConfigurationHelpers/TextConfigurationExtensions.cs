@@ -40,6 +40,7 @@ public static class TextConfigurationExtensions
             s.FileProvider = provider;
             s.Optional = optional;
             s.ReloadOnChange = reloadOnChange;
+            s.ResolveFileProvider(); //forgot this one.
         });
     }
     public static IConfigurationBuilder AddTextFile(this IConfigurationBuilder builder, Stream stream)
