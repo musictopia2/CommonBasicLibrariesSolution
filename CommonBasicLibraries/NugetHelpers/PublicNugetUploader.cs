@@ -1,11 +1,12 @@
 ﻿namespace CommonBasicLibraries.NugetHelpers;
 public class PublicNugetUploader : INugetUploader
 {
-    private readonly INugetKey _nugetKey;
-    public PublicNugetUploader(INugetKey nugetKey)
-    {
-        _nugetKey = nugetKey;
-    }
+    //private readonly INugetKey _nugetKey;
+    //public PublicNugetUploader(INugetKey nugetKey)
+    //{
+    //    _nugetKey = nugetKey;
+    //}
+    private static IConfiguration Configuration => bb1.Configuration!;
     private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(e.Data))
@@ -17,7 +18,7 @@ public class PublicNugetUploader : INugetUploader
     async Task<bool> INugetUploader.UploadNugetPackageAsync(string nugetPath)
     {
         Console.WriteLine($"Uploading Package {nugetPath}");
-        string key = await _nugetKey.GetKeyAsync();
+        string key = Configuration.GetValue<string>(Constants.NugetKey)!;
         string filePath = await ff1.GetSpecificFileAsync(nugetPath, ".nupkg");
         string tempName = ff1.FullFile(filePath);
         ProcessStartInfo psi = new();
