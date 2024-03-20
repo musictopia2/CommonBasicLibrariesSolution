@@ -7,6 +7,11 @@ public static class IConfigurationExtensions
     }
     public static string GetNetVersion(this IConfiguration config)
     {
-        return config.GetValue<string>("NetVersion")!;
+        string? output = config.GetValue<string>("NetVersion");
+        if (output is null)
+        {
+            throw new CustomBasicException("Did not find the key NetVersion.  Try registering the source to get NetVersion");
+        }
+        return output;
     }
 }
