@@ -5,4 +5,8 @@ public static class IConfigurationExtensions
     {
         config[key] = value!.ToString();
     }
+    public static string GetNetVersion(this IConfiguration config)
+    {
+        return config.GetValue<string>("NetVersion")!;
+    }
 }
