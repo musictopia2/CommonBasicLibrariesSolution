@@ -1,4 +1,5 @@
-﻿using System.Data; //not common enough
+﻿using System.Data;
+using System.Data.Common; //not common enough
 namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces;
 /// <summary>
 /// this is a helper that all it does is decides what connection to return.
@@ -8,7 +9,9 @@ namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces;
 /// </summary>
 public interface IDbConnector
 {
-    public IDbConnection GetConnection(EnumDatabaseCategory category, string connectionString); //by this time, it should have already gotten the connection string
-                                                                                                //this is like a custom factory pattern.
-    public EnumDatabaseCategory GetCategory(IDbConnection connection); //this way i don't need a reference to sql lite or sql server in my helpers.
+    IDbConnection GetConnection(EnumDatabaseCategory category, string connectionString); //by this time, it should have already gotten the connection string
+    //this is like a custom factory pattern.
+    EnumDatabaseCategory GetCategory(IDbConnection connection); //this way i don't need a reference to sql lite or sql server in my helpers.
+    IDbCommand GetCommand(); //take case by case what is needed.
+    DbParameter GetParameter();
 }
