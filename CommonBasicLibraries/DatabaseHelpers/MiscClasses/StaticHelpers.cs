@@ -3,16 +3,16 @@ public static class StaticHelpers
 {
     public static BasicList<ICondition> StartConditionWithID(int id)
     {
-        BasicList<ICondition> list = new();
+        BasicList<ICondition> list = [];
         AndCondition condition = new();
-        condition.Property = nameof(ISimpleDapperEntity.ID);
+        condition.Property = nameof(ISimpleEntity.ID);
         condition.Value = id;
         list.Add(condition);
         return list;
     }
     public static BasicList<ICondition> StartWithOneCondition(string property, object value)
     {
-        BasicList<ICondition> list = new();
+        BasicList<ICondition> list = [];
         AndCondition condition = new();
         condition.Property = property;
         condition.Value = value;
@@ -21,7 +21,7 @@ public static class StaticHelpers
     }
     public static BasicList<ICondition> StartWithNullCondition(string property, string operation)
     {
-        BasicList<ICondition> list = new();
+        BasicList<ICondition> list = [];
         AndCondition condition = new();
         condition.Property = property;
         if (operation != co1.IsNotNull && operation != co1.IsNull)
@@ -35,7 +35,7 @@ public static class StaticHelpers
     }
     public static BasicList<ICondition> StartWithOneCondition(string property, string operation, object value)
     {
-        BasicList<ICondition> list = new();
+        BasicList<ICondition> list = [];
         AndCondition condition = new();
         condition.Property = property;
         condition.Value = value;
@@ -47,21 +47,21 @@ public static class StaticHelpers
     {
         SortInfo sort = new();
         sort.Property = property;
-        return new() { sort };
+        return [sort];
     }
     public static BasicList<SortInfo> StartSorting(string property, EnumOrderBy order)
     {
         SortInfo sort = new();
         sort.Property = property;
         sort.OrderBy = order;
-        return new() { sort };
+        return [sort];
     }
     public static BasicList<UpdateEntity> StartUpdate(string property, object value)
     {
-        BasicList<UpdateEntity> output = new()
-        {
+        BasicList<UpdateEntity> output =
+        [
             new UpdateEntity(property, value)
-        };
+        ];
         return output;
     }
 }
