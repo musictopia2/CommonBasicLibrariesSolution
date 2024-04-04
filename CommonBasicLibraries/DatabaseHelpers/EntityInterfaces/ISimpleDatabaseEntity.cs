@@ -1,5 +1,5 @@
 ﻿namespace CommonBasicLibraries.DatabaseHelpers.EntityInterfaces;
-public interface ISimpleEntity
+public interface ISimpleDatabaseEntity
 {
     int ID { get; set; }
 }

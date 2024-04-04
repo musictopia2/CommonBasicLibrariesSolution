@@ -14,7 +14,7 @@ public static class ListExtensions
         thisDict.Add(parameter, 1);
         return $"{parameter}1";
     }
-    public static BasicList<int> GetIDList<E>(this BasicList<E> thisList) where E : ISimpleEntity
+    public static BasicList<int> GetIDList<E>(this BasicList<E> thisList) where E : ISimpleDatabaseEntity
     {
         return thisList.Select(Items => Items.ID).ToBasicList();
     }

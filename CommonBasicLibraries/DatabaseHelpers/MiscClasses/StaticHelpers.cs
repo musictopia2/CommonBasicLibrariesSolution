@@ -5,7 +5,7 @@ public static class StaticHelpers
     {
         BasicList<ICondition> list = [];
         AndCondition condition = new();
-        condition.Property = nameof(ISimpleEntity.ID);
+        condition.Property = nameof(ISimpleDatabaseEntity.ID);
         condition.Value = id;
         list.Add(condition);
         return list;
