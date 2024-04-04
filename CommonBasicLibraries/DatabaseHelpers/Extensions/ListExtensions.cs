@@ -16,11 +16,11 @@ public static class ListExtensions
     }
     public static BasicList<int> GetIDList<E>(this BasicList<E> thisList) where E : ISimpleDatabaseEntity
     {
-        return thisList.Select(Items => Items.ID).ToBasicList();
+        return thisList.Select(xx => xx.ID).ToBasicList();
     }
-    public static void InitalizeAll<E>(this BasicList<E> thisList) where E : IUpdatableEntity
+    public static void InitalizeAll<E>(this BasicList<E> thisList) where E : IChangeTracker
     {
-        thisList.ForEach(Items => Items.Initialize());
+        thisList.ForEach(xx => xx.Initialize());
     }
     public static BasicList<SortInfo> Append(this BasicList<SortInfo> sortList, string property)
     {
