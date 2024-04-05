@@ -10,6 +10,36 @@ public static class StaticHelpers
         list.Add(condition);
         return list;
     }
+    public static BasicList<ICondition> StartWithOrConditions(Action<OrCondition> others)
+    {
+        BasicList<ICondition> list = [];
+        OrCondition condition = new();
+        others.Invoke(condition);
+        list.Add(condition);
+        return list;
+    }
+    public static BasicList<ICondition> StartWithOrConditions<T>(string property, BasicList<T> values)
+    {
+        BasicList<ICondition> list = [];
+        OrCondition condition = new();
+        foreach (var item in values)
+        {
+            condition.AppendOr(property, item);
+        }
+        list.Add(condition);
+        return list;
+    }
+    public static BasicList<ICondition> StartWithOrConditions<T>(string property, string operation, BasicList<T> values)
+    {
+        BasicList<ICondition> list = [];
+        OrCondition condition = new();
+        foreach (var item in values)
+        {
+            condition.AppendOr(property, operation, item);
+        }
+        list.Add(condition);
+        return list;
+    }
     public static BasicList<ICondition> StartWithOneCondition(string property, object value)
     {
         BasicList<ICondition> list = [];

@@ -1,4 +1,4 @@
-﻿namespace CommonBasicLibraries.DatabaseHelpers.Attributes;
+﻿namespace CommonBasicLibraries.BasicDataSettingsAndProcesses;
 [AttributeUsage(AttributeTargets.Property)]
 public class ExcludeUpdateListenerAttribute : Attribute
 {
