@@ -120,7 +120,6 @@ public class HtmlParser
             });
         });
     }
-
     public string GetTopInfo(bool bIncludeThis = false)
     {
         if (EndTag == "")

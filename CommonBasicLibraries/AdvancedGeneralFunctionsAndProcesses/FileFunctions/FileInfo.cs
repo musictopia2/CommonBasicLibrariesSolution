@@ -1,7 +1,6 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions;
 public class FileInfo
 {
-    //decided to keep time because it can be important of when it was accessed in time (for possible autoupdate processes)
     public DateTime DateCreated { get; set; }
     public long FileSize { get; set; }
     public DateTime DateModified { get; set; }

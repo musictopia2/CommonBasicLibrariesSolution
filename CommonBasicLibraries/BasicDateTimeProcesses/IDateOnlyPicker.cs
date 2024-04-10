@@ -1,7 +1,5 @@
-﻿#if NET6_0_OR_GREATER
-namespace CommonBasicLibraries.BasicDateTimeProcesses;
+﻿namespace CommonBasicLibraries.BasicDateTimeProcesses;
 public interface IDateOnlyPicker
 {
     DateOnly GetCurrentDate { get; }
 }
-#endif

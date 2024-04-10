@@ -10,15 +10,7 @@ public static class Lists
     {
         return thisList.Values.ToBasicList().GetRandomItem();
     }
-#if NETSTANDARD2_0
-    public static HashSet<T> ToHashSet<T>(this IEnumerable<T> TempList)
-    {
-        return new HashSet<T>(TempList);
-    }
-#endif
-#if NET6_0_OR_GREATER
     public static Span<T> AsSpan<T>(this BasicList<T>? list) => list is null ? default : CollectionsMarshal.AsSpan(list.GetInternalList); //hopefully this will allow me to use the built in asspan even for my custom list.
-#endif
     public static BasicList<T> ToBasicList<T>(this IEnumerable<T> tempList)
     {
         return new BasicList<T>(tempList);
@@ -29,10 +21,7 @@ public static class Lists
     }
     public static TKey GetKey<TKey, TValue>(this IDictionary<TKey, TValue> thisDict, TValue thisValue)
     {
-        if (thisDict == null)
-        {
-            throw new ArgumentNullException(nameof(thisDict));
-        }
+        ArgumentNullException.ThrowIfNull(thisDict);
         foreach (KeyValuePair<TKey, TValue> thisPair in thisDict)
         {
             if (thisValue!.Equals(thisPair.Value) == true || ReferenceEquals(thisPair.Value, thisValue) == true)
@@ -51,7 +40,7 @@ public static class Lists
     }
     public static BasicList<string> CastIntegerListToStringList(this BasicList<int> thisList)
     {
-        BasicList<string> newList = new();
+        BasicList<string> newList = [];
         thisList.ForEach(x => newList.Add(x.ToString()));
         return newList;
     }
@@ -67,10 +56,10 @@ public static class Lists
     }
     public static async Task ReconcileStrings<T>(this BasicList<string> sentList, BasicList<T> savedList, Func<T, string> match, Func<string, Task<T>> result)
     {
-        BasicList<string> tempList = new();
+        BasicList<string> tempList = [];
         savedList.ForEach(items => tempList.Add(match(items)));
-        BasicList<T> removeList = new();
-        BasicList<T> addList = new();
+        BasicList<T> removeList = [];
+        BasicList<T> addList = [];
         tempList.ForEach(items =>
         {
             if (sentList.Contains(items) == false)
@@ -100,7 +89,7 @@ public static class Lists
     }
     public static bool HasDuplicates<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
     {
-        HashSet<TKey> seenKeys = new();
+        HashSet<TKey> seenKeys = [];
         foreach (var item in source)
         {
             if (seenKeys.Add(keySelector(item)) == false)
@@ -112,7 +101,7 @@ public static class Lists
     }
     public static bool HasOnlyOne<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
     {
-        HashSet<TKey> seenKeys = new();
+        HashSet<TKey> seenKeys = [];
         if (source.Count == 0)
         {
             return false; //because there are none.
@@ -155,8 +144,8 @@ public static class Lists
     }
     public static BasicList<TSource> GetDuplicates<TSource, TKey>(this IBasicList<TSource> source, Func<TSource, TKey> keySelector)
     {
-        HashSet<TKey> seenKeys = new();
-        BasicList<TSource> output = new();
+        HashSet<TKey> seenKeys = [];
+        BasicList<TSource> output = [];
         foreach (var item in source)
         {
             if (seenKeys.Add(keySelector(item)) == false)
@@ -172,7 +161,7 @@ public static class Lists
         {
             return false; //because not even the same count.
         }
-        HashSet<TKey> seenKeys = new();
+        HashSet<TKey> seenKeys = [];
         foreach (var item in source)
         {
             seenKeys.Add(keySelector(item));
@@ -184,8 +173,7 @@ public static class Lists
                 return false;
             }
         }
-        return true; //may need to test this idea.
-                     //its case sensitive.  i think its okay since its intended for anything.
+        return true;
     }
     public static bool IsIntOrdered<TSource>(this IBasicList<TSource> source, Func<TSource, int?> keySelector, bool ExcludeUnknowns = true)
     {
@@ -215,10 +203,9 @@ public static class Lists
         }
         return true;
     }
-    //decided to use ienumerable now because sometimes it does not quite implement the custom list but is still needed.
     public static BasicList<int?> ExtractIntegers<TSource>(this IEnumerable<TSource> source, Func<TSource, int?> keySelector)
     {
-        BasicList<int?> output = new();
+        BasicList<int?> output = [];
         foreach (var item in source)
         {
             output.Add(keySelector(item));
@@ -227,7 +214,7 @@ public static class Lists
     }
     public static BasicList<int> ExtractIntegers<TSource>(this IEnumerable<TSource> source, Func<TSource, int> keySelector)
     {
-        BasicList<int> output = new();
+        BasicList<int> output = [];
         foreach (var item in source)
         {
             output.Add(keySelector(item));
@@ -237,7 +224,7 @@ public static class Lists
     public static int DistinctCount<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
     {
         int count = 0;
-        HashSet<TKey> seenKeys = new();
+        HashSet<TKey> seenKeys = [];
         foreach (TSource element in source)
         {
             if (seenKeys.Add(keySelector(element)))
@@ -247,11 +234,10 @@ public static class Lists
         }
         return count;
     }
-
-    public static IEnumerable<TSource> DistinctBy<TSource, TKey> //2 choices
-(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    public static IEnumerable<TSource> DistinctBy<TSource, TKey> 
+        (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
     {
-        HashSet<TKey> seenKeys = new();
+        HashSet<TKey> seenKeys = [];
         foreach (TSource element in source)
         {
             if (seenKeys.Add(keySelector(element)))
@@ -263,8 +249,8 @@ public static class Lists
     public static BasicList<TKey> DistinctItems<TSource, TKey>
         (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
     {
-        HashSet<TKey> seenKeys = new();
-        BasicList<TKey> output = new();
+        HashSet<TKey> seenKeys = [];
+        BasicList<TKey> output = [];
         foreach (TSource element in source)
         {
             if (seenKeys.Add(keySelector(element)))

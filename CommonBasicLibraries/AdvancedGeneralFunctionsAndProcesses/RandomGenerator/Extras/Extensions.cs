@@ -7,5 +7,5 @@ internal static class Extensions
     /// <param name="this"></param>
     /// <returns>Returns a copy of this <see cref="string"/> with capitalized first letter.</returns>
     public static string Capitalize(this string @this)
-        => @this[0].ToString().ToUpperInvariant() + @this.Substring(1);
+        => string.Concat(@this[0].ToString().ToUpperInvariant(), @this.AsSpan(1));
 }

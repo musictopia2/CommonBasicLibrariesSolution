@@ -1,7 +1,6 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class Decimals
-{
-    
+{ 
     public static bool IsPaidInFull(this decimal amountPaid, decimal totalDue)
     {
         decimal remainingToPay = totalDue - amountPaid;
@@ -27,13 +26,13 @@ public static class Decimals
         var newPrice = thisPrice - 1;
         var thisStr = newPrice.ToString("##0.00");
         int newSearch;
-        if (thisStr.Contains(".") == false)
+        if (thisStr.Contains('.') == false)
         {
             newSearch = -1;
         }
         else
         {
-            newSearch = thisStr.IndexOf(".");
+            newSearch = thisStr.IndexOf('.');
         }
         decimal centss;
         decimal diffs;

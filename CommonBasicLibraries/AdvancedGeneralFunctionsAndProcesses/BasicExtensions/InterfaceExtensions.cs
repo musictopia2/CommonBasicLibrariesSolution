@@ -5,7 +5,7 @@ public static class InterfaceExtensions
         where T: new()
     {
         ICustomMapContext<T>? context = CustomMapperHelpers<T>.MasterContext ?? throw new CustomBasicException($"There was no mappings found at {typeof(T)}.  Try to use source generators to create it");
-        return context.AutoMap(payLoad); //decided to do away with the dictionary way of doing it to improve performance.
+        return context.AutoMap(payLoad);
     }
     public static bool IsUpdate(this IChangeTracker entity, object? thisValue, object? newValue)
     {

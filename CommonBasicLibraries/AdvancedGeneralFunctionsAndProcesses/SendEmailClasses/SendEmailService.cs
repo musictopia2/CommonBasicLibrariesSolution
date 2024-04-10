@@ -1,17 +1,11 @@
 ﻿using System.Net; //not common enough.
 using System.Net.Mail; //not common enough.
-
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.SendEmailClasses;
-public class SendEmailService
+public class SendEmailService(ISmptService smptService)
 {
-    private readonly ISmptService _smptService;
-    public SendEmailService(ISmptService smptService)
-    {
-        _smptService = smptService;
-    }
     public async Task SendEmailAsync(EmailMessage email)
     {
-        SmptInfo info = await _smptService.GetSmptInfoAsync();
+        SmptInfo info = await smptService.GetSmptInfoAsync();
         var smtpClient = new SmtpClient(info.Smtp)
         {
             Port = info.Port,

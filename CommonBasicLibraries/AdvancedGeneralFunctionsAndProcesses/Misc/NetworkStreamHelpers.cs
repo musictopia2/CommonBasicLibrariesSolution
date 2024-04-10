@@ -29,10 +29,8 @@ public static class NetworkStreamHelpers
     }
     public static byte[] CreateDataPacket(byte[] data)
     {
-        byte[] initialize = new byte[1];
-        initialize[0] = 2;
-        byte[] separator = new byte[1];
-        separator[0] = 4;
+        byte[] initialize = [2];
+        byte[] separator = [4];
         byte[] datalength = Encoding.UTF8.GetBytes(Convert.ToString(data.Length));
         MemoryStream ms = new();
         ms.Write(initialize, 0, initialize.Length);

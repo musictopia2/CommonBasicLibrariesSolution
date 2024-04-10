@@ -17,7 +17,6 @@ public abstract class CustomWebAPIClient
     public CustomWebAPIClient(IConfiguration config, HttpClient client)
     {
         Client = client;
-        //Microsoft.Extensions.Configuration.ConfigurationBinder
         string firstPart = config.GetValue<string>(Key) ?? throw new CustomBasicException("Failed to get key from appsettings.  Use appsettings instead of ISimpleConfig");
         Uri secondPart = new(firstPart);
         BaseAddress = new(secondPart, ServicePath);

@@ -2,7 +2,6 @@
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class NumberExtensions
 {
-#if NET7_0_OR_GREATER
     public static (int Pounds, int Ounces) PoundsOunces<T>(this T grossWeight)
         where T : INumber<T>
     {
@@ -10,16 +9,12 @@ public static class NumberExtensions
         if (thisItem!.Contains('.') == false)
         {
             return (int.Parse(thisItem), 0);
-            //return ((int)grossWeight, 0);
         }
         int firsts;
         firsts = int.Parse(thisItem.PartialString(".", true));
         decimal seconds;
         seconds = decimal.Parse("." + thisItem.PartialString(".", false));
         var sec_fin = seconds * 16;
-
-        //int secFin;
-        //secFin = int(seconds * 16);
         return (firsts, (int)sec_fin);
     }
 
@@ -30,7 +25,7 @@ public static class NumberExtensions
         tempAmount = decimal.Parse(amount.ToString()!);
         decimal splits = tempAmount / howManyToSplitBy;
         splits = decimal.Round(splits, 2);
-        BasicList<decimal> thisList = new();
+        BasicList<decimal> thisList = [];
         decimal totalUsed;
         totalUsed = 0;
         var loopTo = howManyToSplitBy;
@@ -43,8 +38,6 @@ public static class NumberExtensions
         {
             return thisList;
         }
-
-        
         decimal Lefts;
         decimal diffs;
         diffs = tempAmount - totalUsed;
@@ -66,6 +59,4 @@ public static class NumberExtensions
         }
         return thisList;
     }
-
-#endif
 }

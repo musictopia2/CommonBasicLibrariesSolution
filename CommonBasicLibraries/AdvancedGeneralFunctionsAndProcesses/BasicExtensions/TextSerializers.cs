@@ -1,6 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class TextSerializers
 {
     public static async Task SaveTextAsync<T>(this IModel payLoad, string path)
@@ -1019,4 +1017,3 @@ public static class TextSerializers
         }
     }
 }
-#endif

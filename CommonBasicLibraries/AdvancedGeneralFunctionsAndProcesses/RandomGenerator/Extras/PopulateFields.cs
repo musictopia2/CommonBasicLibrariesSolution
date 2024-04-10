@@ -4,7 +4,7 @@ public partial class RandomGenerator
     public static bool UseFullName { get; set; } //if true, then will make sure you get real names.
     public BasicList<ITestPerson> GetTestPeopleList<T>(int HowMany, EnumAgeRanges DefaultAge = EnumAgeRanges.Adult) where T : ITestPerson, new()
     {
-        BasicList<ITestPerson> output = new();
+        BasicList<ITestPerson> output = [];
         for (int i = 0; i < HowMany; i++)
         {
             output.Add(GetTestSinglePerson<T>(DefaultAge));
@@ -30,9 +30,7 @@ public partial class RandomGenerator
         CityStateClass chosen = cities.GetRandomItem();
         output.City = chosen.City;
         output.State = chosen.StateAbb;
-#if NET6_0_OR_GREATER
         output.LastDate = NextDateOnly();
-#endif
         output.PostalCode = NextZipCode();
         output.Address = NextAddress();
         output.IsActive = NextBool(70); //wants to lean towards active

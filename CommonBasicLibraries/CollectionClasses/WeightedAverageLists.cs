@@ -2,8 +2,8 @@
 public class WeightedAverageLists<T>
     where T : notnull
 {
-    private readonly Dictionary<T, int> _possibleList = new();
-    private readonly Dictionary<int, int> _subList = new();
+    private readonly Dictionary<T, int> _possibleList = [];
+    private readonly Dictionary<int, int> _subList = [];
     private IRandomGenerator? _rs;
     public WeightedAverageLists<T> AddSubItem(int numberPossible, int weight)
     {
@@ -17,7 +17,7 @@ public class WeightedAverageLists<T>
         {
             throw new CustomBasicException("You never used the sublist");
         }
-        BasicList<int> output = new();
+        BasicList<int> output = [];
         foreach (var item in _subList.Keys)
         {
             int howMany = _subList[item];
@@ -69,7 +69,7 @@ public class WeightedAverageLists<T>
     public BasicList<T> GetWeightedList()
     {
         _rs = RandomHelpers.GetRandomGenerator();
-        BasicList<T> output = new();
+        BasicList<T> output = [];
         foreach (var thisItem in _possibleList.Keys)
         {
             int howMany = _possibleList[thisItem];

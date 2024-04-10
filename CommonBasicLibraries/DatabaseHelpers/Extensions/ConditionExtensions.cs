@@ -25,7 +25,6 @@ public static class ConditionExtensions
         thisCon.Code = tableCode;
         return tempList;
     }
-
     public static BasicList<ICondition> AppendContains(this BasicList<ICondition> tempList, BasicList<int> containList)
     {
         SpecificListCondition thisCon = new();

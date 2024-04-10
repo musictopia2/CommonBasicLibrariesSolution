@@ -1,16 +1,10 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class Dates
 {
-#if NET6_0_OR_GREATER
     public static DateTime ToDateTime(this DateOnly date) => new(date.Year, date.Month, date.Day); //hopefully this simple.
     public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
     public static TimeOnly ToTimeOnly(this DateTime date) => TimeOnly.FromDateTime(date);
     public static string GetLongDate(this DateOnly thisDate) => thisDate.ToString("dddd M/d/yyyy");
-#endif
-#if NETSTANDARD2_0
-    public static string GetLongDate(this DateTime thisDate) => thisDate.ToString("dddd M/d/yyyy");
-#endif
-#if NET6_0_OR_GREATER
     public static DateOnly WhenIsThanksgivingThisYear(this DateOnly dateUsed) //try this way (since i don't think time matters)
     {
         int x;
@@ -51,7 +45,6 @@ public static class Dates
         }
         return false;
     }
-#endif
     public static DateTime AddTimeToDate(this DateTime thisDate, string timestring) //since you are adding time, then means must be date/time this time.
     {
         DateTime timed = DateTime.Parse(timestring);

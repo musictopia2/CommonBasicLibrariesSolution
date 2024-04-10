@@ -67,8 +67,7 @@ public static class FileLocator
         foreach (var item in list)
         {
             string name = ff1.FileName(item);
-
-            if (name.ToLower() == _lookup)
+            if (name.Equals(_lookup, StringComparison.CurrentCultureIgnoreCase))
             {
                 return true;
             }

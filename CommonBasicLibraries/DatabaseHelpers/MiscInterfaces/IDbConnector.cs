@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Data.Common; //not common enough
-namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces;
+﻿namespace CommonBasicLibraries.DatabaseHelpers.MiscInterfaces;
 /// <summary>
 /// this is a helper that all it does is decides what connection to return.
 /// the purpose of this is so database helpers don't need to rely on sql server or sqlite.

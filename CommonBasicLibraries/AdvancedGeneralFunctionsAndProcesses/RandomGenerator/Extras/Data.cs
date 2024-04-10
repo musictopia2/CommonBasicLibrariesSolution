@@ -8,8 +8,7 @@ public partial class RandomGenerator
         public static readonly string CharsUpper = CharsLower.ToUpperInvariant();
         public const string HexPool = Numbers + "abcdef";
         public static readonly BasicList<(string Month, string Abb, string Code, int Day)> Months =
-            new()
-            {
+            [
                 ("January", "Jan", "01", 31),
                 ("February", "Feb", "02", 28),
                 ("March", "Mar", "03", 31),
@@ -22,17 +21,17 @@ public partial class RandomGenerator
                 ("October", "Oct", "10", 31),
                 ("November", "Nov", "11", 30),
                 ("December", "Dec", "12", 31)
-            };
-        public static readonly BasicList<string> Tlds = new()
-        {
+            ];
+        public static readonly BasicList<string> Tlds =
+        [
             "com",
             "org",
             "edu",
             "gov",
             "net",
-        };
-        public static readonly BasicList<(string Name, string Abb)> StreetSuffixes = new()
-        {
+        ];
+        public static readonly BasicList<(string Name, string Abb)> StreetSuffixes =
+        [
             ("Avenue", "Ave"),
             ("Boulevard", "Blvd"),
             ("Center", "Ctr"),
@@ -68,13 +67,13 @@ public partial class RandomGenerator
             ("Turnpike", "Tpke"),
             ("View", "Vw"),
             ("Way", "Way")
-        };
-        public static readonly BasicList<(string Company, string Abb, string Code, int Digits)> CcTypes = new()
-        {
+        ];
+        public static readonly BasicList<(string Company, string Abb, string Code, int Digits)> CcTypes =
+        [
             ("American Express", "amex", "37", 15),
             ("Discover Card", "discover", "6011", 16),
             ("Mastercard", "mc", "51", 16),
             ("Visa", "visa", "4", 16),
-        };
+        ];
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public static class ConvertersHelpers
 {
-    private readonly static HashSet<JsonConverter> _converters = new();
+    private readonly static HashSet<JsonConverter> _converters = [];
     public static void AddConverter<T>()
         where T : JsonConverter, new()
     {

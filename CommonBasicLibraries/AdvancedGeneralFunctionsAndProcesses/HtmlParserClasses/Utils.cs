@@ -28,9 +28,7 @@ internal static class Utils
                 w.Close();
                 w = null;
             }
-
-            if (!(fs == null))
-                fs.Close();
+            fs?.Close();
         }
         return to_ret;
     }

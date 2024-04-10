@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public class JsonDateOnlyConverter : JsonConverter<DateOnly>
 {
     public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -12,4 +11,3 @@ public class JsonDateOnlyConverter : JsonConverter<DateOnly>
         writer.WriteStringValue(value.ToString());
     }
 }
-#endif

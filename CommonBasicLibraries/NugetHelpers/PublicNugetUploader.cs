@@ -1,11 +1,6 @@
 ﻿namespace CommonBasicLibraries.NugetHelpers;
 public class PublicNugetUploader : INugetUploader
 {
-    //private readonly INugetKey _nugetKey;
-    //public PublicNugetUploader(INugetKey nugetKey)
-    //{
-    //    _nugetKey = nugetKey;
-    //}
     private static IConfiguration Configuration => bb1.Configuration!;
     private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {

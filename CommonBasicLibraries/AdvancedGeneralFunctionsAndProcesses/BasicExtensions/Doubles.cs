@@ -4,7 +4,7 @@ public static class Doubles
     public static int RoundToHigherNumber(this double thisDou)
     {
         string str = thisDou.ToString();
-        if (str.Contains(".") == false)
+        if (str.Contains('.') == false)
         {
             return int.Parse(thisDou.ToString());
         }
@@ -15,7 +15,7 @@ public static class Doubles
     public static int RoundToLowerNumber(this double thisDou)
     {
         string thisStr = thisDou.ToString();
-        if (thisStr.Contains(".") == false)
+        if (thisStr.Contains('.') == false)
         {
             return int.Parse(thisDou.ToString());
         }

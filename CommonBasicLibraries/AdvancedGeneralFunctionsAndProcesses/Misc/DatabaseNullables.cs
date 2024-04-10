@@ -24,11 +24,11 @@ public static class DatabaseNullables
             return false;
         }
         thisString = WhatString(thisString);
-        if (thisString.ToLower() == "false")
+        if (thisString.Equals("false", StringComparison.CurrentCultureIgnoreCase))
         {
             return false;
         }
-        if (thisString.ToLower() == "true")
+        if (thisString.Equals("true", StringComparison.CurrentCultureIgnoreCase))
         {
             return true;
         }
@@ -36,11 +36,11 @@ public static class DatabaseNullables
         {
             throw new CustomBasicException("Boolean strings has to be 1 character long; not " + thisString.Length + " long");
         }
-        if (thisString.ToLower() == "y")
+        if (thisString.Equals("y", StringComparison.CurrentCultureIgnoreCase))
         {
             return true;
         }
-        if (thisString.ToLower() == "n")
+        if (thisString.Equals("n", StringComparison.CurrentCultureIgnoreCase))
         {
             return false;
         }
@@ -93,11 +93,11 @@ public static class DatabaseNullables
     }
     public static bool WhatBoolean(char thisChar)
     {
-        if (thisChar.ToString().ToLower() == "y")
+        if (thisChar.ToString().Equals("y", StringComparison.CurrentCultureIgnoreCase))
         {
             return true;
         }
-        if (thisChar.ToString().ToLower() == "n")
+        if (thisChar.ToString().Equals("n", StringComparison.CurrentCultureIgnoreCase))
         {
             return false;
         }

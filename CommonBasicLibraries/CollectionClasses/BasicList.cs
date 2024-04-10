@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
 namespace CommonBasicLibraries.CollectionClasses;
-//has to implement the ilist after all now.
 public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection, ISimpleList<T>, IBasicList<T>, IList<T> //needs inheritance still because game package needs it.
 {
     internal List<T> GetInternalList => PrivateList; //only internal can do this.
@@ -36,7 +35,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     protected void CopyFrom(IEnumerable<T> collection)
     {
-        IList<T> items = PrivateList;
+        List<T> items = PrivateList;
         if (collection != null && items != null)
         {
             using IEnumerator<T> enumerator = collection.GetEnumerator();
@@ -95,7 +94,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public IBasicList<T> FindAll(Predicate<T> match)
     {
-        BasicList<T> output = new();
+        BasicList<T> output = [];
         foreach (T thisItem in PrivateList)
         {
             if (match(thisItem) == true)
@@ -193,7 +192,9 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
         foreach (T thisItem in PrivateList)
         {
             if (match1.Invoke(thisItem) == true)
+            {
                 allAction.Invoke(thisItem);
+            }
         }
         foreach (T thisItem in PrivateList)
         {
@@ -214,7 +215,9 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
         foreach (T thisItem in PrivateList)
         {
             if (match.Invoke(thisItem) == true)
+            {
                 action.Invoke(thisItem);
+            }
         }
     }
     public async Task ForConditionalItemsAsync(Predicate<T> match, ActionAsync<T> action)
@@ -222,7 +225,9 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
         foreach (T thisItem in PrivateList)
         {
             if (match.Invoke(thisItem) == true)
+            {
                 await action.Invoke(thisItem);
+            }
         }
     }
     public async Task ForEachAsync(ActionAsync<T> action)
@@ -260,7 +265,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     {
         _rs = RandomHelpers.GetRandomGenerator();
         BasicList<int> rList = _rs.GenerateRandomList(PrivateList.Count, howManyInList);
-        BasicList<T> output = new();
+        BasicList<T> output = [];
         foreach (var index in rList)
         {
             output.Add(PrivateList[index - 1]);
@@ -276,7 +281,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     {
         _rs = RandomHelpers.GetRandomGenerator();
         BasicList<int> rList = _rs.GenerateRandomList(PrivateList.Count, howMany);
-        List<T> list = new();
+        List<T> list = [];
         foreach (int index in rList)
         {
             list.Add(PrivateList[index - 1]);
@@ -285,7 +290,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public IBasicList<T> GetConditionalItems(Predicate<T> match)
     {
-        BasicList<T> output = new();
+        BasicList<T> output = [];
         foreach (var item in PrivateList)
         {
             if (match.Invoke(item))
@@ -305,7 +310,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public IBasicList<T> GetRange(int index, int count)
     {
-        BasicList<T> output = new();
+        BasicList<T> output = [];
         for (int i = index; i < count; i++)
         {
             output.Add(PrivateList[i]);
@@ -339,7 +344,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public IBasicList<T> RemoveAllAndObtain(Predicate<T> match)
     {
-        BasicList<T> output = new();
+        BasicList<T> output = [];
         foreach (var item in PrivateList)
         {
             if (match(item))
@@ -355,7 +360,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public void RemoveAllOnly(Predicate<T> match)
     {
-        List<T> tempList = new();
+        List<T> tempList = [];
         foreach (T item in PrivateList)
         {
             if (match(item) == true)
@@ -370,7 +375,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public void KeepConditionalItems(Predicate<T> match)
     {
-        List<T> tempList = new();
+        List<T> tempList = [];
         foreach (T item in PrivateList)
         {
             if (match(item) == false)
@@ -399,10 +404,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public void RemoveGivenList(IEnumerable<T> list)
     {
-        if (list == null)
-        {
-            throw new ArgumentNullException(nameof(list));
-        }
+        ArgumentNullException.ThrowIfNull(list);
         foreach (var item in list)
         {
             PrivateList.Remove(item);
@@ -452,7 +454,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
         }
         _rs = RandomHelpers.GetRandomGenerator();
         BasicList<int> thisList = _rs.GenerateRandomList(PrivateList.Count);
-        List<T> rList = new();
+        List<T> rList = [];
         foreach (int index in thisList)
         {
             rList.Add(PrivateList[index - 1]); //because 0 based.
@@ -464,7 +466,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     {
         _rs = RandomHelpers.GetRandomGenerator();
         BasicList<int> thisList = _rs.GenerateRandomList(PrivateList.Count, howMany);
-        List<T> rList = new();
+        List<T> rList = [];
         foreach (int index in thisList)
         {
             rList.Add(PrivateList[index - 1]);
@@ -503,10 +505,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public void InsertRange(int index, IEnumerable<T> items)
     {
-        if (items == null)
-        {
-            throw new ArgumentNullException(nameof(items));
-        }
+        ArgumentNullException.ThrowIfNull(items);
         PrivateList.InsertRange(index, items);
         Behavior!.AddRange(items);
     }
@@ -557,7 +556,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public void RemoveSeveralConditionalItems(BasicList<ConditionActionPair<T>> thisList)
     {
-        BasicList<T> rList = new();
+        BasicList<T> rList = [];
         thisList.ForEach(firstItem =>
         {
             if (Exists(firstItem.Predicate) == true)
@@ -583,7 +582,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public IBasicList<U> ConvertAll<U>(Converter<T, U> converter)
     {
-        BasicList<U> output = new();
+        BasicList<U> output = [];
         output.Capacity = PrivateList.Count;
         for (int i = 0; i < PrivateList.Count; i++)
         {
@@ -593,7 +592,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public void ReplaceWithNewObjects(int howMany, Func<T> func)
     {
-        BasicList<T> newList = new();
+        BasicList<T> newList = [];
         howMany.Times(() =>
         {
             newList.Add(func.Invoke());

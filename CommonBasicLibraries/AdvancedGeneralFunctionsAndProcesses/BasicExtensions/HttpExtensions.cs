@@ -10,12 +10,7 @@ public static class HttpExtensions
         }
         using FileStream stream = new(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
         var results = await output.Content.ReadAsByteArrayAsync();
-#if NET6_0_OR_GREATER
         await stream.WriteAsync(results);
-#endif
-#if NETSTANDARD2_0
-await stream.WriteAsync(results, 0, results.Length);
-#endif
     }
     private static async Task<StringContent> GetContentAsync<T>(this T value) //hopefully still this simple.
     {
@@ -38,24 +33,6 @@ await stream.WriteAsync(results, 0, results.Length);
         StringContent content = await GetContentAsync(value);
         return await client.PutAsync(uri, content);
     }
-
-    //hopefully i don't need the putcustomjsonasync anymore (?)
-
-    ///// <summary>
-    ///// use the custom method if this contains a custom list and using put command.
-    ///// </summary>
-    ///// <typeparam name="T"></typeparam>
-    ///// <param name="client"></param>
-    ///// <param name="uri"></param>
-    ///// <param name="value"></param>
-    ///// <returns></returns>
-    //public static async Task<HttpResponseMessage> PutCustomJsonAsync<T>(this HttpClient client, string uri, T value)
-    //{
-    //    string thisStr = await js.SerializeObjectAsync(value!);
-    //    StringContent content = new(thisStr); //this is exception.
-    //    return await client.PutAsync(uri, content);
-    //}
-
     private static async Task<T> GetJsonAsync<T>(this HttpResponseMessage response, string errorMessage = "Failed to get async json data.  Rethink")
     {
         if (response.IsSuccessStatusCode == false)

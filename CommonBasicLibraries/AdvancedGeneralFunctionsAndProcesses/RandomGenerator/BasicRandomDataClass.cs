@@ -2,8 +2,8 @@
 public class BasicRandomDataClass : IRandomData
 {
     //since this is default, does not need as long of a list.  since anybody can create their own list.
-    BasicList<string> IRandomData.FirstNamesMale => new()
-    {
+    BasicList<string> IRandomData.FirstNamesMale =>
+    [
         "James",
         "John",
         "Mike",
@@ -83,9 +83,9 @@ public class BasicRandomDataClass : IRandomData
         "Trevor",
         "Tom",
         "Mario"
-    };
-    BasicList<string> IRandomData.FirstNamesFemale => new()
-    {
+    ];
+    BasicList<string> IRandomData.FirstNamesFemale =>
+    [
         "Mary",
         "Elizabeth",
         "Margaret",
@@ -142,9 +142,9 @@ public class BasicRandomDataClass : IRandomData
         "Sue",
         "Johanna",
         "Hester"
-    };
-    BasicList<string> IRandomData.LastNames => new()
-    {
+    ];
+    BasicList<string> IRandomData.LastNames =>
+    [
         "Smith",
         "Johnson",
         "Williams",
@@ -364,9 +364,9 @@ public class BasicRandomDataClass : IRandomData
         "Hoffman",
         "Pearson",
         "Douglas",
-    };
-    BasicList<string> IRandomData.ColorNames => new()
-    {
+    ];
+    BasicList<string> IRandomData.ColorNames =>
+    [
         "Black",
         "Navy",
         "Blue",
@@ -390,14 +390,13 @@ public class BasicRandomDataClass : IRandomData
         "Pink",
         "Gold",
         "Yellow",
-    };
+    ];
 
     BasicList<FullNameClass> IRandomData.FullNames
     {
         get
         {
-            BasicList<FullNameClass> output = new();
-            output.Add(new("Billy", "Hill"));
+            BasicList<FullNameClass> output = [new("Billy", "Hill")];
             return output; //this will be a true fake name for the full name.  this means if you don't provide a full name list, then it will always be the same name for this
                            //you can always create your own list though.
         }
@@ -418,19 +417,19 @@ public class BasicRandomDataClass : IRandomData
     {
         get
         {
-            BasicList<CityStateClass> output = new();
-            output.Add(new("Reno", "NV"));
-            output.Add(new("Los Angeles", "CA"));
-            output.Add(new("Phoenix", "AZ"));
-            output.Add(new("San Diego", "CA"));
-            output.Add(new("Austin", "TX"));
-            output.Add(new("Las Cruces", "NM"));
-            output.Add(new("Portland", "OR"));
-            output.Add(new("Seattle", "WA"));
-            output.Add(new("Las Vegas", "NV"));
-            output.Add(new("Detroit", "MI"));
-            //for now, hopefully its okay.  after all new implementations can be done as well though.
-
+            BasicList<CityStateClass> output =
+            [
+                new("Reno", "NV"),
+                new("Los Angeles", "CA"),
+                new("Phoenix", "AZ"),
+                new("San Diego", "CA"),
+                new("Austin", "TX"),
+                new("Las Cruces", "NM"),
+                new("Portland", "OR"),
+                new("Seattle", "WA"),
+                new("Las Vegas", "NV"),
+                new("Detroit", "MI"),
+            ];
             return output;
         }
     }

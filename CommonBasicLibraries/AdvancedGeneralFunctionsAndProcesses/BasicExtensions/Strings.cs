@@ -1,23 +1,23 @@
 ﻿using System.Globalization;
-using System.Text.RegularExpressions; //not common enough to put into globals.
+using System.Text.RegularExpressions;
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-public static class Strings
+public static partial class Strings
 {
     public static string BackSpaceRemoveEnding0s(this string payLoad)
     {
-        string output = payLoad.TrimEnd(new char[] { '0' });
+        string output = payLoad.TrimEnd(['0']);
         return output;
     }
-#if NET6_0_OR_GREATER
     private static string _monthReplace = "";
-    public static int FindMonthInStringLine(this string thisStr) // will return a number  this will assume that there is never a case where 2 months appear
+    public static int FindMonthInStringLine(this string thisStr)
     {
-        BasicList<string> possList = new() { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        BasicList<string> possList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         int possNum;
         possNum = 0;
         _monthReplace = "";
         int currentNum;
         foreach (var thisPoss in possList)
+        {
             if (thisStr.Contains(thisPoss) == true)
             {
                 currentNum = thisPoss.GetMonthID();
@@ -31,39 +31,37 @@ public static class Strings
                     possNum = currentNum;
                 }
             }
+        }
+
         return possNum;
     }
-#endif
     public static BasicList<string> CommaDelimitedList(string payLoad)
     {
-        return payLoad.Split(",").ToBasicList(); //comma alone.
+        return payLoad.Split(",").ToBasicList();
     }
     public static bool IsNumeric(this string thisStr)
     {
-        return int.TryParse(thisStr, out _); //you are forced to assign variable no matter what now.
+        return int.TryParse(thisStr, out _);
     }
-    
-#if NET6_0_OR_GREATER
     public static BasicList<string> SplitStringEliminateMonth(this string thisStr)
     {
         thisStr = thisStr.Trim();
         if (_monthReplace == null == true || _monthReplace == "")
         {
-            return new BasicList<string>() { thisStr };
+            return [thisStr];
         }
         var thisList = thisStr.Split(_monthReplace);
         if (thisList.Length != 2)
         {
             throw new CustomBasicException("There should be only 2 items splited, not " + thisList.Length); //i am guessing has to be this way now.
         }
-        BasicList<string> newList = new();
+        BasicList<string> newList = [];
         foreach (var thisItem in thisList)
         {
             newList.Add(thisItem.Trim());
         }
         return newList;
     }
-#endif
     public static int GetMonthID(this string monthString)
     {
 
@@ -87,10 +85,10 @@ public static class Strings
     }
     public static BasicList<string> GetSentences(this string sTextToParse)
     {
-        BasicList<string> al = new();
+        BasicList<string> al = [];
         string sTemp = sTextToParse;
         sTemp = sTemp.Replace(Environment.NewLine, " ");
-        string[] customSplit = new[] { ".", "?", "!", ":" };
+        string[] customSplit = [".", "?", "!", ":"];
         var splits = sTemp.Split(customSplit, StringSplitOptions.RemoveEmptyEntries).ToList();
         int pos;
         foreach (var thisSplit in splits)
@@ -108,7 +106,7 @@ public static class Strings
                 al.Add(thisSplit);
             }
         }
-        if (al.First().StartsWith("\"") == true)
+        if (al.First().StartsWith('"') == true)
         {
             throw new CustomBasicException("I don't think the first one can start with quotes");
         }
@@ -120,14 +118,14 @@ public static class Strings
             string secondItem;
             firstItem = al[x - 1];
             secondItem = al[x];
-            if (secondItem.StartsWith("\"") == true)
+            if (secondItem.StartsWith('"') == true)
             {
                 al[x] = al[x].Substring(1); // i think
                 al[x] = al[x].Trim();
                 al[x - 1] = al[x - 1] + "\"";
                 al[x - 1] = al[x - 1].Trim();
             }
-            else if (secondItem.StartsWith(")") == true)
+            else if (secondItem.StartsWith(')') == true)
             {
                 al[x] = al[x].Substring(1); // i think
                 al[x] = al[x].Trim();
@@ -164,7 +162,7 @@ public static class Strings
     }
     public static string StripHtml(this string htmlText) //unfortunately not perfect.
     {
-        var thisText = Regex.Replace(htmlText, "<.*?>", "");
+        var thisText = MyRegex().Replace(htmlText, "");
         if (thisText.Contains("<sup") == true)
         {
             var index = thisText.IndexOf("<sup");
@@ -264,7 +262,6 @@ public static class Strings
         }
         throw new CustomBasicException("Not sure");
     }
-#if NET6_0_OR_GREATER
     public static bool IsValidDate(this string dateStr, out DateOnly? newDate)
     {
         bool rets = DateOnly.TryParseExact(dateStr, "MMddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly temps);
@@ -288,35 +285,9 @@ public static class Strings
         newDate = null;
         return false;
     }
-#endif
-#if NETSTANDARD2_0
-public static bool IsValidDate(this string dateStr, out DateTime? newDate)
-    {
-        bool rets = DateTime.TryParseExact(dateStr, "mmddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime temps);
-        if (rets)
-        {
-            newDate = temps;
-            return true;
-        }
-        rets = DateTime.TryParseExact(dateStr, "mmddyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
-        if (rets)
-        {
-            newDate = temps;
-            return true;
-        }
-        rets = DateTime.TryParse(dateStr, out temps);
-        if (rets)
-        {
-            newDate = temps;
-            return true;
-        }
-        newDate = null;
-        return false;
-    }
-#endif
     public static BasicList<Tuple<string, int?>> GetStringIntegerCombos(this string thisStr)
     {
-        BasicList<Tuple<string, int?>> thisList = new();
+        BasicList<Tuple<string, int?>> thisList = [];
         if (thisStr == "")
         {
             return thisList;
@@ -390,7 +361,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         }
         if (reject == true)
         {
-            thisList = new();
+            thisList = [];
             return thisList;
         }
         if (hadNumber == false && thisList.Count == 0)
@@ -417,7 +388,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         }
         else
         {
-            thisList = new();
+            thisList = [];
             return thisList;
         }
         return thisList;
@@ -451,7 +422,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
     public static BasicList<string> Split(this string thisStr, string words)
     {
         int oldCount = thisStr.Length;
-        BasicList<string> tempList = new();
+        BasicList<string> tempList = [];
         do
         {
             if (thisStr.Contains(words) == false)
@@ -543,7 +514,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         if (postalCode.Length == 10)
         {
             int index;
-            index = postalCode.IndexOf("-");
+            index = postalCode.IndexOf('-');
             if (index != 5)
             {
                 return false;
@@ -604,7 +575,9 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
                         isSpaceOrDot = false;
                     }
                     else
+                    {
                         tempStr += char.ToLower(info[i]);
+                    }
                 }
                 else
                 {
@@ -669,7 +642,6 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         FileStream.Flush();
         FileStream.Close();
     }
-#if NET6_0_OR_GREATER
     public async static Task SaveFileAsync(this string data, string path)
     {
         byte[] bytes = Convert.FromBase64String(data);
@@ -678,7 +650,6 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         await fileStream.FlushAsync();
         fileStream.Close();
     }
-#endif
     public static string GetFileData(this string path)
     {
         using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
@@ -687,7 +658,6 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         fileStream.Close();
         return Convert.ToBase64String(bytes);
     }
-#if NET6_0_OR_GREATER
     public async static Task<string> GetFileDataAsync(this string path)
     {
         using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
@@ -696,7 +666,6 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         fileStream.Close();
         return Convert.ToBase64String(Bytes);
     }
-#endif
     public static BasicList<string> GenerateSentenceList(this string entireText)
     {
         return entireText.Split(Constants.VBCrLf).ToBasicList();
@@ -717,7 +686,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
     public static int GetColumnNumber(this string columnString) // will be 0 based
     {
         string newStr = columnString.ToLower();
-        BasicList<string> AlphabetList = new() { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
+        BasicList<string> AlphabetList = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
         var tempList = newStr.ToList();
         if (tempList.Count > 2)
         {
@@ -760,7 +729,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
         {
             throw thisEx;
         }
-        BasicList<int> newList = new();
+        BasicList<int> newList = [];
         foreach (var thisItem in tempList)
         {
             rets = int.TryParse(thisItem, out newInt);
@@ -809,4 +778,7 @@ public static bool IsValidDate(this string dateStr, out DateTime? newDate)
     {
         return (T)Enum.Parse(typeof(T), value, true);
     }
+
+    [GeneratedRegex("<.*?>")]
+    private static partial Regex MyRegex();
 }

@@ -1,7 +1,6 @@
-﻿#if NET6_0_OR_GREATER
-using System.ComponentModel.DataAnnotations; //not common enough.
+﻿using System.ComponentModel.DataAnnotations; //not common enough.
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.TemplateHelpers;
-public class CreateTemplateViewModel : ICreateTemplateViewModel
+public class CreateTemplateViewModel(ITemplateCreater templateCreater, IExit exit) : ICreateTemplateViewModel
 {
     [Required]
     public string AppName { get; set; } = "";
@@ -9,15 +8,7 @@ public class CreateTemplateViewModel : ICreateTemplateViewModel
     public string PathDestination { get; set; } = "";
     public async Task SaveAsync()
     {
-        await _templateCreater.CreateTemplateAsync(AppName!, PathDestination!);
-        _exit.ExitApp(); //has to be all or nothing now.
-    }
-    private readonly ITemplateCreater _templateCreater;
-    private readonly IExit _exit;
-    public CreateTemplateViewModel(ITemplateCreater templateCreater, IExit exit)
-    {
-        _templateCreater = templateCreater;
-        _exit = exit;
+        await templateCreater.CreateTemplateAsync(AppName!, PathDestination!);
+        exit.ExitApp(); //has to be all or nothing now.
     }
 }
-#endif

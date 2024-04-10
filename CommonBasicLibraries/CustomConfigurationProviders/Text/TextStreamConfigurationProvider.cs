@@ -4,20 +4,10 @@ public class TextStreamConfigurationProvider(StreamConfigurationSource source, s
     public override void Load(Stream stream)
     {
         Read(stream, delimiter);
-        //this is what focuses on the stream.
-        //this has a dictionary (good).  which is where it gets the values of the key/value pairs for the iconfiguration system.
-        //this version will only focus on simple tab delimited.
-        //will try connection strings (needs :) though.
-
     }
-    //this is where i have to figure out how to parse this.  comes across as a stream.
-
     public static IDictionary<string, string?> Read(Stream stream, string delimiter)
     {
         var data = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
-        //figure out how to read.
-        //stream.ReadEx
-
         using var reader = new StreamReader(stream);
         while (reader.Peek() != -1)
         {
@@ -47,14 +37,11 @@ public class TextStreamConfigurationProvider(StreamConfigurationSource source, s
                 foreach (var item in list)
                 {
                     cats.AddToString(item, delimiter);
-                    //valueToUse = valueToUse && item;
                 }
                 valueToUse = cats.GetInfo();
             }
             data.Add(key, valueToUse);
-            //data.Add(list[0], list[1]);
         }
-
-        return data; //for now.
+        return data;
     }
 }

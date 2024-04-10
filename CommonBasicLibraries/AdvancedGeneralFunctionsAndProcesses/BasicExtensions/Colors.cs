@@ -334,38 +334,22 @@ public static class Colors
         string thisColor = thisStr.ToColor(false);
         return thisColor != "";
     }
-#if NETSTANDARD2_0_OR_GREATER
     public static BasicList<E> GetColorList<E>(this E thisEnum) where E : struct, Enum
     {
-        var firsts = Enum.GetValues(thisEnum.GetType());
-        //var firsts = Enum.GetValuesAsUnderlyingType<E>(thisEnum);
+        string thisStr = thisEnum.ToString();
+        if (thisStr == "")
+        {
+            //just to stop the warnings.
+        }
+        var firsts = Enum.GetValues<E>();
         BasicList<E> output = [];
         foreach (var thisItem in firsts)
         {
             if (thisItem.ToString()!.HasColor<E>() == true)
             {
-                output.Add((E)thisItem);
+                output.Add(thisItem);
             }
         }
         return output;
     }
-#endif
-#if NET8_0_OR_GREATER
-    public static BasicList<E> GetColorList<E>(this E thisEnum) where E : struct, Enum
-    {
-        var firsts = Enum.GetValues<E>(); 
-        //var firsts = Enum.GetValuesAsUnderlyingType<E>(thisEnum);
-        BasicList<E> output = new();
-        foreach (var thisItem in firsts)
-        {
-            if (thisItem.ToString()!.HasColor<E>() == true)
-            {
-                output.Add((E)thisItem);
-            }
-        }
-        return output;
-    }
-
-#endif
-
 }

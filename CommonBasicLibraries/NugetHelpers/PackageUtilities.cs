@@ -22,7 +22,7 @@ public static class PackageUtilities
             {
                 return;
             }
-            if (e.Data.ToLower().Contains("error"))
+            if (e.Data.Contains("error", StringComparison.CurrentCultureIgnoreCase))
             {
                 //this is used to double check after adding all latest versions of packages.
                 throw new CustomBasicException($"There was probably a compatibility error.  The message returned was {e.Data}");
@@ -67,7 +67,7 @@ public static class PackageUtilities
         Process process = new();
         process.StartInfo = psi;
         process.EnableRaisingEvents = true;
-        BasicList<string> output = new();
+        BasicList<string> output = [];
         process.OutputDataReceived += Process_OutputDataReceived;
         process.Start();
         process.BeginOutputReadLine();
@@ -85,7 +85,7 @@ public static class PackageUtilities
             {
                 return;
             }
-            if (e.Data.Contains(">") == false)
+            if (e.Data.Contains('>') == false)
             {
                 return;
             }

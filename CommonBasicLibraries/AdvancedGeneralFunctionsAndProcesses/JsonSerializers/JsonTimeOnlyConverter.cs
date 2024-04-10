@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers;
 public class JsonTimeOnlyConverter : JsonConverter<TimeOnly>
 {
     public override TimeOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -12,4 +11,3 @@ public class JsonTimeOnlyConverter : JsonConverter<TimeOnly>
         writer.WriteStringValue(value.ToString());
     }
 }
-#endif

@@ -1,9 +1,8 @@
-﻿#if NET6_0_OR_GREATER
-using System.IO.Compression; //not common enough.
+﻿using System.IO.Compression; //not common enough.
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses;
 public class CustomZipClass
 {
-    private readonly BasicList<PrivateZipInfo> _zipList = new();
+    private readonly BasicList<PrivateZipInfo> _zipList = [];
     public void Clear()
     {
         _zipList.Clear();
@@ -57,7 +56,7 @@ public class CustomZipClass
     public static BasicList<OpenedZipFile> OpenZipFile(string path)
     {
         using ZipArchive archive = ZipFile.OpenRead(path);
-        BasicList<OpenedZipFile> output = new();
+        BasicList<OpenedZipFile> output = [];
         foreach (ZipArchiveEntry entry in archive.Entries)
         {
             OpenedZipFile zip = new();
@@ -86,7 +85,7 @@ public class CustomZipClass
     public static void UnzipFile(string zipFile, string extractPath, BasicList<OpenedZipFile> files)
     {
         using ZipArchive archive = ZipFile.OpenRead(zipFile);
-        BasicList<ZipArchiveEntry> entries = new();
+        BasicList<ZipArchiveEntry> entries = [];
         files.ForEach(file =>
         {
             ZipArchiveEntry zip = archive.Entries.Where(x => x.Name == file.FileName).Single();
@@ -114,4 +113,3 @@ public class CustomZipClass
         });
     }
 }
-#endif

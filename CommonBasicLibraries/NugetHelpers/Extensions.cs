@@ -7,26 +7,28 @@ public static class Extensions
         var file = ff1.GetFile(dllPath);
         return file!.DateModified;
     }
-    public static string GetNet6DllPath(this INugetModel project) //this is a temporary method.  eventually may create another library to better figure this out.
-    {
-        string tempName = $"{ff1.FileName(project.CSPath)}.dll";
-        string dllPath = $@"{project.ProjectDirectory}\bin\release\net6.0\{tempName}";
-        string altPath = $@"{project.ProjectDirectory}\bin\release\net6.0-windows\{tempName}";
-        if (ff1.FileExists(altPath))
-        {
-            dllPath = altPath; //this allows the workaround for the windows stuff1.
-        }
-        altPath = $@"{project.ProjectDirectory}\bin\release\net6.0-windows10.0.19041.0\{tempName}";
-        if (ff1.FileExists(altPath))
-        {
-            dllPath = altPath; //to support windows 10 (for blazor wpf).
-        }
-        if (ff1.FileExists(dllPath) == false)
-        {
-            throw new CustomBasicException($"Dll does not even exist at {dllPath}");
-        }
-        return dllPath;
-    }
+    //try to not have this method anymore.  not sure if still needed.
+
+    //public static string GetNet6DllPath(this INugetModel project) //this is a temporary method.  eventually may create another library to better figure this out.
+    //{
+    //    string tempName = $"{ff1.FileName(project.CSPath)}.dll";
+    //    string dllPath = $@"{project.ProjectDirectory}\bin\release\net6.0\{tempName}";
+    //    string altPath = $@"{project.ProjectDirectory}\bin\release\net6.0-windows\{tempName}";
+    //    if (ff1.FileExists(altPath))
+    //    {
+    //        dllPath = altPath; //this allows the workaround for the windows stuff1.
+    //    }
+    //    altPath = $@"{project.ProjectDirectory}\bin\release\net6.0-windows10.0.19041.0\{tempName}";
+    //    if (ff1.FileExists(altPath))
+    //    {
+    //        dllPath = altPath; //to support windows 10 (for blazor wpf).
+    //    }
+    //    if (ff1.FileExists(dllPath) == false)
+    //    {
+    //        throw new CustomBasicException($"Dll does not even exist at {dllPath}");
+    //    }
+    //    return dllPath;
+    //}
     public static int GetMajorVersion(this string payLoad)
     {
         BasicList<string> output = payLoad.Split(".").ToBasicList();

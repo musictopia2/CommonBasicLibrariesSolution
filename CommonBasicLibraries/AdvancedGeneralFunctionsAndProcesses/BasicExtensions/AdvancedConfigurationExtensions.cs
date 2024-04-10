@@ -1,7 +1,6 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
-#if NET7_0_OR_GREATER
 public static class AdvancedConfigurationExtensions
-{ 
+{
     public static IAdvancedConfiguration AddLocalDB<T>(this IAdvancedConfiguration configuration)
         where T : ISqlDatabaseConfiguration
     {
@@ -22,15 +21,12 @@ public static class AdvancedConfigurationExtensions
         string key = $"DocumentDatabaseSqlite-{T.DatabaseName}-{T.CollectionName}";
         return configuration.Add(key, path);
     }
-
     public static IAdvancedConfiguration AddSqliteStandardPath<T>(this IAdvancedConfiguration configuration, string path)
         where T : ISqlDatabaseConfiguration
     {
         string key = $"{T.DatabaseName}Path";
         return configuration.Add(key, path);
     }
-
-    //not extension here though.
     public static string GetDatabaseKey<T>()
         where T : ISqlDatabaseConfiguration
     {
@@ -45,4 +41,3 @@ public static class AdvancedConfigurationExtensions
         return key;
     }
 }
-#endif

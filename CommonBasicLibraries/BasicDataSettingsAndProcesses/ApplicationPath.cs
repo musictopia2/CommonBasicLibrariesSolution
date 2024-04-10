@@ -7,6 +7,6 @@ public static class ApplicationPath
     }
     public static bool IsDebug()
     {
-        return System.Diagnostics.Debugger.IsAttached;
+        return Debugger.IsAttached;
     }
 }

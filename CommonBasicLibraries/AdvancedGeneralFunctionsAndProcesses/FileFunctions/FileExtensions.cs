@@ -38,7 +38,7 @@ public static class FileExtensions
         Stream? thisStream = default;
         await Task.Run(() =>
         {
-            if (fileName.Contains("/") == true || fileName.Contains(@"\") == true)
+            if (fileName.Contains('/') == true || fileName.Contains('\\') == true)
             {
                 throw new CustomBasicException(@"Cannot contain the / or \ in the file name.   Its already smart enough to figure out even if put in folders", null!);
             }
@@ -64,7 +64,7 @@ public static class FileExtensions
     }
     public static string GetMediaURIFromStream(this Assembly thisAssembly, string fileName)
     {
-        if (fileName.Contains("/") == true || fileName.Contains(@"\") == true)
+        if (fileName.Contains('/') == true || fileName.Contains('\\') == true)
         {
             throw new CustomBasicException(@"Cannot contain the / or \ in the file name.   Its already smart enough to figure out even if put in folders", null!);
         }
@@ -82,7 +82,6 @@ public static class FileExtensions
         stream.Close();
         return Convert.ToBase64String(bb);
     }
-#if NET6_0_OR_GREATER
     public static async Task<string> ResourcesBinaryTextFromFileAsync(this Assembly assembly, string fileName)
     {
         using var stream = await GetStreamAsync(assembly, fileName);
@@ -91,8 +90,6 @@ public static class FileExtensions
         stream.Close();
         return Convert.ToBase64String(bb);
     }
-#endif
-
     public static async Task<string> ResourcesAllTextFromFileAsync(this Assembly thisAssembly, string fileName)
     {
         using var thisStream = await GetStreamAsync(thisAssembly, fileName);
@@ -112,7 +109,7 @@ public static class FileExtensions
     }
     public static Stream ResourcesGetStream(this Assembly thisAssembly, string fileName)
     {
-        if (fileName.Contains("/") == true || fileName.Contains(@"\") == true)
+        if (fileName.Contains('/') == true || fileName.Contains('\\') == true)
         {
             throw new CustomBasicException(@"Cannot contain the / or \ in the file name.   Its already smart enough to figure out even if put in folders", null!);
         }
@@ -127,14 +124,9 @@ public static class FileExtensions
         {
             internalPath = firstName + "." + ResourceLocation + "." + fileName;
         }
-        Stream? thisStream = thisAssembly.GetManifestResourceStream(internalPath);
-        if (thisStream == null)
-        {
-            throw new FileNotFoundException(fileName + " does not exist");
-        }
+        Stream? thisStream = thisAssembly.GetManifestResourceStream(internalPath) ?? throw new FileNotFoundException(fileName + " does not exist");
         return thisStream;
     }
-#if NET6_0_OR_GREATER
     public async static Task SaveBinaryDataAsync(this string data, string path)
     {
         using var fins = new FileStream(bb1.GetCleanedPath(path), FileMode.Create);
@@ -142,5 +134,4 @@ public static class FileExtensions
         await fins.WriteAsync(Bytes);
         await fins.FlushAsync();
     }
-#endif
 }

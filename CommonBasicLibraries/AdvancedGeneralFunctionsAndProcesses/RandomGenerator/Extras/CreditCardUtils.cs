@@ -21,10 +21,8 @@ public static class CreditCardUtils
                     digit -= 9;
                 }
             }
-
             sum += digit;
         }
-
         return sum * 9 % 10;
     }
     /// <summary>

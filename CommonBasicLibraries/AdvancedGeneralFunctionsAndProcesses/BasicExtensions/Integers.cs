@@ -1,8 +1,8 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class Integers
 {
-    private readonly static BasicList<string> _units = new()
-    {
+    private readonly static BasicList<string> _units =
+    [
         "Zero",
         "One",
         "Two",
@@ -23,9 +23,9 @@ public static class Integers
         "Seventeen",
         "Eighteen",
         "Nineteen"
-    };
-    private readonly static BasicList<string> _tens = new()
-    {
+    ];
+    private readonly static BasicList<string> _tens =
+    [
         "",
         "",
         "Twenty",
@@ -36,7 +36,7 @@ public static class Integers
         "Seventy",
         "Eighty",
         "Ninety"
-    };
+    ];
     public static string ConvertToIntegerWords(this int value)
     {
         if (value < 20)
@@ -121,7 +121,7 @@ public static class Integers
             T result = (T)Enum.Parse(typeof(T), param.ToString(), true);
             return result;
         }
-        return default!; //i think should be fine (?)
+        return default!;
     }
     public static int FromEnum<T>(this T param) where T : Enum
     {

@@ -1,7 +1,7 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses;
-public class MissingTags : Exception
+public class MissingTags(EnumLocation tagLocation) : Exception
 {
-    public EnumLocation Location { get; }
+    public EnumLocation Location { get; } = tagLocation;
     public override string Message
     {
         get
@@ -16,9 +16,5 @@ public class MissingTags : Exception
             }
             throw new Exception("Can't figure out the message");
         }
-    }
-    public MissingTags(EnumLocation tagLocation)
-    {
-        Location = tagLocation;
     }
 }

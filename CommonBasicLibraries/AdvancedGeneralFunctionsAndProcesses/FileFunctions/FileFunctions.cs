@@ -48,7 +48,7 @@ public static class FileFunctions
     }
     public static string GetWriteLocationForExternalOnAndroid()
     {
-        return @"/sdcard"; //can be iffy for now (?)
+        return @"/sdcard";
     }
     public static bool FileExists(string filePath)
     {
@@ -84,7 +84,7 @@ public static class FileFunctions
                 {
                     if (temps.IsReady == true)
                     {
-                        if (label.ToLower() == temps.VolumeLabel.ToLower())
+                        if (label.Equals(temps.VolumeLabel, StringComparison.CurrentCultureIgnoreCase))
                         {
                             thisStr = temps.Name.Substring(0, 1);
                         }
@@ -92,8 +92,7 @@ public static class FileFunctions
                     }
                 }
             }
-        }
-        );
+        });
         if (thisStr == null)
         {
             throw new CustomBasicException("No label for " + label);
@@ -102,7 +101,7 @@ public static class FileFunctions
     }
     public static async Task FilterDirectoryAsync(BasicList<string> firstList)
     {
-        BasicList<string> removeList = new();
+        BasicList<string> removeList = [];
         await Task.Run(() =>
         {
             firstList.ForEach(items =>
@@ -118,7 +117,7 @@ public static class FileFunctions
     }
     public static void FilterDirectory(BasicList<string> firstList)
     {
-        BasicList<string> removeList = new();
+        BasicList<string> removeList = [];
         firstList.ForEach(items =>
         {
             if (Directory.EnumerateFiles(bb1.GetCleanedPath(items)).Any() == false)
@@ -132,7 +131,7 @@ public static class FileFunctions
     {
 
         DriveInfo[] completeDrives;
-        BasicList<string> newList = new();
+        BasicList<string> newList = [];
         await Task.Run(() =>
         {
             completeDrives = DriveInfo.GetDrives();
@@ -153,7 +152,7 @@ public static class FileFunctions
     public static BasicList<string> GetDriveList()
     {
         DriveInfo[] completeDrives;
-        BasicList<string> newList = new();
+        BasicList<string> newList = [];
         completeDrives = DriveInfo.GetDrives();
         foreach (var temps in completeDrives)
         {
@@ -257,7 +256,7 @@ public static class FileFunctions
     }
     public static BasicList<string> FileList(BasicList<string> directoryList) //this can be just top because you already sent in a directory list
     {
-        BasicList<string> newList = new();
+        BasicList<string> newList = [];
         directoryList.ForEach(x =>
         {
             var temps = FileList(x);
@@ -285,7 +284,7 @@ public static class FileFunctions
         firstList.KeepConditionalItems(items =>
         {
             string thisName = FileName(items).ToLower();
-            if (goodList.Exists(Temps => Temps.ToLower() == thisName) == true)
+            if (goodList.Exists(xx => xx.Equals(thisName, StringComparison.CurrentCultureIgnoreCase)) == true)
             {
                 return true;
             }
@@ -308,7 +307,7 @@ public static class FileFunctions
     }
     public static async Task<BasicList<string>> FileListAsync(string directoryPath, SearchOption thisOption = SearchOption.TopDirectoryOnly)
     {
-        BasicList<string> tFileList = new();
+        BasicList<string> tFileList = [];
         await Task.Run(() =>
         {
             tFileList = Directory.EnumerateFiles(bb1.GetCleanedPath(directoryPath), "*", thisOption).ToBasicList();
@@ -317,7 +316,7 @@ public static class FileFunctions
     }
     public static async Task<BasicList<string>> FileListAsync(BasicList<string> directoryList)
     {
-        BasicList<string> newList = new();
+        BasicList<string> newList = [];
         await directoryList.ForEachAsync(async x =>
         {
             var temps = await FileListAsync(x);
@@ -345,7 +344,7 @@ public static class FileFunctions
         firstList.KeepConditionalItems(items =>
         {
             string thisName = FileName(items).ToLower();
-            if (goodList.Exists(xx => xx.ToLower() == thisName) == true)
+            if (goodList.Exists(xx => xx.Equals(thisName, StringComparison.CurrentCultureIgnoreCase)) == true)
             {
                 return true;
             }
@@ -375,7 +374,7 @@ public static class FileFunctions
     /// <returns></returns>
     public static async Task<string> SearchForFileNameAsync(string directoryPath, string fileName)
     {
-        BasicList<string> tFileList = new();
+        BasicList<string> tFileList = [];
         await Task.Run(() =>
         {
             tFileList = Directory.EnumerateFiles(bb1.GetCleanedPath(directoryPath), fileName, SearchOption.AllDirectories).ToBasicList();
@@ -535,23 +534,18 @@ public static class FileFunctions
     {
         File.WriteAllLines(bb1.GetCleanedPath(filePath), lines);
     }
-#if NET6_0_OR_GREATER
     public static async Task WriteAllLinesAsync(string filePath, BasicList<string> lines)
     {
         await File.WriteAllLinesAsync(bb1.GetCleanedPath(filePath), lines);
     }
-#endif
-
     public static void WriteAllLines(string filePath, BasicList<string> lines, Encoding encoding)
     {
         File.WriteAllLines(bb1.GetCleanedPath(filePath), lines, encoding);
     }
-#if NET6_0_OR_GREATER
     public static async Task WriteAllLinesAsync(string filePath, BasicList<string> lines, Encoding encoding)
     {
         await File.WriteAllLinesAsync(bb1.GetCleanedPath(filePath), lines, encoding);
     }
-#endif
     public static async Task FileCopyAsync(string originalFile, string newFile)
     {
         await Task.Run(() => File.Copy(bb1.GetCleanedPath(originalFile), bb1.GetCleanedPath(newFile), true));
@@ -577,7 +571,7 @@ public static class FileFunctions
     }
     public static async Task RenameFileAsync(string oldFile, string newName)
     {
-        if (File.Exists(oldFile) == false && File.Exists(newName) && oldFile.ToLower().Contains("storage/emulated"))
+        if (File.Exists(oldFile) == false && File.Exists(newName) && oldFile.Contains("storage/emulated", StringComparison.CurrentCultureIgnoreCase))
         {
             return;
         }
@@ -606,21 +600,11 @@ public static class FileFunctions
     {
         await Task.Run(() => Directory.Move(bb1.GetCleanedPath(oldDirectory), bb1.GetCleanedPath(newName)));
     }
-#if NET6_0_OR_GREATER
     public static async Task<BasicList<string>> ReadAllLinesAsync(string filePath)
     {
         var temps = await File.ReadAllLinesAsync(bb1.GetCleanedPath(filePath));
         return temps.ToBasicList();
     }
-#endif
-#if NETSTANDARD2_0
-    public static async  Task<BasicList<string>> TextFromFileListAsync(string path)
-    {
-        BasicList<string> list = new ();
-        await Task.Run(() => list = File.ReadAllLines(path).ToBasicList());
-        return list;
-    }
-#endif
     /// <summary>
     /// This will copy the folder and all sub folders and files.
     /// if the destination already exist, then will exit since this cannot replace.
@@ -681,7 +665,7 @@ public static class FileFunctions
     {
         string finold = bb1.GetCleanedPath(oldFile);
         string finnew = bb1.GetCleanedPath(newName);
-        if (File.Exists(finold) == false && File.Exists(finnew) && oldFile.ToLower().Contains("storage/emulated"))
+        if (File.Exists(finold) == false && File.Exists(finnew) && oldFile.Contains("storage/emulated", StringComparison.CurrentCultureIgnoreCase))
         {
             return; //because you already renamed.  i will assume this only for sd card situations.
         }
