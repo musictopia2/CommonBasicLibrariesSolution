@@ -24,3 +24,4 @@ global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 global using CommonBasicLibraries.CustomConfigurationProviders.Text;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.IConfigurationHelpers;
 global using CommonBasicLibraries.DatabaseHelpers.AbstractStaticInterfaces;
+global using System.Data; //unfortunately, needs some stuff with system.data anyways.
