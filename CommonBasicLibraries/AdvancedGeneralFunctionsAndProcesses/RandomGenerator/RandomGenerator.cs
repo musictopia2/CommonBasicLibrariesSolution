@@ -721,11 +721,11 @@ public partial class RandomGenerator : IRandomGenerator
         BasicList<string> listToUse;
         if (isFemale == false)
         {
-            listToUse = _data.FirstNamesFemale;
+            listToUse = _data.FirstNamesMale;
         }
         else
         {
-            listToUse = _data.FirstNamesMale;
+            listToUse = _data.FirstNamesFemale;
         }
 
         listToUse._rs = this;
