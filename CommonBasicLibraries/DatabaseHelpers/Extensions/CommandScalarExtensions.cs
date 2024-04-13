@@ -14,6 +14,7 @@ public static class CommandScalarExtensions
         {
             return default!;
         }
+        //hopefully i never need dateonly where parts was hosed.  if so, then needs to run a process to fix.
         return T.Parse(results.ToString()!, null); //hopefully this simple.
     }
     public static int? ParseNullableInt(this IDbCommand command)
@@ -28,7 +29,7 @@ public static class CommandScalarExtensions
         {
             return null;
         }
-        return int.Parse(results.ToString()!); //hopefully this simple.
+        return int.Parse(input); //hopefully this simple.
     }
     public static string? ParseString(this IDbCommand command)
     {
@@ -65,7 +66,7 @@ public static class CommandScalarExtensions
         {
             return null;
         }
-        return bool.Parse(results.ToString()!); //hopefully this simple.
+        return bool.Parse(input); //hopefully this simple.
     }
     public static decimal? ParseNullableDecimal(this IDbCommand command)
     {
@@ -79,7 +80,7 @@ public static class CommandScalarExtensions
         {
             return null;
         }
-        return decimal.Parse(results.ToString()!);
+        return decimal.Parse(input);
     }
     public static double? ParseNullableDouble(this IDbCommand command)
     {
@@ -93,7 +94,7 @@ public static class CommandScalarExtensions
         {
             return null;
         }
-        return double.Parse(results.ToString()!);
+        return double.Parse(input);
     }
     public static float? ParseNullableFloat(this IDbCommand command)
     {
@@ -107,7 +108,7 @@ public static class CommandScalarExtensions
         {
             return null;
         }
-        return float.Parse(results.ToString()!);
+        return float.Parse(input);
     }
     //public static TimeOnly
     public static DateTime? ParseNullableDateTime(this IDbCommand command)
@@ -122,7 +123,7 @@ public static class CommandScalarExtensions
         {
             return null;
         }
-        return DateTime.Parse(results.ToString()!);
+        return DateTime.Parse(input);
     }
     public static DateOnly? ParseNullableDateOnly(this IDbCommand command)
     {
@@ -136,7 +137,8 @@ public static class CommandScalarExtensions
         {
             return null;
         }
-        return DateOnly.Parse(results.ToString()!);
+        input = input.Replace(" 00:00:00", "");
+        return DateOnly.Parse(input);
     }
     public static TimeOnly? ParseNullableTimeOnly(this IDbCommand command)
     {
@@ -150,6 +152,6 @@ public static class CommandScalarExtensions
         {
             return null;
         }
-        return TimeOnly.Parse(results.ToString()!);
+        return TimeOnly.Parse(input);
     }
 }

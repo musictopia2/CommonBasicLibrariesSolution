@@ -549,6 +549,7 @@ public static class CommandReaderExtensions
             if (category == EnumDatabaseCategory.SQLite)
             {
                 string temp = DataReaderExtensions.GetString(reader, list.Single().ColumnName);
+                temp = temp.Replace(" 00:00:00", "");
                 output = DateOnly.Parse(temp);
             }
             else
@@ -596,6 +597,7 @@ public static class CommandReaderExtensions
             if (category == EnumDatabaseCategory.SQLite)
             {
                 string temp = DataReaderExtensions.GetString(reader, list.Single().ColumnName);
+                temp = temp.Replace(" 00:00:00", "");
                 output = DateOnly.Parse(temp);
             }
             else
