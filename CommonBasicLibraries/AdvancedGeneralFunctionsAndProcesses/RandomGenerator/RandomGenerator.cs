@@ -1,4 +1,5 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
+﻿using aa3 = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.Advanced;
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
 public partial class RandomGenerator : IRandomGenerator
 {
     public static EnumFormula Formula => EnumFormula.TwisterStandard;
@@ -460,24 +461,16 @@ public partial class RandomGenerator : IRandomGenerator
             }
         } while (true);
     }
-    public string NextAddress(int syllables = 2, bool shortSuffix = true) => $"{GetRandomNumber(6000, 100)} {NextStreet(syllables, shortSuffix)}";
+    public string NextAddress(int syllables = 2, bool shortSuffix = true) => aa3.RandomExtensions.NextAddress(this, syllables, shortSuffix);
     public int NextAge(EnumAgeRanges types = EnumAgeRanges.Adult) //this means if somebody wants to create a new version and have different rules it can.
     {
-        var range = types switch
-        {
-            EnumAgeRanges.Child => [1, 12],
-            EnumAgeRanges.Teen => [13, 19],
-            EnumAgeRanges.Senior => [65, 100],
-            EnumAgeRanges.All => [1, 100],
-            _ => new[] { 18, 65 },
-        };
-        return GetRandomNumber(range[1], range[0]);
+        return aa3.RandomExtensions.NextAge(this, types);
     }
     public string NextAnyName()
     {
         BasicList<string> allList = _data.FirstNamesFemale;
         allList.AddRange(_data.FirstNamesMale);
-        allList._rs = this;
+        allList.SendRandoms(this);
         return allList.GetRandomItem();
     }
     public bool NextBool(int likelihood = 50)
@@ -492,14 +485,13 @@ public partial class RandomGenerator : IRandomGenerator
     public string NextCity()
     {
         BasicList<CityStateClass> cities = _data.Cities;
-        cities._rs = this;
+        cities.SendRandoms(this);
         return cities.GetRandomItem().City;
     }
-
     public string NextColor()
     {
         var list = _data.ColorNames;
-        list._rs = this;
+        list.SendRandoms(this);
         return list.GetRandomItem();
     }
     internal long NextLong(long min = long.MinValue + 1, long max = long.MaxValue - 1)
@@ -519,169 +511,6 @@ public partial class RandomGenerator : IRandomGenerator
 
         return double.Parse(numFixed);
     }
-    internal string GetDigits(int howMany, int startAt = 0, int endAt = 9)
-    {
-        StringBuilder str = new();
-        for (int i = 0; i < howMany; i++)
-        {
-            str.Append(GetRandomNumber(endAt, startAt));
-        }
-        return str.ToString();
-    }
-    /// <summary>
-    /// Return a semi-pronounceable random (nonsense) word.
-    /// </summary>
-    /// <param name="capitalize">True to capitalize a word.</param>
-    /// <param name="syllablesCount">Number of syllables which the word will have.</param>
-    /// <param name="length">Length of a word.</param>
-    /// <returns>Returns random generated word.</returns>
-    internal string NextWord(bool capitalize = false, int? syllablesCount = 2, int? length = null)
-    {
-        if (syllablesCount != null && length != null)
-        {
-            throw new ArgumentException("Cannot specify both syllablesCount AND length.");
-        }
-        var text = "";
-        if (length.HasValue)
-        {
-            do
-            {
-                text += NextSyllable();
-            } while (text.Length < length.Value);
-
-            text = text.Substring(0, length.Value);
-        }
-        else if (syllablesCount.HasValue)
-        {
-            for (var i = 0; i < syllablesCount.Value; i++)
-            {
-                text += NextSyllable();
-            }
-        }
-        if (capitalize)
-        {
-            text = text.Capitalize();
-        }
-
-        return text;
-    }
-
-    /// <summary>
-    /// Return a semi-speakable syllable, 2 or 3 letters.
-    /// </summary>
-    /// <param name="length">Length of a syllable.</param>
-    /// <param name="capitalize">True to capitalize a syllable.</param>
-    /// <returns>Returns random generated syllable.</returns>
-    internal string NextSyllable(int length = 2, bool capitalize = false)
-    {
-        const string consonats = "bcdfghjklmnprstvwz";
-        const string vowels = "aeiou";
-        const string all = consonats + vowels;
-        var text = "";
-        var chr = -1;
-        for (var i = 0; i < length; i++)
-        {
-            if (i == 0)
-            {
-                chr = NextChar(all);
-            }
-            else if (consonats.IndexOf((char)chr) == -1) //(consonats[chr] == -1)
-            {
-                chr = NextChar(consonats);
-            }
-            else
-            {
-                chr = NextChar(vowels);
-            }
-
-            text += (char)chr;
-        }
-        if (capitalize)
-        {
-            text = text.Capitalize();
-        }
-        return text;
-    }
-    /// <summary>
-    /// Returns a random character.
-    /// </summary>
-    /// <param name="pool">Characters pool</param>
-    /// <param name="alpha">Set to True to use only an alphanumeric character.</param>
-    /// <param name="symbols">Set to true to return only symbols.</param>
-    /// <param name="casing">Default casing.</param>
-    /// <returns>Returns a random character.</returns>
-    internal char NextChar(string? pool = null, bool alpha = false, bool symbols = false, EnumCasingRules casing = EnumCasingRules.MixedCase)
-    {
-        const string s = "!@#$%^&*()[]";
-        string letters, p;
-        if (alpha && symbols)
-        {
-            throw new ArgumentException("Cannot specify both alpha and symbols.");
-        }
-        if (casing == EnumCasingRules.LowerCase)
-        {
-            letters = CharsLower;
-        }
-        else if (casing == EnumCasingRules.UpperCase)
-        {
-            letters = CharsUpper;
-        }
-        else
-        {
-            letters = CharsLower + CharsUpper;
-        }
-        if (!string.IsNullOrEmpty(pool))
-        {
-            p = pool!;
-        }
-        else if (alpha)
-        {
-            p = letters;
-        }
-        else if (symbols)
-        {
-            p = s;
-        }
-        else
-        {
-            p = letters + Numbers + s;
-        }
-        BasicList<char> list = p.ToBasicList();
-        list._rs = this;
-        return list.GetRandomItem();
-    }
-    #region Finance
-    private static (string Company, string Abb, string Code, int Digits) CcType(string? name = null)
-    {
-        (string Company, string Abb, string Code, int Digits) cc;
-        if (!string.IsNullOrEmpty(name))
-        {
-            cc = CcTypes.FirstOrDefault(tcc => tcc.Company == name || tcc.Abb == name);
-            if (cc == default)
-            {
-                throw new ArgumentOutOfRangeException(nameof(name),
-                    "Credit card type '" + name + "'' is not supported");
-            }
-        }
-        else
-        {
-            cc = CcTypes.GetRandomItem();
-        }
-
-        return cc;
-    }
-    public long NextCreditCardNumber(string? cardType = null)
-    {
-        var (_, _, Code, Digits) = CcType(cardType);
-        var toGenerate = Digits - Code.Length - 1;
-        var number = Code;
-        string group = GetDigits(toGenerate);
-        number += group;
-        number += CreditCardUtils.LuhnCalcualte(long.Parse(number));
-
-        return long.Parse(number);
-    }
-    #endregion
     public DateOnly NextDateOnly(DateOnly? min = null, DateOnly? max = null)
     {
         //can't be simple anymore because its dateonly now.
@@ -713,9 +542,12 @@ public partial class RandomGenerator : IRandomGenerator
         return new DateTime(y, m, d, NextHour(), NextMinute(),
             NextSecond(), NextMillisecond());
     }
-    public string NextDomainName(string? tld = null) => NextWord() + "." + (tld ?? NextTopLevelDomain());
-    public string NextTopLevelDomain() => Tlds.GetRandomItem();
-    public string NextEmail(string? domain = null, int length = 7) => NextWord(length: length, syllablesCount: null) + "@" + (domain ?? NextDomainName());
+    public string NextDomainName(string? tld = null) => aa3.RandomExtensions.NextDomainName(this, tld);
+    public string NextTopLevelDomain()
+    {
+        return aa3.RandomExtensions.NextTopLevelDomain(this);
+    }
+    public string NextEmail(string? domain = null, int length = 7) => aa3.RandomExtensions.NextEmail(this, domain, length);
     public string NextFirstName(bool isFemale = false)
     {
         BasicList<string> listToUse;
@@ -728,36 +560,25 @@ public partial class RandomGenerator : IRandomGenerator
             listToUse = _data.FirstNamesFemale;
         }
 
-        listToUse._rs = this;
+        listToUse.SendRandoms(this);
         return listToUse.GetRandomItem();
     }
     public FullNameClass NextFullName()
     {
         BasicList<FullNameClass> list = _data.FullNames;
-        list._rs = this;
+        list.SendRandoms(this);
         return list.GetRandomItem();
     }
     public string NextGender()
     {
-        BasicList<string> thisList = ["Male", "Female"];
-        thisList._rs = this;
-        return thisList.GetRandomItem();
+        return aa3.RandomExtensions.NextGender(this);
     }
-    public string NextGeohash(int length = 7) => NextString(length, "0123456789bcdefghjkmnpqrstuvwxyz");
+    public string NextGeohash(int length = 7) => aa3.RandomExtensions.NextGeohash(this, length);
     public string NextGUID(int version = 5)
     {
-        const string guidPool = "abcdef1234567890";
-        const string variantPool = "ab89";
-        string strFn(string pool, int len) => NextString(len, pool);
-        return strFn(guidPool, 8) + "-" +
-               strFn(guidPool, 4) + "-" +
-               version +
-               strFn(guidPool, 3) + "-" +
-               strFn(variantPool, 1) +
-               strFn(guidPool, 3) + "-" +
-               strFn(guidPool, 12);
+        return aa3.RandomExtensions.NextGUID(this, version);
     }
-    public string NextHashtag() => $"#{NextWord()}";
+    public string NextHashtag() => aa3.RandomExtensions.NextHashtag(this);
     /// <summary>
     /// Generates a random hour.
     /// </summary>
@@ -771,31 +592,13 @@ public partial class RandomGenerator : IRandomGenerator
     /// <returns>Returns random generated hour.</returns>
     public int NextHour(bool twentyfourHours = true, int? min = null, int? max = null)
     {
-        if (min < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(min), "min cannot be less than 0.");
-        }
-        if (twentyfourHours && max > 23)
-        {
-            throw new ArgumentOutOfRangeException(nameof(max), "max cannot be greater than 23 for twentyfourHours option.");
-        }
-        if (!twentyfourHours && max > 12)
-        {
-            throw new ArgumentOutOfRangeException(nameof(max), "max cannot be greater than 12.");
-        }
-        if (min > max)
-        {
-            throw new ArgumentOutOfRangeException(nameof(min), "min cannot be greater than max.");
-        }
-        min ??= (twentyfourHours ? 0 : 1);
-        max ??= (twentyfourHours ? 23 : 12);
-        return GetRandomNumber(max.Value, min.Value);
+        return aa3.RandomExtensions.NextHour(this, twentyfourHours, min, max);
     }
     /// <summary>
     /// Returns a random IP Address.
     /// </summary>
     /// <returns>Returns a random IP Address.</returns>
-    public string NextIP() => $"{GetRandomNumber(254, 1)}.{GetRandomNumber(255, 0)}.{GetRandomNumber(255, 0)}.{GetRandomNumber(254, 0)}";
+    public string NextIP() => aa3.RandomExtensions.NextIP(this);
     /// <summary>
     /// Generates a random last name.
     /// </summary>
@@ -803,7 +606,7 @@ public partial class RandomGenerator : IRandomGenerator
     public string NextLastName()
     {
         var thisList = _data.LastNames;
-        thisList._rs = this;
+        thisList.SendRandoms(this);
         return thisList.GetRandomItem();
     }
     /// <summary>
@@ -828,7 +631,7 @@ public partial class RandomGenerator : IRandomGenerator
     /// Generates a random millisecond.
     /// </summary>
     /// <returns>Returns random generated millisecond.</returns>
-    public int NextMillisecond() => GetRandomNumber(999);
+    public int NextMillisecond() => aa3.RandomExtensions.NextMillisecond(this);
 
     /// <summary>
     /// Generates a random minute.
@@ -841,19 +644,7 @@ public partial class RandomGenerator : IRandomGenerator
     /// <returns>Returns random generated minute.</returns>
     public int NextMinute(int min = 0, int max = 59)
     {
-        if (min < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(min), "min cannot be less than 0.");
-        }
-        if (max > 59)
-        {
-            throw new ArgumentOutOfRangeException(nameof(max), "max cannot be greater than 59.");
-        }
-        if (min > max)
-        {
-            throw new ArgumentOutOfRangeException(nameof(min), "min cannot be greater than max.");
-        }
-        return GetRandomNumber(max, min);
+        return aa3.RandomExtensions.NextMinute(this, min, max);
     }
     /// <summary>
     /// Generates a random month.
@@ -866,26 +657,13 @@ public partial class RandomGenerator : IRandomGenerator
     /// <returns>Returns random generated month.</returns>
     public string NextMonth(int min = 1, int max = 12)
     {
-        if (min < 1)
-        {
-            throw new ArgumentOutOfRangeException(nameof(min), "min cannot be less than 1.");
-        }
-        if (max > 12)
-        {
-            throw new ArgumentOutOfRangeException(nameof(max), "max cannot be greater than 12.");
-        }
-        if (min > max)
-        {
-            throw new ArgumentOutOfRangeException(nameof(min), "min cannot be greater than max.");
-        }
-        var firsts = Months.Skip(min - 1).Take(max - 1).ToBasicList();
-        return firsts.GetRandomItem().Month;
+        return aa3.RandomExtensions.NextMonth(this, min, max);
     }
     /// <summary>
     /// Generates a random second.
     /// </summary>
     /// <returns>Returns random generated second.</returns>
-    public int NextSecond() => GetRandomNumber(59, 0);
+    public int NextSecond() => aa3.RandomExtensions.NextSecond(this);
     /// <summary>
     /// Generates a random social security number.
     /// </summary>
@@ -894,21 +672,9 @@ public partial class RandomGenerator : IRandomGenerator
     /// <returns>Returns random generated social security number.</returns>
     public string NextSSN(bool ssnFour = false, bool dashes = true)
     {
-        const string ssnPool = "1234567890";
-        string ssn, dash = dashes ? "-" : "";
-        if (!ssnFour)
-        {
-            ssn = NextString(3, ssnPool) + dash + NextString(2, ssnPool) +
-                  dash + NextString(4, ssnPool);
-        }
-        else
-        {
-            ssn = NextString(4, ssnPool);
-        }
-
-        return ssn;
+        return aa3.RandomExtensions.NextSSN(this, ssnFour, dashes);
     }
-    private static (string Name, string Abb) StreetSuffix() => StreetSuffixes.GetRandomItem();
+
 
     /// <summary>
     /// Generates a random street.
@@ -916,24 +682,16 @@ public partial class RandomGenerator : IRandomGenerator
     /// <param name="syllables">Number of syllables.</param>
     /// <param name="shortSuffix">True to use short suffix.</param>
     /// <returns>Returns random generated street name.</returns>
-    public string NextStreet(int syllables = 2, bool shortSuffix = true) => NextWord(syllablesCount: syllables).Capitalize() + " " + (shortSuffix
-            ? StreetSuffix().Name
-            : StreetSuffix().Abb);
+    public string NextStreet(int syllables = 2, bool shortSuffix = true) => aa3.RandomExtensions.NextStreet(this, syllables, shortSuffix);
     public string NextString(int howMany, string stringsToPick)
     {
-        BasicList<char> tempList = stringsToPick.ToBasicList();
-        StringBuilder thisStr = new();
-        for (int i = 0; i < howMany; i++)
-        {
-            thisStr.Append(tempList.GetRandomItem());
-        }
-        return thisStr.ToString();
+        return aa3.RandomExtensions.NextString(this, howMany, stringsToPick);
     }
     /// <summary>
     /// Returns a random twitter handle.
     /// </summary>
     /// <returns>Returns a random twitter handle.</returns>
-    public string NextTwitterName() => $"@{NextWord()}";
+    public string NextTwitterName() => aa3.RandomExtensions.NextTwitterName(this);
 
     /// <summary>
     /// Returns a random url.
@@ -946,10 +704,7 @@ public partial class RandomGenerator : IRandomGenerator
     /// <returns>Returns a random url.</returns>
     public string NextUrl(string protocol = "http", string? domain = null, string? domainPrefix = null, string? path = null, BasicList<string>? extensions = null)
     {
-        domain ??= NextDomainName();
-        var ext = extensions != null && extensions.Count != 0 ? "." + extensions.GetRandomItem() : "";
-        var dom = !string.IsNullOrEmpty(domainPrefix) ? domainPrefix + "." + domain : domain;
-        return $"{protocol}://{dom}/{path}{ext}";
+       return aa3.RandomExtensions.NextUrl(this, protocol, domain, domainPrefix, path, extensions);
     }
     /// <summary>
     /// Generates a random year.
@@ -959,11 +714,7 @@ public partial class RandomGenerator : IRandomGenerator
     /// <returns>Returns random generated year.</returns>
     public int NextYear(int min = 2000, int max = -1)
     {
-        if (max == -1)
-        {
-            max = DateTime.Now.Year;
-        }
-        return GetRandomNumber(max, min);
+        return aa3.RandomExtensions.NextYear(this, min, max);
     }
     /// <summary>
     /// Generates a random (U.S.) zip code.
@@ -972,20 +723,16 @@ public partial class RandomGenerator : IRandomGenerator
     /// <returns>Returns random generated U.S. zip code.</returns>
     public string NextZipCode(bool plusfour = true)
     {
-        var zip = GetDigits(5);
-        if (!plusfour)
-        {
-            return zip;
-        }
-        zip += "-";
-        string others = GetDigits(4);
-        zip += others;
-        return zip;
+        return aa3.RandomExtensions.NextZipCode(this, plusfour);
     }
     public void SetRandomSeed(int value) //this can come from anywhere.  saved data, etc.
     {
         _privateID = value; //so it can be saved and used for testing (to more easily replay the game).
         SetUpRandom();
         _dids = true; //this means that this will use the same value every time.  useful for debugging.
+    }
+    public long NextCreditCardNumber(string? cardType = null)
+    {
+        return aa3.RandomExtensions.NextCreditCardNumber(this, cardType);
     }
 }

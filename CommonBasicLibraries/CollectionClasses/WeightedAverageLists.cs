@@ -4,7 +4,7 @@ public class WeightedAverageLists<T>
 {
     private readonly Dictionary<T, int> _possibleList = [];
     private readonly Dictionary<int, int> _subList = [];
-    private IRandomGenerator? _rs;
+    private IRandomNumberList? _rs;
     public WeightedAverageLists<T> AddSubItem(int numberPossible, int weight)
     {
         _subList.Add(numberPossible, weight);

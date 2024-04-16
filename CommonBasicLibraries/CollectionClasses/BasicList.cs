@@ -64,7 +64,15 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public int Count => PrivateList.Count;
     bool ICollection<T>.IsReadOnly { get; }
-    internal IRandomGenerator? _rs;
+    public void SendRandoms(IRandomNumberList? rs)
+    {
+        _rs = rs;
+    }
+    private void CaptureRandoms()
+    {
+        _rs ??= RandomHelpers.GetRandomGenerator();
+    }
+    private IRandomNumberList? _rs;
     public void Add(T value)
     {
         PrivateList.Add(value);
@@ -247,8 +255,8 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public T GetRandomItem(bool removePrevious)
     {
-        _rs = RandomHelpers.GetRandomGenerator();
-        int ask1 = _rs.GetRandomNumber(PrivateList.Count);
+        CaptureRandoms();
+        int ask1 = _rs!.GetRandomNumber(PrivateList.Count);
         T output = PrivateList[ask1 - 1];
         if (removePrevious)
         {
@@ -256,15 +264,17 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
         }
         return output;
     }
-    public int GetSeed()
-    {
-        _rs = RandomHelpers.GetRandomGenerator();
-        return _rs!.GetSeed();
-    }
+    //hopefully i never run into a situation where i need the seed.
+
+    //public int GetSeed()
+    //{
+    //    CaptureRandoms();
+    //    return _rs!.GetSeed();
+    //}
     public IBasicList<T> GetRandomList(bool removePrevious, int howManyInList)
     {
-        _rs = RandomHelpers.GetRandomGenerator();
-        BasicList<int> rList = _rs.GenerateRandomList(PrivateList.Count, howManyInList);
+        CaptureRandoms();
+        BasicList<int> rList = _rs!.GenerateRandomList(PrivateList.Count, howManyInList);
         BasicList<T> output = [];
         foreach (var index in rList)
         {
@@ -279,8 +289,8 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public void RemoveRandomItems(int howMany)
     {
-        _rs = RandomHelpers.GetRandomGenerator();
-        BasicList<int> rList = _rs.GenerateRandomList(PrivateList.Count, howMany);
+        CaptureRandoms();
+        BasicList<int> rList = _rs!.GenerateRandomList(PrivateList.Count, howMany);
         List<T> list = [];
         foreach (int index in rList)
         {
@@ -452,8 +462,8 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
         {
             return;
         }
-        _rs = RandomHelpers.GetRandomGenerator();
-        BasicList<int> thisList = _rs.GenerateRandomList(PrivateList.Count);
+        CaptureRandoms();
+        BasicList<int> thisList = _rs!.GenerateRandomList(PrivateList.Count);
         List<T> rList = [];
         foreach (int index in thisList)
         {
@@ -464,8 +474,8 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection,
     }
     public void ShuffleList(int howMany)
     {
-        _rs = RandomHelpers.GetRandomGenerator();
-        BasicList<int> thisList = _rs.GenerateRandomList(PrivateList.Count, howMany);
+        CaptureRandoms();
+        BasicList<int> thisList = _rs!.GenerateRandomList(PrivateList.Count, howMany);
         List<T> rList = [];
         foreach (int index in thisList)
         {

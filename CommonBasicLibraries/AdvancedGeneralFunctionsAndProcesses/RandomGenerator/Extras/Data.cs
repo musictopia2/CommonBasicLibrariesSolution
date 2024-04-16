@@ -1,7 +1,8 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
 public partial class RandomGenerator
 {
-    internal static class Data
+    //decided to make the data public so i can use for future faker framework.
+    public static class Data
     {
         public const string Numbers = "0123456789";
         public const string CharsLower = "abcdefghijklmnopqrstuvwxyz";

@@ -2,8 +2,10 @@
 public class BasicRandomDataClass : IRandomData
 {
     //since this is default, does not need as long of a list.  since anybody can create their own list.
-    BasicList<string> IRandomData.FirstNamesMale =>
-    [
+
+
+    public static BasicList<string> MaleFirstNames =
+        [
         "James",
         "John",
         "Mike",
@@ -83,8 +85,10 @@ public class BasicRandomDataClass : IRandomData
         "Trevor",
         "Tom",
         "Mario"
-    ];
-    BasicList<string> IRandomData.FirstNamesFemale =>
+        ];
+    BasicList<string> IRandomData.FirstNamesMale => MaleFirstNames;
+    BasicList<string> IRandomData.FirstNamesFemale => FirstNamesFemale;
+    public static BasicList<string> FirstNamesFemale =
     [
         "Mary",
         "Elizabeth",
@@ -143,7 +147,8 @@ public class BasicRandomDataClass : IRandomData
         "Johanna",
         "Hester"
     ];
-    BasicList<string> IRandomData.LastNames =>
+    BasicList<string> IRandomData.LastNames => LastNames;
+    public static BasicList<string> LastNames =
     [
         "Smith",
         "Johnson",
@@ -365,7 +370,8 @@ public class BasicRandomDataClass : IRandomData
         "Pearson",
         "Douglas",
     ];
-    BasicList<string> IRandomData.ColorNames =>
+    BasicList<string> IRandomData.ColorNames => ColorNames;
+    public BasicList<string> ColorNames =
     [
         "Black",
         "Navy",
@@ -391,28 +397,15 @@ public class BasicRandomDataClass : IRandomData
         "Gold",
         "Yellow",
     ];
-
     BasicList<FullNameClass> IRandomData.FullNames
     {
         get
         {
             BasicList<FullNameClass> output = [new("Billy", "Hill")];
             return output; //this will be a true fake name for the full name.  this means if you don't provide a full name list, then it will always be the same name for this
-                           //you can always create your own list though.
+            //you can always create your own list though.
         }
     }
-    //CustomBasicList<string> IRandomData.CityNames => new()
-    //{
-    //    "Los Angeles",
-    //    "Tucson",
-    //    "Phoenix",
-    //    "San Diego",
-    //    "Austin",
-    //    "Las Cruces",
-    //    "Reno",
-    //    ""
-    //};
-
     BasicList<CityStateClass> IRandomData.Cities
     {
         get

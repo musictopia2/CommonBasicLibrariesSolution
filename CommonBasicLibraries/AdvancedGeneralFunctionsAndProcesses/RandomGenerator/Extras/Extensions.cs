@@ -1,5 +1,5 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
-internal static class Extensions
+public static class Extensions
 {
     /// <summary>
     /// Capitalize the first letter of a string.

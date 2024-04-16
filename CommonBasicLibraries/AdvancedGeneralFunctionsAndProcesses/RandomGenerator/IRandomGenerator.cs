@@ -1,11 +1,9 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
-public interface IRandomGenerator
+public interface IRandomGenerator : IRandomNumberList
 {
     string GenerateRandomPassword();
     string GenerateRandomPassword(RandomPasswordParameterClass thisPassword);
     int GetSeed();
-    int GetRandomNumber(int maxNumber, int startingPoint = 1, BasicList<int>? previousList = null);
-    BasicList<int> GenerateRandomList(int maxNumber, int howMany = -1, int startingNumber = 1, BasicList<int>? previousList = null, BasicList<int>? setToContinue = null, bool putBefore = false);
     BasicList<int> GenerateRandomNumberList(int maximumNumber, int howMany, int startingPoint = 0, int increments = 1);
     string NextString(int howMany, string stringsToPick);
     int NextAge(EnumAgeRanges types = EnumAgeRanges.Adult);

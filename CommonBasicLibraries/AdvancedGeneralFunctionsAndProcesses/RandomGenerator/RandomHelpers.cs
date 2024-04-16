@@ -1,9 +1,9 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
 public static class RandomHelpers
 {
-    private static IRandomGenerator? _rs;
+    private static IRandomNumberList? _rs;
     private static IRandomData? _data;
-    public static void SetUpRandom(IRandomGenerator random)
+    public static void SetUpRandom(IRandomNumberList random)
     {
         _rs = random;
     }
@@ -11,7 +11,7 @@ public static class RandomHelpers
     {
         _data = data; //it should be okay to be static.
     }
-    public static IRandomGenerator GetRandomGenerator()
+    public static IRandomNumberList GetRandomGenerator()
     {
         //has to set up the data now too.  if this is not provided, then default implementation will be provided.
         _data ??= new BasicRandomDataClass();
