@@ -93,7 +93,7 @@ public static class JsonToBson
         }
         return output;
     }
-    public static BObject GetJson(string text)
+    public static BObject GetBsonFromJson(string text)
     {
         using var doc = JsonDocument.Parse(text);
         var element = doc.RootElement;

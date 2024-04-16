@@ -4,40 +4,23 @@ public static class BsonToJson
     private static void WriteList(BObject payLoad, Utf8JsonWriter writer)
     {
         writer.WriteStartObject();
-        foreach (var item1 in payLoad.FullList)
+        foreach (var item in payLoad.FullList)
         {
-            if (item1.Value.ValueType == EnumBValueType.String)
+            if (item.Value.ValueType == EnumBValueType.String)
             {
-                writer.WriteString(item1.Key, item1.Value.StringValue);
+                writer.WriteString(item.Key, item.Value.StringValue);
             }
-            else if (item1.Value.ValueType == EnumBValueType.CustomList)
+            else if (item.Value.ValueType == EnumBValueType.CustomList)
             {
-                writer.WriteStartArray(item1.Key);
-                var list = (BCustomList)item1.Value;
-                foreach (var item2 in list.FullList)
-                {
-                    if (item2.ValueType == EnumBValueType.Object)
-                    {
-                        WriteList((BObject)item2, writer);
-                    }
-                    else if (item2.ValueType == EnumBValueType.String)
-                    {
-                        writer.WriteStringValue(item2.StringValue);
-                    }
-                    else
-                    {
-                        throw new CustomBasicException("Not Supported");
-                    }
-                }
-                writer.WriteEndArray();
+                FinishArray(item.Key, (BCustomList)item.Value, writer);
             }
-            else if (item1.Value.ValueType == EnumBValueType.Int32)
+            else if (item.Value.ValueType == EnumBValueType.Int32)
             {
-                writer.WriteNumber(item1.Key, item1.Value.Int32Value);
+                writer.WriteNumber(item.Key, item.Value.Int32Value);
             }
-            else if (item1.Value.ValueType == EnumBValueType.Boolean)
+            else if (item.Value.ValueType == EnumBValueType.Boolean)
             {
-                writer.WriteBoolean(item1.Key, item1.Value.BoolValue);
+                writer.WriteBoolean(item.Key, item.Value.BoolValue);
             }
             else
             {
@@ -46,35 +29,39 @@ public static class BsonToJson
         }
         writer.WriteEndObject();
     }
+    private static void FinishArray(string key, BCustomList list, Utf8JsonWriter writer)
+    {
+        writer.WriteStartArray(key);
+        foreach (var item in list.FullList)
+        {
+            if (item.ValueType == EnumBValueType.Object)
+            {
+                WriteList((BObject)item, writer);
+            }
+            else if (item.ValueType == EnumBValueType.String)
+            {
+                writer.WriteStringValue(item.StringValue);
+            }
+            else
+            {
+                throw new CustomBasicException("Not Supported");
+            }
+        }
+
+        writer.WriteEndArray();
+    }
     private static void WriteObject(string key, BObject payLoad, Utf8JsonWriter writer)
     {
         writer.WriteStartObject(key);
-        foreach (var item1 in payLoad.FullList)
+        foreach (var item in payLoad.FullList)
         {
-            if (item1.Value.ValueType == EnumBValueType.Object)
+            if (item.Value.ValueType == EnumBValueType.Object)
             {
-                WriteObject(item1.Key, (BObject)item1.Value, writer);
+                WriteObject(item.Key, (BObject)item.Value, writer);
             }
-            else if (item1.Value.ValueType == EnumBValueType.CustomList)
+            else if (item.Value.ValueType == EnumBValueType.CustomList)
             {
-                writer.WriteStartArray(item1.Key);
-                var list = (BCustomList)item1.Value;
-                foreach (var item2 in list.FullList)
-                {
-                    if (item2.ValueType == EnumBValueType.Object)
-                    {
-                        WriteList((BObject)item2, writer);
-                    }
-                    else if (item2.ValueType == EnumBValueType.String)
-                    {
-                        writer.WriteStringValue(item2.StringValue);
-                    }
-                    else
-                    {
-                        throw new CustomBasicException("Not Supported");
-                    }
-                }
-                writer.WriteEndArray();
+                FinishArray(item.Key, (BCustomList)item.Value, writer);
             }
             else
             {
@@ -100,6 +87,11 @@ public static class BsonToJson
             else if (item.Value.ValueType == EnumBValueType.String)
             {
                 writer.WriteString(item.Key, item.Value.StringValue);
+            }
+            else if (item.Value.ValueType == EnumBValueType.CustomList)
+            {
+                //try to do the list.  needed because sometimes i need a section of it.
+                FinishArray(item.Key, (BCustomList)item.Value, writer);
             }
             else
             {
