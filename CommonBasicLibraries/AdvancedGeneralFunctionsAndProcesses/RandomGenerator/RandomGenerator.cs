@@ -6,7 +6,7 @@ public partial class RandomGenerator : IRandomGenerator
     private readonly IRandomData _data;
     public RandomGenerator()
     {
-        _data = RandomHelpers.GetRandomDataClass;
+        _data = RandomHelpers.GetRandomDataClass();
     }
     /// <summary>
     /// Casing rules.

@@ -14,9 +14,13 @@ public static class RandomHelpers
     public static IRandomNumberList GetRandomGenerator()
     {
         //has to set up the data now too.  if this is not provided, then default implementation will be provided.
-        _data ??= new BasicRandomDataClass();
+        //will risk not getting the data class until needed.
         _rs ??= new RandomGenerator();
         return _rs;
     }
-    internal static IRandomData GetRandomDataClass => _data!;
+    public static IRandomData GetRandomDataClass()
+    {
+        _data ??= new BasicRandomDataClass();
+        return _data;
+    }
 }
