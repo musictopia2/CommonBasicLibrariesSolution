@@ -195,7 +195,7 @@ public static class RandomExtensions
     /// </summary>
     /// <returns>Returns a random twitter handle.</returns>
     public static string NextTwitterName(this IRandomNumberList random) => $"@{random.NextWord()}";
-    public static string NextHashtag(IRandomNumberList random) => $"#{random.NextWord()}";
+    public static string NextHashtag(this IRandomNumberList random) => $"#{random.NextWord()}";
     public static string NextDomainName(this IRandomNumberList random, string? tld = null) => NextWord(random) + "." + (tld ?? NextTopLevelDomain(random));
     public static string NextTopLevelDomain(this IRandomNumberList random)
     {
