@@ -74,253 +74,25 @@ public partial class RandomGenerator : IRandomGenerator
                 break;
         }
     }
-    private static int PrivateHowManyPossible(int maxNumber, int startingNumber, int previousCount, int setCount)
-    {
-        int count = maxNumber - (startingNumber - 1);
-        count -= previousCount;
-        count -= setCount;
-        return count;
-    }
     internal int Next(int max)
     {
+        DoRandomize();
         return (int)Math.Floor(_r!() * (max));
     }
     internal int Next(int min, int max)
     {
+        DoRandomize();
         return (int)Math.Floor(_r!() * (max - min) + min);
     }
     public BasicList<int> GenerateRandomList(int maxNumber, int howMany = -1, int startingNumber = 1, BasicList<int>? previousList = null, BasicList<int>? setToContinue = null, bool putBefore = false)
     {
         DoRandomize();
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(howMany, maxNumber);
-        if (maxNumber == 0)
-        {
-            throw new ArgumentNullException(nameof(maxNumber));
-        }
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(startingNumber, maxNumber);
-        bool isMax = false;
-        if (howMany == -1)
-        {
-            howMany = maxNumber;
-            isMax = true;
-        }
-        int adjustedMany = howMany;
-        adjustedMany += startingNumber - 1;
-        if (previousList != null && previousList.Exists(x => x > maxNumber || x <= startingNumber - 1))
-        {
-            throw new ArgumentOutOfRangeException(nameof(previousList));
-        }
-        if (setToContinue != null && setToContinue.Exists(x => x > maxNumber || x <= startingNumber - 1))
-        {
-            throw new ArgumentException(nameof(setToContinue));
-        }
-        int oldC;
-        oldC = startingNumber - 1;
-        int counts;
-        BasicList<int> oldList = [];
-        int preC = 0;
-        int setC = 0;
-        if (previousList != null)
-        {
-            if (previousList.Count == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(previousList), "If you sent previouslist, must contain at least one item");
-            }
-            counts = previousList.Distinct().Count();
-            if (counts != previousList.Count)
-            {
-                throw new ArgumentException("Previous List Had Duplicate Numbers", nameof(previousList));
-            }
-            oldC += previousList.Count;
-            adjustedMany += previousList.Count;
-            oldList.AddRange(previousList);
-            preC = previousList.Count;
-        }
-        if (setToContinue != null)
-        {
-            if (setToContinue.Count == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(setToContinue), "If you sent settocontinue, must contain at least one item");
-            }
-            counts = setToContinue.Distinct().Count();
-            if (counts != setToContinue.Count)
-            {
-                throw new ArgumentException("Set List Had Duplicate Numbers", nameof(setToContinue));
-            }
-            adjustedMany += setToContinue.Count;
-            oldList.AddRange(setToContinue);
-            oldC += setToContinue.Count;
-            setC = setToContinue.Count;
-        }
-        if (setToContinue != null && previousList != null)
-        {
-            counts = oldList.Distinct().Count();
-            if (counts != previousList.Count + setToContinue.Count)
-            {
-                throw new CustomBasicException("When combining the set list and previous list, there was duplicates.  This means can't do another list of non duplicate numbers");
-            }
-        }
-        bool isSingle = false;
-        int total;
-        total = PrivateHowManyPossible(maxNumber, startingNumber, preC, setC);
-        if (isMax == false && total < howMany)
-        {
-            throw new Exception("Since you are not choosing match, not reconciling.  Will cause a never ending loop or you get less than expected");
-        }
-        if (total == 1)
-        {
-            isSingle = true;
-        }
-        if (total < 1)
-        {
-            throw new Exception("Does not reconcile to randomize.   Will result in a never ending loop");
-        }
-        if (isSingle == true)
-        {
-            BasicList<int> tempList = Enumerable.Range(startingNumber, maxNumber - startingNumber + 1).ToBasicList();
-            if (oldList.Count > tempList.Count)
-            {
-                throw new Exception("Unable to get the one number remaining.  Something is corrupted.  Rethink");
-            }
-            if (oldList.Count == 0)
-            {
-                return [startingNumber];
-            }
-            int possibleItem = 0;
-            foreach (int index in tempList)
-            {
-                if (oldList.Contains(index) == false)
-                {
-                    if (possibleItem > 0)
-                    {
-                        throw new CustomBasicException("Getting single item failed.  Rethink");
-                    }
-                    possibleItem = index;
-                }
-            }
-            if (possibleItem == 0)
-            {
-                throw new CustomBasicException("The single item not found");
-            }
-            if (setToContinue == null)
-            {
-                return [possibleItem]; //should not bother doing the random items because there is only one.
-            }
-            BasicList<int> finalList = [];
-            if (putBefore == true)
-            {
-                finalList.AddRange(setToContinue);
-                finalList.Add(possibleItem);
-            }
-            else
-            {
-                finalList.Add(possibleItem);
-                finalList.AddRange(setToContinue);
-            }
-            return finalList;
-        }
-        HashSet<int> rndIndexes = [];
-        for (int i = 1; i <= startingNumber - 1; i++)
-        {
-            rndIndexes.Add(i);
-        }
-        bool rets;
-        if (previousList != null)
-        {
-            foreach (int index in previousList)
-            {
-                rets = rndIndexes.Add(index);
-                if (rets == false)
-                {
-                    throw new Exception("Previous List Failed.  Rethink");
-                }
-            }
-        }
-        if (setToContinue != null)
-        {
-            foreach (int index in setToContinue)
-            {
-                rets = rndIndexes.Add(index);
-                if (rets == false)
-                {
-                    throw new Exception("Set To Continue Failed.  Rethink");
-                }
-            }
-        }
-        while (rndIndexes.Count != adjustedMany)
-        {
-            int index = Next(maxNumber);
-            rndIndexes.Add(index + 1);
-        }
-        for (int i = 1; i <= startingNumber - 1; i++)
-        {
-            rndIndexes.Remove(i);
-        }
-        if (previousList != null)
-        {
-            foreach (int index in previousList)
-            {
-                rndIndexes.Remove(index);
-            }
-        }
-        BasicList<int> thisList = rndIndexes.ToBasicList();
-        if (setToContinue != null && putBefore == false)
-        {
-            foreach (int index in setToContinue)
-            {
-                thisList.RemoveSpecificItem(index);
-                thisList.Add(index);
-            }
-        }
-        return thisList;
+        return aa3.RandomExtensions.GenerateRandomList(this, maxNumber, howMany, startingNumber, previousList, setToContinue, putBefore);
     }
     public BasicList<int> GenerateRandomNumberList(int maximumNumber, int howMany, int startingPoint = 0, int increments = 1)
     {
-        BasicList<int> firstList;
-        if (increments <= 1)
-        {
-            increments = 1;
-        }
-        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(startingPoint, maximumNumber);
-        firstList = GetPossibleIntegerList(startingPoint, maximumNumber, increments);
-        if (firstList.Count < 2)
-        {
-            throw new ArgumentOutOfRangeException("MaximumNumber");
-        }
         DoRandomize();
-        BasicList<int> finalList = [];
-        int x;
-        var loopTo = howMany;
-        for (x = 1; x <= loopTo; x++)
-        {
-            // can have repeating numbers
-            var ask1 = Next(firstList.Count);
-            finalList.Add(firstList[ask1]);
-        }
-        return finalList;
-    }
-    private static BasicList<int> GetPossibleIntegerList(int minValue, int maximumValue, int increments)
-    {
-        BasicList<int> newList =
-        [
-            minValue
-        ];
-        int upTo;
-        upTo = minValue;
-        do
-        {
-            upTo += increments;
-            if (upTo >= maximumValue)
-            {
-                newList.Add(maximumValue);
-                return newList;
-            }
-            else
-            {
-                newList.Add(upTo);
-            }
-        }
-        while (true);
+        return aa3.RandomExtensions.GenerateRandomNumberList(this, maximumNumber, howMany, startingPoint, increments);
     }
     public string GenerateRandomPassword()
     {
@@ -330,121 +102,14 @@ public partial class RandomGenerator : IRandomGenerator
     public string GenerateRandomPassword(RandomPasswordParameterClass thisPassword)
     {
         DoRandomize();
-        BasicList<int> tempResults = [];
-        int x;
-        int picked;
-        if (thisPassword.HowManyNumbers > 0)
-        {
-            var numberList = Enumerable.Range(48, 10).ToList();
-            if (thisPassword.EliminateSimiliarCharacters == true)
-            {
-                numberList.Remove(48); // because that is a 0
-                numberList.Remove(49); // because 1 is close to l or I
-            }
-
-            var loopTo = thisPassword.HowManyNumbers;
-            for (x = 1; x <= loopTo; x++)
-            {
-                picked = Next(numberList.Count);
-                tempResults.Add(numberList[picked]); // number picked
-            }
-        }
-        if (thisPassword.UpperCases > 0)
-        {
-            var upperList = Enumerable.Range(65, 26).ToList();
-            if (thisPassword.EliminateSimiliarCharacters == true)
-            {
-                upperList.Remove(79); // O
-                upperList.Remove(73); // I
-            }
-            var loopTo1 = thisPassword.UpperCases;
-            for (x = 1; x <= loopTo1; x++)
-            {
-                picked = Next(upperList.Count);
-                tempResults.Add(upperList[picked]);
-            }
-        }
-        if (thisPassword.LowerCases > 0)
-        {
-            var lowerList = Enumerable.Range(97, 26).ToList();
-            if (thisPassword.EliminateSimiliarCharacters == true)
-            {
-                lowerList.Remove(111);
-                lowerList.Remove(108); // because l is too close to 1
-                lowerList.Remove(105);
-            }
-            var loopTo2 = thisPassword.LowerCases;
-            for (x = 1; x <= loopTo2; x++)
-            {
-                picked = Next(lowerList.Count);
-                tempResults.Add(lowerList[picked]);
-            }
-        }
-        if (thisPassword.HowManySymbols > 0)
-        {
-            var loopTo3 = thisPassword.HowManySymbols;
-            for (x = 1; x <= loopTo3; x++)
-            {
-                picked = Next(thisPassword.SymbolList.Count);
-                string thisSym = thisPassword.SymbolList[picked];
-                picked = VBCompat.AscW(thisSym);
-                tempResults.Add(picked); // i think
-            }
-        }
-        tempResults.ShuffleList(); //i now have this new list.  i might as well use this especially if i need random functions.
-        string resultString = "";
-        foreach (var item in tempResults)
-        {
-            resultString += VBCompat.ChrW(item);
-        }
-        return resultString;
+        return aa3.RandomExtensions.Password(this, thisPassword);
     }
     public int GetRandomNumber(int maxNumber, int startingPoint = 1, BasicList<int>? previousList = null)
     {
-        if (previousList != null)
-        {
-            if (previousList.Count == 0)
-            {
-                previousList = null;
-            }
-        }
         DoRandomize();
-        int randNum;
-        if (startingPoint > maxNumber)
-        {
-            ShowError();
-        }
-        if (previousList == null)
-        {
-            randNum = Next(startingPoint, maxNumber + 1); //plus 1 was worse.  trying -1
-            return randNum;
-        }
-        HashSet<int> rndIndexes = previousList.Where(a => a >= startingPoint && a <= maxNumber).Distinct().ToHashSet();
-        int howManyPossible = maxNumber - startingPoint + 1 - rndIndexes.Count;
-        if (howManyPossible < 1)
-        {
-            ShowError();
-        }
-        for (int i = 1; i <= startingPoint - 1; i++)
-        {
-            rndIndexes.Add(i);
-        }
-        bool rets;
-        do
-        {
-            int index = Next(maxNumber);
-            rets = rndIndexes.Add(index + 1);
-            if (rets == true)
-            {
-                return index + 1; //because 0 based
-            }
-
-        } while (true);
+        return aa3.RandomExtensions.GetRandomNumber(this, maxNumber, startingPoint, previousList);
     }
-    private static void ShowError()
-    {
-        throw new CustomBasicException("Random number could not be generated, range to narrow");
-    }
+    
     public int GetSeed()
     {
         return _privateID;
@@ -734,5 +399,13 @@ public partial class RandomGenerator : IRandomGenerator
     public long NextCreditCardNumber(string? cardType = null)
     {
         return aa3.RandomExtensions.NextCreditCardNumber(this, cardType);
+    }
+    int IRandomNumberList.Next(int max)
+    {
+        return Next(max);
+    }
+    int IRandomNumberList.Next(int min, int max)
+    {
+        return Next(min, max);
     }
 }
