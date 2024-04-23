@@ -406,7 +406,7 @@ public class BasicRandomDataClass : IRandomData
             //you can always create your own list though.
         }
     }
-    BasicList<CityStateClass> IRandomData.Cities
+    public static BasicList<CityStateClass> Cities
     {
         get
         {
@@ -424,6 +424,13 @@ public class BasicRandomDataClass : IRandomData
                 new("Detroit", "MI"),
             ];
             return output;
+        }
+    }
+    BasicList<CityStateClass> IRandomData.Cities
+    {
+        get
+        {
+            return Cities;
         }
     }
 }
