@@ -1,4 +1,6 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
+﻿using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.RandomGenerator;
+
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 //for now i am unable to have a simplewebpage class.  if needed, rethinking is required.  since i am using something declared as obsolete.
 public abstract class CustomWebAPIClient
 {
@@ -31,6 +33,17 @@ public abstract class CustomWebAPIClient
         {
             throw new CustomBasicException(errorMessage);
         }
+    }
+    protected async Task<HttpResponseMessage> PostResults<T>(string extras, T data,  string errorMessage)
+    {
+        //i think its best to just return the httpresponse.  then the overrided version can use an extension to get the object needed.
+        Uri finalAddress = new(BaseAddress!, extras);
+        var response = await Client.PostJsonAsync(finalAddress, data);
+        if (response.IsSuccessStatusCode == false)
+        {
+            throw new CustomBasicException(errorMessage);
+        }
+        return response;
     }
     protected async Task<T> GetResults<T>(string extras, string errorMessage)
     {
