@@ -8,16 +8,18 @@ public abstract class CustomWebAPIClient
     /// hotelservice/api/
     /// </summary>
     protected abstract string ServicePath { get; }
+    //static string IWebAPIKey.Key => KeyNotFoundException;
+    //protected abstract string Key { get; }
     protected Uri? BaseAddress;
     /// <summary>
     /// This is the key to get out to figure out the base url.
     /// </summary>
-    protected abstract string Key { get; }
+    //protected abstract string Key { get; }
     protected HttpClient Client;
-    public CustomWebAPIClient(IConfiguration config, HttpClient client)
+    public CustomWebAPIClient(IConfiguration config, HttpClient client, string key)
     {
         Client = client;
-        string firstPart = config.GetValue<string>(Key) ?? throw new CustomBasicException("Failed to get key from appsettings.  Use appsettings instead of ISimpleConfig");
+        string firstPart = config.GetValue<string>(key) ?? throw new CustomBasicException("Failed to get key from appsettings.  Use appsettings instead of ISimpleConfig");
         Uri secondPart = new(firstPart);
         BaseAddress = new(secondPart, ServicePath);
     }
