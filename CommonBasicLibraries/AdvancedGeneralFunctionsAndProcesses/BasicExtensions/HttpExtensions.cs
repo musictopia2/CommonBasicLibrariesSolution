@@ -33,12 +33,8 @@ public static class HttpExtensions
         StringContent content = await GetContentAsync(value);
         return await client.PutAsync(uri, content);
     }
-    private static async Task<T> GetJsonAsync<T>(this HttpResponseMessage response, string errorMessage = "Failed to get async json data.  Rethink")
+    public static async Task<T> GetJsonAsync<T>(this HttpResponseMessage response)
     {
-        if (response.IsSuccessStatusCode == false)
-        {
-            throw new CustomBasicException(errorMessage);
-        }
         string res = await response.Content.ReadAsStringAsync();
         response.Dispose();
         try
@@ -49,6 +45,14 @@ public static class HttpExtensions
         {
             throw new CustomBasicException($"Failed to get the json.  Error was {ex.Message}");
         }
+    }
+    private static async Task<T> GetJsonAsync<T>(this HttpResponseMessage response, string errorMessage = "Failed to get async json data.  Rethink")
+    {
+        if (response.IsSuccessStatusCode == false)
+        {
+            throw new CustomBasicException(errorMessage);
+        }
+        return await response.GetJsonAsync<T>();
     }
     public static async Task<T> GetJsonAsync<T>(this HttpClient client, Uri uri, string errorMessage = "Failed to get async json data.  Rethink")
     {
