@@ -1,4 +1,6 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
+﻿using System;
+
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class HttpExtensions
 {
     public static async Task SaveDownloadFileAsync(this HttpClient client, string requesturi, string path)
@@ -32,6 +34,16 @@ public static class HttpExtensions
     {
         StringContent content = await GetContentAsync(value);
         return await client.PutAsync(uri, content);
+    }
+    public static async Task<HttpResponseMessage> PatchJsonAsync<T>(this HttpClient client, string uri, T value)
+    {
+        StringContent content = await GetContentAsync(value);
+        return await client.PatchAsync(uri, content);
+    }
+    public static async Task<HttpResponseMessage> PatchJsonAsync<T>(this HttpClient client, Uri uri, T value)
+    {
+        StringContent content = await GetContentAsync(value);
+        return await client.PatchAsync(uri, content);
     }
     public static async Task<T> GetJsonAsync<T>(this HttpResponseMessage response)
     {

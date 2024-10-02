@@ -1,6 +1,4 @@
-﻿using static CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.RandomGenerator;
-
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 //for now i am unable to have a simplewebpage class.  if needed, rethinking is required.  since i am using something declared as obsolete.
 public abstract class CustomWebAPIClient
 {
@@ -34,7 +32,7 @@ public abstract class CustomWebAPIClient
             throw new CustomBasicException(errorMessage);
         }
     }
-    protected async Task<HttpResponseMessage> PostResults<T>(string extras, T data,  string errorMessage)
+    protected async Task<HttpResponseMessage> PostResults<T>(string extras, T data, string errorMessage)
     {
         //i think its best to just return the httpresponse.  then the overrided version can use an extension to get the object needed.
         Uri finalAddress = new(BaseAddress!, extras);
@@ -45,6 +43,28 @@ public abstract class CustomWebAPIClient
         }
         return response;
     }
+    protected async Task<HttpResponseMessage> PatchResults(string extras, string errorMessage)
+    {
+        //you may have extras but you may not.
+        Uri finalAddress = new(BaseAddress!, extras);
+        var response = await Client.PatchAsync(finalAddress, null);
+        if (response.IsSuccessStatusCode == false)
+        {
+            throw new CustomBasicException(errorMessage);
+        }
+        return response;
+    }
+    protected async Task<HttpResponseMessage> PatchResults<T>(string extras, T data, string errorMessage)
+    {
+        Uri finalAddress = new(BaseAddress!, extras);
+        var response = await Client.PatchJsonAsync(finalAddress, data);
+        if (response.IsSuccessStatusCode == false)
+        {
+            throw new CustomBasicException(errorMessage);
+        }
+        return response;
+    }
+    //if i ever have a user case to delete, then will have another verb here for delete to support that use case.
     protected async Task<T> GetResults<T>(string extras, string errorMessage)
     {
         Uri finalAddress = new(BaseAddress!, extras);
