@@ -47,4 +47,9 @@ public static class BasicDataFunctions
         ConfigurationBuilder build = new();
         Configuration = build.Build();
     }
+    //this allows me to add advanced stuff to standard iconfiguration.  since sometimes we need to use the standard but add advanced stuff to it.
+    public static void SetupAdvancedIConfiguration(ConfigurationManager config, Action<IAdvancedConfiguration> options)
+    {
+        config.AddInMemoryCollection(options);
+    }
 }
