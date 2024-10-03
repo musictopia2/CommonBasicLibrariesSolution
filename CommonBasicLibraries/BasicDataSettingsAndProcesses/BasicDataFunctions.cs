@@ -51,5 +51,6 @@ public static class BasicDataFunctions
     public static void SetupAdvancedIConfiguration(ConfigurationManager config, Action<IAdvancedConfiguration> options)
     {
         config.AddInMemoryCollection(options);
+        Configuration = config; //i think.
     }
 }
