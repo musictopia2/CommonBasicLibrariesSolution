@@ -5,6 +5,15 @@ public class WeightedAverageLists<T>
     private readonly Dictionary<T, int> _possibleList = [];
     private readonly Dictionary<int, int> _subList = [];
     private IRandomNumberList? _rs;
+    //needs the possibility of another process like a testing framework to send the randoms.
+    public void SendRandoms(IRandomNumberList? rs)
+    {
+        _rs = rs;
+    }
+    private void CaptureRandoms()
+    {
+        _rs ??= RandomHelpers.GetRandomGenerator();
+    }
     public WeightedAverageLists<T> AddSubItem(int numberPossible, int weight)
     {
         _subList.Add(numberPossible, weight);
@@ -12,7 +21,6 @@ public class WeightedAverageLists<T>
     }
     public BasicList<int> GetSubList(bool needsToClear = true)
     {
-        _rs = RandomHelpers.GetRandomGenerator();
         if (_subList.Count == 0)
         {
             throw new CustomBasicException("You never used the sublist");
@@ -56,19 +64,19 @@ public class WeightedAverageLists<T>
     }
     public WeightedAverageLists<T> AddWeightedItem(T thisItem, int lowRange, int highRange)
     {
-        _rs = RandomHelpers.GetRandomGenerator();
-        int Chosen = _rs.GetRandomNumber(highRange, lowRange);
-        return AddWeightedItem(thisItem, Chosen);
+        CaptureRandoms();
+        int chosen = _rs!.GetRandomNumber(highRange, lowRange);
+        return AddWeightedItem(thisItem, chosen);
     }
     public WeightedAverageLists<T> AddWeightedItem(T thisItem, BasicList<int> possList)
     {
-        _rs = RandomHelpers.GetRandomGenerator();
+        CaptureRandoms();
+        possList.SendRandoms(_rs); //whatever is here will be transferred
         int chosen = possList.GetRandomItem();
         return AddWeightedItem(thisItem, chosen);
     }
     public BasicList<T> GetWeightedList()
     {
-        _rs = RandomHelpers.GetRandomGenerator();
         BasicList<T> output = [];
         foreach (var thisItem in _possibleList.Keys)
         {
@@ -78,6 +86,7 @@ public class WeightedAverageLists<T>
                 output.Add(thisItem);
             });
         }
+        output.SendRandoms(_rs); //i think that the randoms here should be sent to the other.
         return output;
     }
     public int GetExpectedCount => _possibleList.Sum(items => items.Value);
