@@ -654,7 +654,7 @@ public static partial class Strings
     {
         using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         byte[] bytes = new byte[fileStream.Length - 1 + 1];
-        fileStream.Read(bytes, 0, (int)fileStream.Length);
+        fileStream.ReadExactly(bytes, 0, (int)fileStream.Length);
         fileStream.Close();
         return Convert.ToBase64String(bytes);
     }
@@ -662,7 +662,7 @@ public static partial class Strings
     {
         using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         byte[] Bytes = new byte[fileStream.Length - 1 + 1];
-        await fileStream.ReadAsync(Bytes.AsMemory(0, (int)fileStream.Length));
+        await fileStream.ReadExactlyAsync(Bytes.AsMemory(0, (int)fileStream.Length));
         fileStream.Close();
         return Convert.ToBase64String(Bytes);
     }

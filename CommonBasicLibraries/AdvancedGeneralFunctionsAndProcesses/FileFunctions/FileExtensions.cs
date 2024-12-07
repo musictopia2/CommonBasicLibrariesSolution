@@ -78,7 +78,7 @@ public static class FileExtensions
     {
         using Stream stream = assembly.ResourcesGetStream(fileName);
         byte[] bb = new byte[stream.Length - 1 + 1];
-        stream.Read(bb, 0, (int)stream.Length);
+        stream.ReadExactly(bb, 0, (int)stream.Length);
         stream.Close();
         return Convert.ToBase64String(bb);
     }
@@ -86,7 +86,7 @@ public static class FileExtensions
     {
         using var stream = await GetStreamAsync(assembly, fileName);
         byte[] bb = new byte[stream!.Length - 1 + 1];
-        await stream.ReadAsync(bb.AsMemory(0, (int)stream.Length));
+        await stream.ReadExactlyAsync(bb.AsMemory(0, (int)stream.Length));
         stream.Close();
         return Convert.ToBase64String(bb);
     }
