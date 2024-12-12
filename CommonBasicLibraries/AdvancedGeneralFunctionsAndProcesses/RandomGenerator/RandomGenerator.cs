@@ -1,4 +1,5 @@
-﻿using aa3 = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.Advanced;
+﻿using System.Threading;
+using aa3 = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator.Advanced;
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.RandomGenerator;
 public partial class RandomGenerator : IRandomGenerator
 {
@@ -28,7 +29,7 @@ public partial class RandomGenerator : IRandomGenerator
         /// </summary>
         MixedCase
     }
-    private readonly object _thisObj = new(); //so it has to lock when initializing.
+    private readonly Lock _thisObj = new(); //so it has to lock when initializing.
     private bool _dids = false;
     private int _privateID;
     private Func<double>? _r;

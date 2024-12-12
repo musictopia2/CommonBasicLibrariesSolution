@@ -3,7 +3,6 @@ public class WeightedAverageLists<T>
     where T : notnull
 {
     private readonly Dictionary<T, int> _possibleList = [];
-    private readonly Dictionary<int, int> _subList = [];
     private IRandomNumberList? _rs;
     //needs the possibility of another process like a testing framework to send the randoms.
     public void SendRandoms(IRandomNumberList? rs)
@@ -14,44 +13,9 @@ public class WeightedAverageLists<T>
     {
         _rs ??= RandomHelpers.GetRandomGenerator();
     }
-    public WeightedAverageLists<T> AddSubItem(int numberPossible, int weight)
+    public void Clear()
     {
-        _subList.Add(numberPossible, weight);
-        return this;
-    }
-    public BasicList<int> GetSubList(bool needsToClear = true)
-    {
-        if (_subList.Count == 0)
-        {
-            throw new CustomBasicException("You never used the sublist");
-        }
-        BasicList<int> output = [];
-        foreach (var item in _subList.Keys)
-        {
-            int howMany = _subList[item];
-            howMany.Times(items => output.Add(item));
-        }
-        if (needsToClear == true)
-        {
-            _subList.Clear(); //so i can use next time.
-        }
-        return output;
-    }
-    public void FillExtraSubItems(int lowRange, int highRange)
-    {
-        for (int i = lowRange; i <= highRange; i++)
-        {
-            if (_subList.ContainsKey(i) == false)
-            {
-                _subList.Add(i, 1);
-            }
-        }
-    }
-    public int GetSubCount => GetSubList(false).Count;
-    public WeightedAverageLists<T> AddWeightedItem(T thisItem)
-    {
-        var output = GetSubList();
-        return AddWeightedItem(thisItem, output);
+        _possibleList.Clear();
     }
     public WeightedAverageLists<T> AddWeightedItem(T thisItem, int weight)
     {
@@ -75,19 +39,65 @@ public class WeightedAverageLists<T>
         int chosen = possList.GetRandomItem();
         return AddWeightedItem(thisItem, chosen);
     }
-    public BasicList<T> GetWeightedList()
+    public WeightedAverageLists<T> AddWeightedItemWithChance(T thisItem, int notPassingWeight, int firstWeight, int desiredWeight)
     {
-        BasicList<T> output = [];
-        foreach (var thisItem in _possibleList.Keys)
+        CaptureRandoms();
+        int totalWeight = notPassingWeight + firstWeight;
+        int ask = _rs!.GetRandomNumber(totalWeight);
+        if (ask <= notPassingWeight)
         {
-            int howMany = _possibleList[thisItem];
-            howMany.Times(Items =>
-            {
-                output.Add(thisItem);
-            });
+            return this;
         }
-        output.SendRandoms(_rs); //i think that the randoms here should be sent to the other.
-        return output;
+        return AddWeightedItem(thisItem, desiredWeight);
+    }
+    public T GetRandomWeightedItem()
+    {
+        if (_possibleList.Count == 0)
+        {
+            throw new CustomBasicException("Cannot select from an empty list");
+        }
+        CaptureRandoms();
+        int totalWeight = _possibleList.Values.Sum();
+        int randomValue = _rs!.GetRandomNumber(totalWeight);
+        int cumulativeWeight = 0;
+        // Iterate over items and find the one that matches the random value
+        foreach (var item in _possibleList)
+        {
+            cumulativeWeight += item.Value;
+
+            // If the random value falls within the cumulative weight of this item, select it
+            if (randomValue <= cumulativeWeight)
+            {
+                T key = item.Key;
+                return key;
+                    
+                //return new List<T> { item.Key };  // Return a list with the selected item
+            }
+        }
+        throw new CustomBasicException("Nothing selected");
     }
     public int GetExpectedCount => _possibleList.Sum(items => items.Value);
+    // Optionally, if the caller wants to see multiple items picked
+    public BasicList<T> GetMultipleWeightedItems(int count)
+    {
+        BasicList<T> selectedItems = [];
+        for (int i = 0; i < count; i++)
+        {
+            selectedItems.Add(GetRandomWeightedItem());  // Assumes list is non-empty after selection
+        }
+        return selectedItems;
+    }
+
+
+    public BasicList<T> GetMultipleItemsWithDynamicWeights(Action<WeightedAverageLists<T>> dynamicAction, int count)
+    {
+        BasicList<T> output = [];
+        count.Times(x =>
+        {
+            _possibleList.Clear();  // Clear previous weights
+            dynamicAction.Invoke(this);  // Dynamically add weighted items
+            output.Add(GetRandomWeightedItem());  // Select the weighted item based on the current conditions
+        });
+        return output;
+    }
 }
