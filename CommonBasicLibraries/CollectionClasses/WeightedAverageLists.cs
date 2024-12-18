@@ -17,6 +17,18 @@ public class WeightedAverageLists<T>
     {
         _possibleList.Clear();
     }
+    public WeightedAverageLists<T> AddWeightedItem(BasicList<T> list, int weight)
+    {
+        if (weight == 0)
+        {
+            return this; //can't be chosen because the weight is 0
+        }
+        foreach (var item in list)
+        {
+            _possibleList.Add(item, weight);
+        }
+        return this; //so i have fluency.
+    }
     public WeightedAverageLists<T> AddWeightedItem(T thisItem, int weight)
     {
         if (weight == 0)
