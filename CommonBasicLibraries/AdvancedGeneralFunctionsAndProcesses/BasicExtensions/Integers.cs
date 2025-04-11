@@ -48,7 +48,7 @@ public static class Integers
         {
             return integerWords; //that always worked so no problem there.
         }
-        string fractionalWords = $"and {fractionalPart}/100 dollars";
+        string fractionalWords = $"and {fractionalPart}/100";
         return $"{integerWords} {fractionalWords}";
     }
     public static string ConvertToIntegerWords(this int value)
