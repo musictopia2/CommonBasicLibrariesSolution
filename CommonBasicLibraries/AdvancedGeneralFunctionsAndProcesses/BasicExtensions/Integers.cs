@@ -68,7 +68,7 @@ public static class Integers
         }
         if (value < 100000)
         {
-            return ConvertToIntegerWords(value / 1000) + " thousand "
+            return ConvertToIntegerWords(value / 1000) + " thousand"
             + ((value % 1000 > 0) ? " " + ConvertToIntegerWords(value % 1000) : "");
         }
         throw new CustomBasicException("This only supports up to 100,000.  If you need hundred thousands, then rethink");
