@@ -37,6 +37,20 @@ public static class Integers
         "Eighty",
         "Ninety"
     ];
+    public static string ConvertToDecimalWords(this decimal value)
+    {
+        // Split the decimal into integer and fractional parts
+        int integerPart = (int)value;
+        int fractionalPart = (int)((value - integerPart) * 100); // Get the cents as an integer
+        // Convert the integer part to words
+        string integerWords = integerPart.ConvertToIntegerWords();
+        if (fractionalPart == 0)
+        {
+            return integerWords; //that always worked so no problem there.
+        }
+        string fractionalWords = $"and {fractionalPart}/100 dollars";
+        return $"{integerWords} {fractionalWords}";
+    }
     public static string ConvertToIntegerWords(this int value)
     {
         if (value < 20)
