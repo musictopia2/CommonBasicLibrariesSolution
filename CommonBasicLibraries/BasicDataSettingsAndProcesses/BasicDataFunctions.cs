@@ -53,4 +53,6 @@ public static class BasicDataFunctions
         config.AddInMemoryCollection(options);
         Configuration = config; //i think.
     }
+    public static string OcrDataPath { get; set; } = "";
+    public static string OcrLanguage { get; set; } = "eng";
 }
