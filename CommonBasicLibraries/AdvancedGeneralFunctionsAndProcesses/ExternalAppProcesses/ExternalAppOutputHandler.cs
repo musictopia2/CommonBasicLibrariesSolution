@@ -14,7 +14,11 @@ public static class ExternalAppOutputHandler
         Console.WriteLine($"[RESULT] An error occurred: {errorMessage}");
         Environment.Exit(1); // Indicates failure
     }
-
+    public static void SendError(Exception ex)
+    {
+        Console.WriteLine($"[RESULT] An error occurred: {ex.Message}");
+        Environment.Exit(1); // Indicates failure
+    }
     // Send a test result to simulate processing
     public static void SendBlankMessage()
     {
