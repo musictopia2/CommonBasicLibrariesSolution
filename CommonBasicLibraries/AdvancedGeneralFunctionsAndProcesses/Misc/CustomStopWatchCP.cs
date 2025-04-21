@@ -1,5 +1,4 @@
-﻿using System.Timers; //not common enough to put under globals
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
 public class CustomStopWatchCP
 {
     private readonly Stopwatch _thisStop;
@@ -8,7 +7,7 @@ public class CustomStopWatchCP
     public event TimeUpEventHandler? TimeUp;
     public delegate void TimeUpEventHandler();
     public event ProgressEventHandler? Progress;
-    private readonly Timer _timer;
+    private readonly tta1.Timer _timer;
     public delegate void ProgressEventHandler(long TimeLeft); //has to be long now.
     public bool IsRunning => _thisStop.IsRunning;
     public CustomStopWatchCP()
@@ -21,7 +20,7 @@ public class CustomStopWatchCP
         };
         _timer.Elapsed += TimerElapsed;
     }
-    private void TimerElapsed(object? sender, ElapsedEventArgs e)
+    private void TimerElapsed(object? sender, tta1.ElapsedEventArgs e)
     {
         if (_thisStop.IsRunning == false)
         {
