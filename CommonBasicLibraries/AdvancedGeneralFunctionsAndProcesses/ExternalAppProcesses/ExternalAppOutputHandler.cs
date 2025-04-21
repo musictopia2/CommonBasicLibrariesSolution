@@ -16,7 +16,7 @@ public static class ExternalAppOutputHandler
     }
 
     // Send a test result to simulate processing
-    public static void SendTestResult()
+    public static void SendBlankMessage()
     {
         Console.WriteLine("[RESULT]"); // Simulating a blank result (can happen in real scenarios)
         Environment.Exit(0); // Success
