@@ -9,31 +9,52 @@ public static class ProcessDataRetriever
             Arguments = arguments,
             UseShellExecute = false,
             RedirectStandardOutput = true,
+            RedirectStandardError = true,
             CreateNoWindow = true,
             WindowStyle = ProcessWindowStyle.Hidden
         };
-        using var process = Process.Start(startInfo);
-        string resultLine = "";
-        while (!process!.StandardOutput.EndOfStream)
+        try
         {
-            string? line = await process.StandardOutput.ReadLineAsync(token)!;
-            if (line != null && line.StartsWith("[RESULT]"))
+            using var process = Process.Start(startInfo) ?? throw new Exception($"Failed to start the process: {exePath} with arguments: {arguments}");
+
+            // Read the full output
+            string fullOutput = await process!.StandardOutput.ReadToEndAsync(token);
+            string fullError = await process.StandardError.ReadToEndAsync(token);
+
+
+            
+
+            // Wait for the process to exit
+            await process.WaitForExitAsync(token);
+
+            // If the process exits with a non-zero code, use the output from the app
+            if (process.ExitCode != 0)
             {
-                resultLine = line.Substring("[RESULT]".Length).Trim();
+                throw new CustomBasicException($"External process failed with exit code {process.ExitCode}. Error: {fullError}");
+            }
+
+            string resultMarker = "[RESULT]";
+            int resultIndex = fullOutput.IndexOf(resultMarker);
+            if (resultIndex >= 0)
+            {
+                string result = fullOutput.Substring(resultIndex + resultMarker.Length).Trim();
+                return result;
+            }
+            else
+            {
+                throw new CustomBasicException("No result.  means did not use a compatible app");
             }
         }
-        await process.WaitForExitAsync(token);
-        if (process.ExitCode != 0)
+        catch (OperationCanceledException)
         {
-            throw new Exception($"There was an error of {resultLine}");
+            // Handle the cancellation specifically
+            Console.WriteLine("Process was canceled by the user.");
+            return string.Empty;  // Return empty string to indicate cancellation
         }
-        if (resultLine != null)
+        catch (Exception ex)
         {
-            return resultLine;
-        }
-        else
-        {
-            return "";
+            // Catch any other exceptions that happen during the execution of the process
+            throw new CustomBasicException($"An error occurred while executing the external process: {ex.Message}");
         }
     }
 }
