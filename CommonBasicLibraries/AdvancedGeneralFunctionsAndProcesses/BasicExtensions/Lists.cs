@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices; //not common enough to use for globals.
+﻿using System.Numerics;
+using System.Runtime.InteropServices; //not common enough to use for globals.
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class Lists
 {
@@ -261,5 +262,32 @@ public static class Lists
         }
         output.Sort();
         return output;
+    }
+    public static T AdvancedSum<T, TSource>(
+        this IEnumerable<TSource> source,
+        Func<TSource, T> selector,
+        int excludeLowest = 0,
+        int excludeHighest = 0)
+        where T : INumber<T>
+    {
+        // Validate input
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(selector);
+
+        if (excludeLowest < 0 || excludeHighest < 0)
+        {
+            throw new Exception("Exclusion counts must be non-negative.");
+        }
+
+        // Select and sort the values
+        var sortedValues = source.Select(selector).OrderBy(x => x).ToList();
+
+        // Exclude the specified number of lowest and highest values
+        var filteredValues = sortedValues
+            .Skip(excludeLowest) // Skip the lowest values
+            .Take(sortedValues.Count - excludeLowest - excludeHighest); // Exclude the highest values
+
+        // Return the sum of the remaining values
+        return filteredValues.Aggregate(T.Zero, (sum, value) => sum + value);
     }
 }
