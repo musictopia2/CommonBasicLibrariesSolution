@@ -1,12 +1,18 @@
 ﻿namespace CommonBasicLibraries.TextProcessing.CsvHelpers;
 public static partial class BasicCsvSerialization
 {
-    public static string Serialize(BasicList<string> inputList)
+    public static string Serialize<T>(BasicList<T> inputList)
     {
         BasicList<string> formattedStrings = [];
 
-        foreach (var str in inputList)
+        foreach (var raw in inputList)
         {
+            // Handle null values (replace them with [[null]] for representation)
+            string? str = raw?.ToString();
+
+            // If the value is null, use [[null]] as a placeholder
+            str ??= "[[null]]"; // Replace null with a unique placeholder
+
             // If the string contains a comma or quotes, wrap it in quotes
             if (str.Contains(',') || str.Contains('"'))
             {
@@ -18,6 +24,7 @@ public static partial class BasicCsvSerialization
                 formattedStrings.Add(str); // No need to quote if no special characters
             }
         }
+
         // Join the list into a single CSV string (separated by commas)
         return string.Join(",", formattedStrings);
     }
@@ -41,11 +48,20 @@ public static partial class BasicCsvSerialization
             string value = match.Value.Trim();
             if (value.StartsWith('"') && value.EndsWith('"'))
             {
-                value = RemoveQuotes(value.ToString());
+                value = RemoveQuotes(value);
             }
-            // Convert string to the correct type
-            T convertedValue = ConvertToType<T>(value);
-            result.Add(convertedValue);
+
+            // Check if the value is the placeholder for null
+            if (value == "[[null]]")
+            {
+                result.Add(default!);  // Add null for nullable types
+            }
+            else
+            {
+                // Convert string to the correct type
+                T convertedValue = ConvertToType<T>(value);
+                result.Add(convertedValue);
+            }
         }
 
         return result;
@@ -55,9 +71,9 @@ public static partial class BasicCsvSerialization
         // Nullable handling using pattern matching (no reflection)
         if (typeof(T) == typeof(int?))
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value == "[[null]]")
             {
-                return default!;
+                return default!;  // Return null for nullable int
             }
 
             if (int.TryParse(value, out var i))
@@ -67,9 +83,9 @@ public static partial class BasicCsvSerialization
         }
         else if (typeof(T) == typeof(bool?))
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value == "[[null]]")
             {
-                return default!;
+                return default!;  // Return null for nullable bool
             }
 
             if (bool.TryParse(value, out var b))
@@ -79,9 +95,9 @@ public static partial class BasicCsvSerialization
         }
         else if (typeof(T) == typeof(double?))
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value == "[[null]]")
             {
-                return default!;
+                return default!;  // Return null for nullable double
             }
 
             if (double.TryParse(value, out var d))
@@ -91,9 +107,9 @@ public static partial class BasicCsvSerialization
         }
         else if (typeof(T) == typeof(decimal?))
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value == "[[null]]")
             {
-                return default!;
+                return default!;  // Return null for nullable decimal
             }
 
             if (decimal.TryParse(value, out var dec))
@@ -103,9 +119,9 @@ public static partial class BasicCsvSerialization
         }
         else if (typeof(T) == typeof(float?))
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value == "[[null]]")
             {
-                return default!;
+                return default!;  // Return null for nullable float
             }
 
             if (float.TryParse(value, out var f))
@@ -115,9 +131,9 @@ public static partial class BasicCsvSerialization
         }
         else if (typeof(T) == typeof(long?))
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value == "[[null]]")
             {
-                return default!;
+                return default!;  // Return null for nullable long
             }
 
             if (long.TryParse(value, out var l))
