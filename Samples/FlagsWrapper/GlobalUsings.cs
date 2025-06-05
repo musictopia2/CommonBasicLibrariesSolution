@@ -1,0 +1,4 @@
+﻿global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc;
+global using jj1 = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers.SystemTextJsonStrings;
+global using FlagsWrapper;
+global using jc1 = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers.JsonCustomRegistrationHelpers;

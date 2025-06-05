@@ -19,6 +19,7 @@ public static class SystemTextJsonStrings
         }
         var options = new JsonSerializerOptions();
         options.AddDateTimeConvertersAndIndent();
+        JsonConverterRegistrationManager.ApplyAll(options);
         ConvertersHelpers.PopulateConverters(options);
         Action<JsonSerializerOptions>? action = MultipleContextHelpers<T>.ContextAction;
         action?.Invoke(options);
