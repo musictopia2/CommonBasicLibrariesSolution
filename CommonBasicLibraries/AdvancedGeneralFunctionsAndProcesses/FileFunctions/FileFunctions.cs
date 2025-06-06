@@ -605,6 +605,17 @@ public static class FileFunctions
         var temps = await File.ReadAllLinesAsync(bb1.GetCleanedPath(filePath));
         return temps.ToBasicList();
     }
+    public static async Task<byte[]> ReadAllBytesAsync(string path)
+    {
+        var output = await File.ReadAllBytesAsync(bb1.GetCleanedPath(path));
+        return output;
+    }
+    public static byte[] ReadAllBytes(string path)
+    {
+        var output = File.ReadAllBytes(bb1.GetCleanedPath(path));
+        return output;
+    }
+
     /// <summary>
     /// This will copy the folder and all sub folders and files.
     /// if the destination already exist, then will exit since this cannot replace.
