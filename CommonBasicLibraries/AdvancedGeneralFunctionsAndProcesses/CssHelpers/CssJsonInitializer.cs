@@ -2,7 +2,7 @@
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.CssHelpers;
 public static class CssJsonInitializer
 {
-    public static async Task GenerateInitialConfig(string originalPath, BasicList<string> cssFilePaths, BasicList<string>? excludedClasses = null)
+    public static async Task GenerateInitialConfigAsync(string originalPath, BasicList<string> cssFilePaths, BasicList<string>? excludedClasses = null)
     {
         CssToolConfiguration config;
         if (ff1.FileExists(originalPath))
