@@ -1,7 +1,7 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.CssHelpers;
 public static class CssJsonInitializer
 {
-    public static CssToolConfiguration GenerateInitialConfigAsync(BasicList<string> cssFilePaths, BasicList<string>? excludedClasses = null)
+    public static CssToolConfiguration GenerateInitialConfig(BasicList<string> cssFilePaths, BasicList<string>? excludedClasses = null)
     {
         CssToolConfiguration config = new();
         config.GlobalExcludedClasses = excludedClasses is not null ? [.. excludedClasses] : [];
