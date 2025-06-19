@@ -23,9 +23,4 @@ public class GroupOverride
     /// </summary>
     public string Namespace { get; set; } = "";
 
-    /// <summary>
-    /// An optional category used to help organize or filter generated class groupings.
-    /// This might be used for additional tooling or categorization logic.
-    /// </summary>
-    public string Category { get; set; } = "";
 }
