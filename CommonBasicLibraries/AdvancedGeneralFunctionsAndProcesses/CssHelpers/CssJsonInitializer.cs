@@ -1,32 +1,56 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.CssHelpers;
+﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.JsonSerializers; //not common enough for global usings
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.CssHelpers;
 public static class CssJsonInitializer
 {
-    public static CssToolConfiguration GenerateInitialConfig(BasicList<string> cssFilePaths, BasicList<string>? excludedClasses = null)
+    public static async Task GenerateInitialConfig(string originalPath, BasicList<string> cssFilePaths, BasicList<string>? excludedClasses = null)
     {
-        CssToolConfiguration config = new();
-        config.GlobalExcludedClasses = excludedClasses is not null ? [.. excludedClasses] : [];
+        CssToolConfiguration config;
+        if (ff1.FileExists(originalPath))
+        {
+            config = await FileHelpers.RetrieveSavedObjectAsync<CssToolConfiguration>(originalPath);
+        }
+        else
+        {
+            config = new();
+        }
+        if (config.GlobalExcludedClasses.Count == 0)
+        {
+            //if i already have the list, keep it.
+            config.GlobalExcludedClasses = excludedClasses is not null ? [.. excludedClasses] : [];
+        }
         foreach (var filePath in cssFilePaths)
         {
             var css = File.ReadAllText(filePath);
             var firsts = CssClassExtractor.ExtractStandaloneClasses(css);
             var patterns = CssClassExtractor.ExtractPatternsFromClasses(firsts);
-            var fileConfig = new CssFileConfig
+            var basePath = Path.GetDirectoryName(filePath)!;
+            var fileName = Path.GetFileName(filePath);
+
+            // Find existing file config or create new
+            var fileConfig = config.Files.FirstOrDefault(f =>
+                f.FileName == fileName && f.BasePath == basePath);
+            if (fileConfig == null)
             {
-                BasePath = Path.GetDirectoryName(filePath)!,
-                FileName = Path.GetFileName(filePath),
-                OutputName = Path.GetFileNameWithoutExtension(filePath) + ".xml",
-            };
-            // Add initial GroupOverrides from patterns
+                fileConfig = new CssFileConfig
+                {
+                    BasePath = basePath,
+                    FileName = fileName,
+                    OutputName = Path.GetFileNameWithoutExtension(fileName) + ".xml",
+                };
+                config.Files.Add(fileConfig);
+            }
             foreach (var pattern in patterns)
             {
-                fileConfig.Overrides.Add(new GroupOverride
+                if (fileConfig.Overrides.Any(o => o.OriginalName == pattern) == false)
                 {
-                    OriginalName = pattern,
-                    DisplayName = pattern // User can edit this later
-                });
+                    fileConfig.Overrides.Add(new GroupOverride
+                    {
+                        OriginalName = pattern,
+                        DisplayName = pattern // or empty string or default
+                    });
+                }
             }
-            config.Files.Add(fileConfig);
         }
-        return config;
+        await FileHelpers.SaveObjectAsync(originalPath, config);
     }
 }
