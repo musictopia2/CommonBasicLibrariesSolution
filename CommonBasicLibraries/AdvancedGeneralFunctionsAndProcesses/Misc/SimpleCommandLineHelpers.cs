@@ -17,6 +17,15 @@ public static class SimpleCommandLineHelpers
         }
         return input.TrimStart('-', '/'); // strips --option, -option, or /option
     }
+    public static bool HasOnlyCommandArgument()
+    {
+        var list = GetUserArgs();
+        if (list.Count == 1)
+        {
+            return true;
+        }
+        return false;
+    }
     public static string GetCommandName()
     {
         BasicList<string> arguments = GetUserArgs();
