@@ -8,9 +8,9 @@ public static class CssJsonInitializer
             [
             cssFilePath
             ];
-        await GenerateInitialConfigAsync(originalPath, paths, excludedClasses);
+        await GenerateInitialConfigAsync(originalPath, paths, excludedClasses: excludedClasses);
     }
-    public static async Task GenerateInitialConfigAsync(string originalPath, BasicList<string> cssFilePaths, BasicList<string>? excludedClasses = null)
+    public static async Task GenerateInitialConfigAsync(string originalPath, BasicList<string> cssFilePaths, string outputPath = "Resources", BasicList<string>? excludedClasses = null)
     {
         CssToolConfiguration config;
         if (ff1.FileExists(originalPath))
@@ -21,6 +21,7 @@ public static class CssJsonInitializer
         {
             config = new();
         }
+        config.DefaultOutputPath = outputPath;
         if (config.GlobalExcludedClasses.Count == 0)
         {
             //if i already have the list, keep it.
