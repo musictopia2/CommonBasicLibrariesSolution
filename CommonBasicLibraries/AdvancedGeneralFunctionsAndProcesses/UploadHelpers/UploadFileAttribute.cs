@@ -3,5 +3,5 @@
 [AttributeUsage(AttributeTargets.Property)]
 public class UploadFileAttribute : Attribute
 {
-    public bool IsRequired { get; set; } = false;
+    public bool IsRequired { get; set; } = true;
 }
