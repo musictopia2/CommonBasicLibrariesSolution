@@ -175,4 +175,8 @@ public static class Integers
         int results = x % 2;
         return Math.Abs(results) == 1;
     }
+    public static long Megs(this int megabytes)
+    {
+        return megabytes * 1024 * 1024;
+    }
 }
