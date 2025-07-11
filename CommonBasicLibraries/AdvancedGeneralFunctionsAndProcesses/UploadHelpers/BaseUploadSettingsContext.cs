@@ -3,4 +3,5 @@ public abstract class BaseUploadSettingsContext
 {
     public const string ConfigureName = nameof(Configure);
     protected abstract void Configure(IUploadConfig config);
+    public virtual bool ServerAlone { get; set; } //defaults to false so existing can work without breaking changes.
 }
