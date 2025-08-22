@@ -179,4 +179,5 @@ public static class Integers
     {
         return megabytes * 1024 * 1024;
     }
+    public static int MinutesToSeconds(this int minutes) => minutes * 60;
 }
