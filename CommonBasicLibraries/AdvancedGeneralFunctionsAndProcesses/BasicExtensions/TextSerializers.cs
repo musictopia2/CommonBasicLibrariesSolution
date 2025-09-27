@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
-
-namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
+﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class TextSerializers
 {
-    public static async Task SaveTextAsync<T>(this IModel payLoad, string path)
+    public static async Task SaveTextAsync<T>(this T payLoad, string path)
         where T : IModel
     {
-        var properties = GetProperties<T>();
+        var table =
+            FlatDataHelpers<T>.MasterContext ?? throw new InvalidOperationException("Flat data provider is not registered.");
+        int columnCount = table.ColumnCount;
         BasicList<string> list = [];
-        properties.ForEach(p =>
+        for (int i = 0; i < columnCount; i++)
         {
-            list.Add(p.GetValue(payLoad)!.ToString()!);
-        });
+            string value = table.GetValue(payLoad, i);
+            list.Add(value);
+        }
         await ff1.WriteAllLinesAsync(path, list);
     }
     public static string SerializeText<T>(this BasicList<T> payLoad, string delimiter = ",")
@@ -46,16 +47,6 @@ public static class TextSerializers
         string content = payLoad.SerializeText<T>(delimiter);
         await ff1.WriteAllTextAsync(path, content, Encoding.UTF8);
     }
-    private static BasicList<PropertyInfo> GetProperties<T>()
-    {
-        Type type = typeof(T);
-        BasicList<PropertyInfo> output = type.GetProperties().ToBasicList();
-        if (output.Exists(x => x.IsSimpleType()) == false)
-        {
-            throw new CustomBasicException("There are some properties that are not simple.  This only handles simple types for now");
-        }
-        return output;
-    }
     /// <summary>
     /// this will load a single object
     /// </summary>
@@ -64,24 +55,30 @@ public static class TextSerializers
     /// <returns></returns>
     public static async Task<T> LoadTextSingleAsync<T>(this string path) where T : new()
     {
-        var properties = GetProperties<T>();
         if (ff1.FileExists(path) == false)
         {
             return new T();
         }
+
+        T output = new();
+
+        var table =
+            FlatDataHelpers<T>.MasterContext ?? throw new InvalidOperationException("Flat data provider is not registered.");
+        int columnCount = table.ColumnCount;
         var lines = await ff1.ReadAllLinesAsync(path);
-        if (lines.Count != properties.Count)
+        if (lines.Count != columnCount)
         {
             throw new CustomBasicException("Text file corrupted because the delimiter count don't match the properties");
         }
-        T output = new();
         int x = 0;
-        properties.ForEach(p =>
+        foreach (var line in lines)
         {
-            string item = lines[x];
-            PopulateValue(item, output, p);
+            if (table.TrySetValue(ref output, x, line, out string? error) == false)
+            {
+                throw new CustomBasicException($"Unable to set data.   Error was {error}");
+            }
             x++;
-        });
+        }
         return output;
     }
     private static object? GetValue(string item, Type type)
@@ -548,13 +545,13 @@ public static class TextSerializers
         return output;
     }
     public static async Task<BasicList<T>> LoadTextListFromResourceAsync<T>(this Assembly assembly, string name, string delimiter = ",")
-        where T: new()
+        where T : new()
     {
         string content = await assembly.ResourcesAllTextFromFileAsync(name);
         return content.DeserializeDelimitedTextList<T>(delimiter);
     }
     public static BasicList<T> LoadTextFromListResource<T>(this Assembly assembly, string name, string delimiter = ",")
-        where T: new()
+        where T : new()
     {
         string content = assembly.ResourcesAllTextFromFile(name);
         return content.DeserializeDelimitedTextList<T>(delimiter);
@@ -628,392 +625,5 @@ public static class TextSerializers
         string content = await ff1.AllTextAsync(path);
         output = content.DeserializeDelimitedTextList<T>(delimiter);
         return output;
-    }
-    private static void PopulateValue<T>(string item, T row, PropertyInfo p)
-    {
-        if (p.PropertyType == typeof(int))
-        {
-            bool rets = int.TryParse(item, out int y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to integer.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(int?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = int.TryParse(item, out int y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to integer.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType.IsEnum)
-        {
-            bool rets = int.TryParse(item, out int y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to enum.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType.IsNullableEnum())
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = int.TryParse(item, out int y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to enum.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(bool))
-        {
-            bool rets = bool.TryParse(item, out bool y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to boolean.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(bool?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = bool.TryParse(item, out bool y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to boolean.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(decimal))
-        {
-            bool rets = decimal.TryParse(item, out decimal y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to decimal.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(decimal?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = decimal.TryParse(item, out decimal y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to decimal.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(float))
-        {
-            bool rets = float.TryParse(item, out float y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to float.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(float?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = float.TryParse(item, out float y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to float.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(double))
-        {
-            bool rets = double.TryParse(item, out double y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to double.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(double?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = double.TryParse(item, out double y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to double.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(DateTime))
-        {
-            bool rets = DateTime.TryParse(item, out DateTime y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to datetime.  Means corruption");
-            }
-            p.SetValue(row, y);
-
-        }
-        else if (p.PropertyType == typeof(DateTime?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = DateTime.TryParse(item, out DateTime y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to datetime.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(DateTimeOffset))
-        {
-            bool rets = DateTimeOffset.TryParse(item, out DateTimeOffset y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to datetimeoffset.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(DateTimeOffset?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = DateTimeOffset.TryParse(item, out DateTimeOffset y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to datetimeoffset.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(Guid))
-        {
-            bool rets = Guid.TryParse(item, out Guid y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to guid.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(Guid?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = Guid.TryParse(item, out Guid y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to guid.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(char))
-        {
-            bool rets = char.TryParse(item, out char y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to char.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(char?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = char.TryParse(item, out char y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to char.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(short))
-        {
-            bool rets = short.TryParse(item, out short y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to short.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(short?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = short.TryParse(item, out short y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to short.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(ushort))
-        {
-            bool rets = ushort.TryParse(item, out ushort y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to ushort.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(ushort?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = ushort.TryParse(item, out ushort y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to ushort.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(uint))
-        {
-            bool rets = uint.TryParse(item, out uint y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to uint.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(uint?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = uint.TryParse(item, out uint y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to uint.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(long))
-        {
-            bool rets = long.TryParse(item, out long y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to long.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(long?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = long.TryParse(item, out long y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to long.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(ulong))
-        {
-            bool rets = ulong.TryParse(item, out ulong y);
-            if (rets == false)
-            {
-                throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to ulong.  Means corruption");
-            }
-            p.SetValue(row, y);
-        }
-        else if (p.PropertyType == typeof(ulong?))
-        {
-            if (item == "")
-            {
-                p.SetValue(row, null);
-            }
-            else
-            {
-                bool rets = ulong.TryParse(item, out ulong y);
-                if (rets == false)
-                {
-                    throw new CustomBasicException($"When trying to parse column {p.Name}, failed to parse to ulong.  Means corruption");
-                }
-                p.SetValue(row, y);
-            }
-        }
-        else if (p.PropertyType == typeof(string))
-        {
-            p.SetValue(row, item);
-        }
-        else
-        {
-            throw new CustomBasicException($"Property with name of {p.Name} has unsupported property type of {p.PropertyType.Name}.  Rethink");
-        }
     }
 }
