@@ -575,7 +575,7 @@ public static class TextSerializers
             var parts = line.Split(delimiter);
             if (parts.Length != columnCount)
             {
-                throw new InvalidOperationException($"The number of columns in the line '{line}' does not match the expected column count of {columnCount}.");
+                throw new InvalidOperationException($"The number of columns in the line {line} does not match the expected column count of {columnCount}.");
             }
             int x = 0;
             foreach (var part in parts)
