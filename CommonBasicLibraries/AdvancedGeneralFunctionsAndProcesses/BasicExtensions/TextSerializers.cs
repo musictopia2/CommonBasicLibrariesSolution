@@ -1,4 +1,6 @@
-﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
+﻿using System.Collections.Generic;
+
+namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class TextSerializers
 {
     public static async Task SaveTextAsync<T>(this IModel payLoad, string path)
@@ -14,27 +16,24 @@ public static class TextSerializers
     }
     public static string SerializeText<T>(this BasicList<T> payLoad, string delimiter = ",")
     {
-        var properties = GetProperties<T>();
-        BasicList<string> list = [];
+        var table =
+            FlatDataHelpers<T>.MasterContext ?? throw new InvalidOperationException("Flat data provider is not registered.");
+        int columnCount = table.ColumnCount;
+        StrCat cats = new();
+        BasicList<string> lines = [];
         foreach (var item in payLoad)
         {
-            StrCat cats = new();
-            properties.ForEach(p =>
+            for (int i = 0; i < columnCount; i++)
             {
-                var value = p.GetValue(item);
-                if (value != null)
-                {
-                    cats.AddToString(value.ToString()!, delimiter);
-                }
-                else
-                {
-                    cats.AddToString("", delimiter);
-                }
-            });
-            list.Add(cats.GetInfo());
+                string value = table.GetValue(item, i);
+                cats.AddToString(value, delimiter); //for now, comma delimited only
+            }
+
+            lines.Add(cats.GetInfo());
+            cats.ClearString(); //i think this too (?)
         }
         StrCat fins = new();
-        list.ForEach(x => fins.AddToString(x, Constants.VBCrLf));
+        lines.ForEach(x => fins.AddToString(x, Constants.VBCrLf));
         return fins.GetInfo();
     }
     public static void SaveText<T>(this BasicList<T> payLoad, string path, string delimiter = ",")
@@ -549,46 +548,45 @@ public static class TextSerializers
         return output;
     }
     public static async Task<BasicList<T>> LoadTextListFromResourceAsync<T>(this Assembly assembly, string name, string delimiter = ",")
+        where T: new()
     {
         string content = await assembly.ResourcesAllTextFromFileAsync(name);
         return content.DeserializeDelimitedTextList<T>(delimiter);
     }
     public static BasicList<T> LoadTextFromListResource<T>(this Assembly assembly, string name, string delimiter = ",")
+        where T: new()
     {
         string content = assembly.ResourcesAllTextFromFile(name);
         return content.DeserializeDelimitedTextList<T>(delimiter);
     }
     //eventually can do source generators but not yet.
     public static BasicList<T> DeserializeDelimitedTextList<T>(this string content, string delimiter = ",")
+        where T : new()
     {
-        BasicList<T> output;
-        Type key = typeof(T);
-        if (key.IsSimpleType())
-        {
-            var temps = content.Split(delimiter).ToBasicList();
-            output = temps.ToCastedList<T>();
-            return output;
-        }
-        output = [];
         BasicList<string> lines = content.Split(Constants.VBCrLf).ToBasicList();
-        var properties = GetProperties<T>();
+        BasicList<T> output = [];
+        var table =
+            FlatDataHelpers<T>.MasterContext ?? throw new InvalidOperationException("Flat data provider is not registered.");
+        int columnCount = table.ColumnCount;
+        StrCat cats = new();
         foreach (var line in lines)
         {
-            var items = line.Split(delimiter).ToBasicList();
-            if (items.Count != properties.Count)
+            T news = new();
+            var parts = line.Split(delimiter);
+            if (parts.Length != columnCount)
             {
-                throw new CustomBasicException("Text file corrupted because the delimiter count don't match the properties");
+                throw new InvalidOperationException($"The number of columns in the line '{line}' does not match the expected column count of {columnCount}.");
             }
             int x = 0;
-            object temp = Activator.CreateInstance(typeof(T))!;
-            T row = (T)temp;
-            properties.ForEach(p =>
+            foreach (var part in parts)
             {
-                string item = items[x];
-                PopulateValue(item, row, p);
+                if (table.TrySetValue(ref news, x, part.Trim(), out string? error) == false)
+                {
+                    throw new CustomBasicException($"Unable to set data.   Error was {error}");
+                }
                 x++;
-            });
-            output.Add(row);
+            }
+            output.Add(news);
         }
         return output;
     }
@@ -600,6 +598,7 @@ public static class TextSerializers
     /// <param name="delimiter"></param>
     /// <returns></returns>
     public static BasicList<T> LoadTextList<T>(this string path, string delimiter = ",")
+        where T : new()
     {
         BasicList<T> output = [];
         if (ff1.FileExists(path) == false)
@@ -619,6 +618,7 @@ public static class TextSerializers
     /// <param name="delimiter"></param>
     /// <returns></returns>
     public static async Task<BasicList<T>> LoadTextListAsync<T>(this string path, string delimiter = ",")
+        where T : new()
     {
         BasicList<T> output = [];
         if (ff1.FileExists(path) == false)

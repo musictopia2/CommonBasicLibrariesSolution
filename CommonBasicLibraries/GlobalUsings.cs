@@ -24,3 +24,4 @@ global using System.Collections;
 global using System.Threading;
 global using tta1 = System.Timers;
 global using System.Text.RegularExpressions; //becoming common enough now.
+global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FlatDataHelpers;
