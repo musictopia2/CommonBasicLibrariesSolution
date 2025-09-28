@@ -38,7 +38,6 @@
     <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Misc" />
     <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions" />
     <Using Include="CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses" />
-    <Using Include="System.Reflection" />
     <Using Include="System.Text" />
     <!--
 	  Eventually figure out how to not do reflection via source generators (not yet though)

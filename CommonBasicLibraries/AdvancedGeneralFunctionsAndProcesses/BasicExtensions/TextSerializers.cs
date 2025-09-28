@@ -81,18 +81,6 @@ public static class TextSerializers
         }
         return output;
     }
-    public static async Task<BasicList<T>> LoadTextListFromResourceAsync<T>(this Assembly assembly, string name, string delimiter = ",")
-        where T : new()
-    {
-        string content = await assembly.ResourcesAllTextFromFileAsync(name);
-        return content.DeserializeDelimitedTextList<T>(delimiter);
-    }
-    public static BasicList<T> LoadTextFromListResource<T>(this Assembly assembly, string name, string delimiter = ",")
-        where T : new()
-    {
-        string content = assembly.ResourcesAllTextFromFile(name);
-        return content.DeserializeDelimitedTextList<T>(delimiter);
-    }
     //eventually can do source generators but not yet.
     public static BasicList<T> DeserializeDelimitedTextList<T>(this string content, string delimiter = ",")
         where T : new()

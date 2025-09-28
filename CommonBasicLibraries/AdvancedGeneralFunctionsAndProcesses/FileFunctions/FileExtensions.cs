@@ -1,7 +1,6 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions;
 public static class FileExtensions
 {
-    public static string ResourceLocation = "Resources"; //c# requires the actual folder where you place the resource to read the embedded resource.
     public static async Task<string?> FixBase64ForFileDataAsync(this string str_Image)
     {
         // *** Need to clean up the text in case it got corrupted travelling in an XML file
@@ -32,100 +31,6 @@ public static class FileExtensions
         sbText.Replace(" ", string.Empty);
         thisStr = sbText.ToString();
         return thisStr;
-    }
-    private static async Task<Stream?> GetStreamAsync(Assembly thisAssembly, string fileName)
-    {
-        Stream? thisStream = default;
-        await Task.Run(() =>
-        {
-            if (fileName.Contains('/') == true || fileName.Contains('\\') == true)
-            {
-                throw new CustomBasicException(@"Cannot contain the / or \ in the file name.   Its already smart enough to figure out even if put in folders", null!);
-            }
-            var thisList = thisAssembly.GetManifestResourceNames();
-            var firstName = thisAssembly.GetName().Name;
-            firstName = firstName!.Replace(" ", "_");
-            string internalPath;
-            if (ResourceLocation == "")
-            {
-                internalPath = firstName + "." + fileName;
-            }
-            else
-            {
-                internalPath = firstName + "." + ResourceLocation + "." + fileName;
-            }
-            thisStream = thisAssembly.GetManifestResourceStream(internalPath);
-            if (thisStream == null)
-            {
-                throw new FileNotFoundException(fileName + " does not exist");
-            }
-        });
-        return thisStream;
-    }
-    public static string GetMediaURIFromStream(this Assembly thisAssembly, string fileName)
-    {
-        if (fileName.Contains('/') == true || fileName.Contains('\\') == true)
-        {
-            throw new CustomBasicException(@"Cannot contain the / or \ in the file name.   Its already smart enough to figure out even if put in folders", null!);
-        }
-        var firstName = thisAssembly.GetName().Name;
-        firstName = firstName!.Replace(" ", "_");
-        string internalPath;
-        internalPath = firstName + "." + fileName;
-        return internalPath;
-    }
-    public static string ResourcesBinaryTextFromFile(this Assembly assembly, string fileName)
-    {
-        using Stream stream = assembly.ResourcesGetStream(fileName);
-        byte[] bb = new byte[stream.Length - 1 + 1];
-        stream.ReadExactly(bb, 0, (int)stream.Length);
-        stream.Close();
-        return Convert.ToBase64String(bb);
-    }
-    public static async Task<string> ResourcesBinaryTextFromFileAsync(this Assembly assembly, string fileName)
-    {
-        using var stream = await GetStreamAsync(assembly, fileName);
-        byte[] bb = new byte[stream!.Length - 1 + 1];
-        await stream.ReadExactlyAsync(bb.AsMemory(0, (int)stream.Length));
-        stream.Close();
-        return Convert.ToBase64String(bb);
-    }
-    public static async Task<string> ResourcesAllTextFromFileAsync(this Assembly thisAssembly, string fileName)
-    {
-        using var thisStream = await GetStreamAsync(thisAssembly, fileName);
-        using var thisRead = new StreamReader(thisStream!);
-        return await thisRead.ReadToEndAsync();
-    }
-
-    public static string ResourcesAllTextFromFile(this Assembly thisAssembly, string fileName)
-    {
-        using var thisStream = thisAssembly.ResourcesGetStream(fileName);
-        using var thisRead = new StreamReader(thisStream);
-        return thisRead.ReadToEnd();
-    }
-    public static async Task<Stream?> ResourcesGetStreamAsync(this Assembly thisAssembly, string fileName)
-    {
-        return await GetStreamAsync(thisAssembly, fileName);
-    }
-    public static Stream ResourcesGetStream(this Assembly thisAssembly, string fileName)
-    {
-        if (fileName.Contains('/') == true || fileName.Contains('\\') == true)
-        {
-            throw new CustomBasicException(@"Cannot contain the / or \ in the file name.   Its already smart enough to figure out even if put in folders", null!);
-        }
-        var firstName = thisAssembly.GetName().Name; // needs 2 things affterall.  looks like simplier in .net standard 2.0
-        firstName = firstName!.Replace(" ", "_");
-        string internalPath;
-        if (ResourceLocation == "")
-        {
-            internalPath = firstName + "." + fileName;
-        }
-        else
-        {
-            internalPath = firstName + "." + ResourceLocation + "." + fileName;
-        }
-        Stream? thisStream = thisAssembly.GetManifestResourceStream(internalPath) ?? throw new FileNotFoundException(fileName + " does not exist");
-        return thisStream;
     }
     public async static Task SaveBinaryDataAsync(this string data, string path)
     {

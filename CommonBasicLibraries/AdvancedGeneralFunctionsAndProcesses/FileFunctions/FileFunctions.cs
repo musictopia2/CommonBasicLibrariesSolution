@@ -737,21 +737,6 @@ public static class FileFunctions
     {
         return new FileStream(filePath, FileMode.Open, FileAccess.Read);
     }
-    public static async Task<string> ResourcesAllTextFromFileAsync(object thisObj, string fileName)
-    {
-        Assembly thisA = Assembly.GetAssembly(thisObj.GetType())!;
-        return await thisA.ResourcesAllTextFromFileAsync(fileName);
-    }
-    public static async Task<Stream?> ResourcesGetStreamAsync(object thisObj, string fileName)
-    {
-        Assembly thisA = Assembly.GetAssembly(thisObj.GetType())!;
-        return await thisA.ResourcesGetStreamAsync(fileName);
-    }
-    public static string GetMediaURIFromStream(object thisObj, string fileName)
-    {
-        Assembly ThisA = Assembly.GetAssembly(thisObj.GetType())!;
-        return ThisA.GetMediaURIFromStream(fileName);
-    }
     public static void CopyFilesRecursively(string sourcePath, string targetPath)
     {
         foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
