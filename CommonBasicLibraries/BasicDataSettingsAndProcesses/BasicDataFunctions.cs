@@ -9,6 +9,7 @@ public static class BasicDataFunctions
     public static EnumOS OS { get; set; } = EnumOS.None; //now has to start with none.  can't assume anymore.
     //you have to somehow populate this now.  does not fit using standard di.  if i decided to do standard di, has to put into here.
     public static ISQLServer? SQLServerConnectionClass { get; set; }
+    public static IEmojiParserHook? EmojiParserHook { get; set; }
     public static IConfiguration? Configuration { get; set; } //i think best to populate here so if using from console, don't have to hook up dependency injection
     //looks like i need my random stuff now.
     //may need to rethink the random stuff now.
