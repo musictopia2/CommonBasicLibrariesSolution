@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
 namespace CommonBasicLibraries.CollectionClasses;
-public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, ICountCollection, ISimpleList<T>, IBasicList<T>, IList<T> //needs inheritance still because game package needs it.
+public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, 
+    ICountCollection, ISimpleList<T>, IBasicList<T>, IList<T>,
+    IReadOnlyList<T>
+    //needs inheritance still because game package needs it.
 {
     internal List<T> GetInternalList => PrivateList; //only internal can do this.
     protected List<T> PrivateList;
