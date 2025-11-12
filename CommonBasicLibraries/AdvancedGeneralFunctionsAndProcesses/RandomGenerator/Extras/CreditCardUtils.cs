@@ -8,7 +8,10 @@ public static class CreditCardUtils
     /// <returns>Returns a number representing credit card number checksum.</returns>
     public static int LuhnCalcualte(long num)
     {
-        var digits = num.ToString().ToCharArray().Reverse().ToList();
+        //var digits = num.ToString().ToCharArray().Reverse().ToList();
+        var digits = num.ToString().ToCharArray().ToList();
+        digits.Reverse(); //do this way now.
+
         var sum = 0;
         for (int i = 0, l = digits.Count; l > i; ++i)
         {
