@@ -558,6 +558,20 @@ public static partial class Strings
         string output = currentTextInfo.ToTitleCase(info);
         return output;
     }
+    public static string CapitalizeFirstLetter(this string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return input;
+        }
+
+        if (char.IsUpper(input[0]))
+        {
+            return input;
+        }
+
+        return char.ToUpper(input[0]) + input.Substring(1);
+    }
     public static string ConvertCase(this string info, bool doAll = true)
     {
         string tempStr = "";
