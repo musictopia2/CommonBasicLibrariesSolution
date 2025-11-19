@@ -1,26 +1,32 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class InterfaceExtensions
 {
-    public static T AutoMap<T>(this IMappable payLoad)
+    extension<T>(IMappable payLoad)
         where T: new()
     {
-        ICustomMapContext<T>? context = CustomMapperHelpers<T>.MasterContext ?? throw new CustomBasicException($"There was no mappings found at {typeof(T)}.  Try to use source generators to create it");
-        return context.AutoMap(payLoad);
+        public T AutoMap()
+        {
+            ICustomMapContext<T>? context = CustomMapperHelpers<T>.MasterContext ?? throw new CustomBasicException($"There was no mappings found at {typeof(T)}.  Try to use source generators to create it");
+            return context.AutoMap(payLoad);
+        }
     }
-    public static bool IsUpdate(this IChangeTracker entity, object? thisValue, object? newValue)
+    extension(IChangeTracker entity)
     {
-        if (entity is null)
+        public bool IsUpdate(object? oldValue, object? newValue)
         {
-            throw new CustomBasicException("Entity was null");
+            if (entity is null)
+            {
+                throw new CustomBasicException("Entity was null");
+            }
+            if (oldValue == null && newValue == null)
+            {
+                return false;
+            }
+            if (oldValue == null)
+            {
+                return true;
+            }
+            return oldValue.Equals(newValue) == false;
         }
-        if (thisValue == null && newValue == null)
-        {
-            return false;
-        }
-        if (thisValue == null)
-        {
-            return true;
-        }
-        return thisValue.Equals(newValue) == false;
     }
 }

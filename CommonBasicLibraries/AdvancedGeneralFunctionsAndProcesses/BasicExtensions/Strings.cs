@@ -1,347 +1,393 @@
 ﻿using System.Globalization;
-using System.Text.RegularExpressions;
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static partial class Strings
 {
-    public static string BackSpaceRemoveEnding0s(this string payLoad)
-    {
-        string output = payLoad.TrimEnd(['0']);
-        return output;
-    }
     private static string _monthReplace = "";
-    public static int FindMonthInStringLine(this string thisStr)
+    private static string _previousString = "";
+    private static (int Days, int Hours, int Minutes) _previousTime;
+
+    extension(string payLoad)
     {
-        BasicList<string> possList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        int possNum;
-        possNum = 0;
-        _monthReplace = "";
-        int currentNum;
-        foreach (var thisPoss in possList)
+        public string BackSpaceRemoveEnding0s
         {
-            if (thisStr.Contains(thisPoss) == true)
+            get
             {
-                currentNum = thisPoss.GetMonthID();
-                if (currentNum > 0)
+                string output = payLoad.TrimEnd(['0']);
+                return output;
+            }
+        }
+        //i chose this time to keep my code and still keep as property.
+        public int FindMonthInStringLine
+        {
+            get
+            {
+                BasicList<string> possList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                int possNum;
+                possNum = 0;
+                _monthReplace = "";
+                int currentNum;
+                foreach (var thisPoss in possList)
                 {
-                    _monthReplace = thisPoss;
-                    if (possNum > 0)
+                    if (payLoad.Contains(thisPoss) == true)
                     {
-                        throw new CustomBasicException("There should not have been 2 months in the same line.  Rethink");
+                        currentNum = thisPoss.GetMonthID;
+                        if (currentNum > 0)
+                        {
+                            _monthReplace = thisPoss;
+                            if (possNum > 0)
+                            {
+                                throw new CustomBasicException("There should not have been 2 months in the same line.  Rethink");
+                            }
+                            possNum = currentNum;
+                        }
                     }
-                    possNum = currentNum;
+                }
+
+                return possNum;
+            }
+        }
+        public BasicList<string> CommaDelimitedList => payLoad.Split(",").ToBasicList();
+        public bool IsNumeric => int.TryParse(payLoad, out _);
+        public BasicList<string> SplitStringEliminateMonth
+        {
+            get
+            {
+                string tempPayLoad = payLoad.Trim(); // work on local copy
+                if (string.IsNullOrEmpty(_monthReplace))
+                {
+                    return new BasicList<string> { tempPayLoad };
+                }
+
+                var thisList = tempPayLoad.Split(_monthReplace);
+                if (thisList.Length != 2)
+                {
+                    throw new CustomBasicException("There should be only 2 items split, not " + thisList.Length);
+                }
+
+                BasicList<string> newList = new BasicList<string>();
+                foreach (var thisItem in thisList)
+                {
+                    newList.Add(thisItem.Trim());
+                }
+                return newList;
+            }
+        }
+        public int GetMonthID
+        {
+            get
+            {
+                return payLoad switch
+                {
+                    null => 0,
+                    "January" => 1,
+                    "February" => 2,
+                    "March" => 3,
+                    "April" => 4,
+                    "May" => 5,
+                    "June" => 6,
+                    "July" => 7,
+                    "August" => 8,
+                    "September" => 9,
+                    "October" => 10,
+                    "November" => 11,
+                    "December" => 12,
+                    _ => 0
+                };
+            }
+        }
+        public BasicList<string> GetSentences()
+        {
+            BasicList<string> al = [];
+            string sTemp = payLoad;
+            sTemp = sTemp.Replace(Environment.NewLine, " ");
+            string[] customSplit = [".", "?", "!", ":"];
+            var splits = sTemp.Split(customSplit, StringSplitOptions.RemoveEmptyEntries).ToList();
+            int pos;
+            foreach (var thisSplit in splits)
+            {
+                pos = sTemp.IndexOf(thisSplit);
+                var thisChar = sTemp.Trim().ToCharArray();
+                if (pos + thisSplit.Length <= thisChar.Length - 1)
+                {
+                    char c = thisChar[pos + thisSplit.Length];
+                    al.Add(thisSplit.Trim() + c.ToString());
+                    sTemp = sTemp.Replace(thisSplit, ""); // because already accounted for.
+                }
+                else
+                {
+                    al.Add(thisSplit);
                 }
             }
-        }
-
-        return possNum;
-    }
-    public static BasicList<string> CommaDelimitedList(string payLoad)
-    {
-        return payLoad.Split(",").ToBasicList();
-    }
-    public static bool IsNumeric(this string thisStr)
-    {
-        return int.TryParse(thisStr, out _);
-    }
-    public static BasicList<string> SplitStringEliminateMonth(this string thisStr)
-    {
-        thisStr = thisStr.Trim();
-        if (_monthReplace == null == true || _monthReplace == "")
-        {
-            return [thisStr];
-        }
-        var thisList = thisStr.Split(_monthReplace);
-        if (thisList.Length != 2)
-        {
-            throw new CustomBasicException("There should be only 2 items splited, not " + thisList.Length); //i am guessing has to be this way now.
-        }
-        BasicList<string> newList = [];
-        foreach (var thisItem in thisList)
-        {
-            newList.Add(thisItem.Trim());
-        }
-        return newList;
-    }
-    public static int GetMonthID(this string monthString)
-    {
-
-        return monthString switch
-        {
-            null => 0,
-            "January" => 1,
-            "February" => 2,
-            "March" => 3,
-            "April" => 4,
-            "May" => 5,
-            "June" => 6,
-            "July" => 7,
-            "August" => 8,
-            "September" => 9,
-            "October" => 10,
-            "November" => 11,
-            "December" => 12,
-            _ => 0
-        };
-    }
-    public static BasicList<string> GetSentences(this string sTextToParse)
-    {
-        BasicList<string> al = [];
-        string sTemp = sTextToParse;
-        sTemp = sTemp.Replace(Environment.NewLine, " ");
-        string[] customSplit = [".", "?", "!", ":"];
-        var splits = sTemp.Split(customSplit, StringSplitOptions.RemoveEmptyEntries).ToList();
-        int pos;
-        foreach (var thisSplit in splits)
-        {
-            pos = sTemp.IndexOf(thisSplit);
-            var thisChar = sTemp.Trim().ToCharArray();
-            if (pos + thisSplit.Length <= thisChar.Length - 1)
+            if (al.First().StartsWith('"') == true)
             {
-                char c = thisChar[pos + thisSplit.Length];
-                al.Add(thisSplit.Trim() + c.ToString());
-                sTemp = sTemp.Replace(thisSplit, ""); // because already accounted for.
+                throw new CustomBasicException("I don't think the first one can start with quotes");
             }
-            else
+            int x;
+            var loopTo = al.Count - 1; // this is used so the quotes go into the proper places.
+            for (x = 1; x <= loopTo; x++)
             {
-                al.Add(thisSplit);
+                string firstItem;
+                string secondItem;
+                firstItem = al[x - 1];
+                secondItem = al[x];
+                if (secondItem.StartsWith('"') == true)
+                {
+                    al[x] = al[x].Substring(1); // i think
+                    al[x] = al[x].Trim();
+                    al[x - 1] = al[x - 1] + "\"";
+                    al[x - 1] = al[x - 1].Trim();
+                }
+                else if (secondItem.StartsWith(')') == true)
+                {
+                    al[x] = al[x].Substring(1); // i think
+                    al[x] = al[x].Trim();
+                    al[x - 1] = al[x - 1] + ")";
+                    al[x - 1] = al[x - 1].Trim();
+                }
+                else if (secondItem.Length == 1)
+                {
+                    var ThisStr = secondItem.ToString();
+                    al[x] = al[x].Substring(1); // i think
+                    al[x] = al[x].Trim();
+                    al[x - 1] = al[x - 1] + ThisStr;
+                    al[x - 1] = al[x - 1].Trim();
+                }
             }
-        }
-        if (al.First().StartsWith('"') == true)
-        {
-            throw new CustomBasicException("I don't think the first one can start with quotes");
-        }
-        int x;
-        var loopTo = al.Count - 1; // this is used so the quotes go into the proper places.
-        for (x = 1; x <= loopTo; x++)
-        {
-            string firstItem;
-            string secondItem;
-            firstItem = al[x - 1];
-            secondItem = al[x];
-            if (secondItem.StartsWith('"') == true)
+            int numbers = al.Where(Items => Items == "").Count();
+            int opening = al.Where(Items => Items == "(").Count();
+            int closing = al.Where(Items => Items == ")").Count();
+            foreach (var thisItem in al)
             {
-                al[x] = al[x].Substring(1); // i think
-                al[x] = al[x].Trim();
-                al[x - 1] = al[x - 1] + "\"";
-                al[x - 1] = al[x - 1].Trim();
+                if (numbers == 1 || numbers == 3)
+                {
+                    throw new CustomBasicException("Quotes are not correct.  Has " + numbers + " Quotes");
+                }
+                if (opening != closing)
+                {
+                    throw new CustomBasicException("Opening and closing much match for ( and ) characters");
+                }
             }
-            else if (secondItem.StartsWith(')') == true)
+            al = (from xx in al
+                  where xx != ""
+                  select xx).ToBasicList();
+            return al;
+        }
+        public string StripHtml()
+        {
+            var thisText = MyRegex().Replace(payLoad, "");
+            if (thisText.Contains("<sup") == true)
             {
-                al[x] = al[x].Substring(1); // i think
-                al[x] = al[x].Trim();
-                al[x - 1] = al[x - 1] + ")";
-                al[x - 1] = al[x - 1].Trim();
+                var index = thisText.IndexOf("<sup");
+                thisText = thisText.Substring(0, index);
             }
-            else if (secondItem.Length == 1)
+            if (thisText.Contains("<div class=" + "\"") == true)
             {
-                var ThisStr = secondItem.ToString();
-                al[x] = al[x].Substring(1); // i think
-                al[x] = al[x].Trim();
-                al[x - 1] = al[x - 1] + ThisStr;
-                al[x - 1] = al[x - 1].Trim();
+                thisText = thisText.Replace("<div class=" + "\"", "");
             }
-        }
-        int numbers = al.Where(Items => Items == "").Count();
-        int opening = al.Where(Items => Items == "(").Count();
-        int closing = al.Where(Items => Items == ")").Count();
-        foreach (var thisItem in al)
-        {
-            if (numbers == 1 || numbers == 3)
+            if (thisText.Contains("<a") == true)
             {
-                throw new CustomBasicException("Quotes are not correct.  Has " + numbers + " Quotes");
+                var index = thisText.IndexOf("<a");
+                thisText = thisText.Substring(0, index);
             }
-            if (opening != closing)
+            thisText = thisText.Replace("[a]", "");
+            thisText = thisText.Replace("[b]", ""); // because even if its b, needs to go away as well.
+            thisText = thisText.Replace("[c]", "");
+            thisText = thisText.Replace("[d]", "");
+            thisText = thisText.Replace("[e]", "");
+            thisText = thisText.Replace("[f]", "");
+            thisText = thisText.Replace("[g]", "");
+            thisText = thisText.Replace("[h]", "");
+            thisText = thisText.Replace("[i]", "");
+            thisText = thisText.Replace("[j]", "");
+            thisText = thisText.Replace("[k]", "");
+            thisText = thisText.Replace("[l]", "");
+            thisText = thisText.Replace("[m]", "");
+            thisText = thisText.Replace("[n]", "");
+            thisText = thisText.Replace("[o]", "");
+            thisText = thisText.Replace("[p]", "");
+            thisText = thisText.Replace("[q]", "");
+            thisText = thisText.Replace("[r]", "");
+            thisText = thisText.Replace("[s]", "");
+            thisText = thisText.Replace("[t]", "");
+            thisText = thisText.Replace("[u]", "");
+            thisText = thisText.Replace("[v]", "");
+            thisText = thisText.Replace("[w]", "");
+            thisText = thisText.Replace("[x]", "");
+            thisText = thisText.Replace("[y]", "");
+            thisText = thisText.Replace("[z]", "");
+            var nextText = System.Net.WebUtility.HtmlDecode(thisText);
+            return nextText.Trim();
+        }
+        public string TextWithSpaces
+        {
+            get
             {
-                throw new CustomBasicException("Opening and closing much match for ( and ) characters");
+                string newText = payLoad;
+                int x = 0;
+                string finals = "";
+                foreach (var thisChar in newText)
+                {
+                    bool rets = int.TryParse(thisChar.ToString(), out _);
+                    if (char.IsLower(thisChar) == false && x > 0 && rets == false)
+                    {
+                        finals += " " + thisChar;
+                    }
+                    else
+                    {
+                        finals += thisChar;
+                    }
+                    x++;
+                }
+                return finals;
             }
         }
-        al = (from xx in al
-              where xx != ""
-              select xx).ToBasicList();
-        return al;
-    }
-    public static string StripHtml(this string htmlText) //unfortunately not perfect.
-    {
-        var thisText = MyRegex().Replace(htmlText, "");
-        if (thisText.Contains("<sup") == true)
+        public int GetSeconds()
         {
-            var index = thisText.IndexOf("<sup");
-            thisText = thisText.Substring(0, index);
-        }
-        if (thisText.Contains("<div class=" + "\"") == true)
-        {
-            thisText = thisText.Replace("<div class=" + "\"", "");
-        }
-        if (thisText.Contains("<a") == true)
-        {
-            var index = thisText.IndexOf("<a");
-            thisText = thisText.Substring(0, index);
-        }
-        thisText = thisText.Replace("[a]", "");
-        thisText = thisText.Replace("[b]", ""); // because even if its b, needs to go away as well.
-        thisText = thisText.Replace("[c]", "");
-        thisText = thisText.Replace("[d]", "");
-        thisText = thisText.Replace("[e]", "");
-        thisText = thisText.Replace("[f]", "");
-        thisText = thisText.Replace("[g]", "");
-        thisText = thisText.Replace("[h]", "");
-        thisText = thisText.Replace("[i]", "");
-        thisText = thisText.Replace("[j]", "");
-        thisText = thisText.Replace("[k]", "");
-        thisText = thisText.Replace("[l]", "");
-        thisText = thisText.Replace("[m]", "");
-        thisText = thisText.Replace("[n]", "");
-        thisText = thisText.Replace("[o]", "");
-        thisText = thisText.Replace("[p]", "");
-        thisText = thisText.Replace("[q]", "");
-        thisText = thisText.Replace("[r]", "");
-        thisText = thisText.Replace("[s]", "");
-        thisText = thisText.Replace("[t]", "");
-        thisText = thisText.Replace("[u]", "");
-        thisText = thisText.Replace("[v]", "");
-        thisText = thisText.Replace("[w]", "");
-        thisText = thisText.Replace("[x]", "");
-        thisText = thisText.Replace("[y]", "");
-        thisText = thisText.Replace("[z]", "");
-        var nextText = System.Net.WebUtility.HtmlDecode(thisText);
-        return nextText.Trim();
-    }
-    public static string TextWithSpaces(this string thisText)
-    {
-        string newText = thisText;
-        int x = 0;
-        string finals = "";
-        foreach (var thisChar in newText)
-        {
-            bool rets = int.TryParse(thisChar.ToString(), out _);
-            if (char.IsLower(thisChar) == false && x > 0 && rets == false)
+            var tempList = payLoad.Split(":").ToBasicList();
+            if (tempList.Count > 3)
             {
-                finals += " " + thisChar;
+                throw new CustomBasicException("Can't handle more than 3 :");
             }
-            else
+            if (tempList.Count == 3)
             {
-                finals += thisChar;
+                int firstNum;
+                int secondNum;
+                int thirdNum;
+                firstNum = int.Parse(tempList.First().ToString());
+                secondNum = int.Parse(tempList[1]);
+                thirdNum = int.Parse(tempList.Last());
+                int firstSecs;
+                firstSecs = firstNum * 60 * 60;
+                var secondSecs = secondNum * 60;
+                var thirdSecs = thirdNum;
+                return firstSecs + secondSecs + thirdSecs;
             }
-            x++;
-        }
-        return finals;
-    }
-    public static int GetSeconds(this string timeString)
-    {
-        var tempList = timeString.Split(":").ToBasicList();
-        if (tempList.Count > 3)
-        {
-            throw new CustomBasicException("Can't handle more than 3 :");
-        }
-        if (tempList.Count == 3)
-        {
-            int firstNum;
-            int secondNum;
-            int thirdNum;
-            firstNum = int.Parse(tempList.First().ToString());
-            secondNum = int.Parse(tempList[1]);
-            thirdNum = int.Parse(tempList.Last());
-            int firstSecs;
-            firstSecs = firstNum * 60 * 60;
-            var secondSecs = secondNum * 60;
-            var thirdSecs = thirdNum;
-            return firstSecs + secondSecs + thirdSecs;
-        }
-        if (tempList.Count == 2)
-        {
-            int firstSecs = int.Parse(tempList.First()) * 60;
-            return firstSecs + int.Parse(tempList.Last());
-        }
-        if (tempList.Count == 0)
-        {
-            throw new CustomBasicException("I think its wrong");
-        }
-        if (tempList.Count == 1)
-        {
-            throw new CustomBasicException("Should just return as is");
-        }
-        throw new CustomBasicException("Not sure");
-    }
-    public static bool IsValidDate(this string dateStr, out DateOnly? newDate)
-    {
-        bool rets = DateOnly.TryParseExact(dateStr, "MMddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly temps);
-        if (rets)
-        {
-            newDate = temps;
-            return true;
-        }
-        rets = DateOnly.TryParseExact(dateStr, "MMddyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
-        if (rets)
-        {
-            newDate = temps;
-            return true;
-        }
-        rets = DateOnly.TryParse(dateStr, out temps);
-        if (rets)
-        {
-            newDate = temps;
-            return true;
-        }
-        newDate = null;
-        return false;
-    }
-    public static BasicList<Tuple<string, int?>> GetStringIntegerCombos(this string thisStr)
-    {
-        BasicList<Tuple<string, int?>> thisList = [];
-        if (thisStr == "")
-        {
-            return thisList;
-        }
-        string item1;
-        item1 = "";
-        string item2;
-        item2 = "";
-        int x = 0;
-        bool hadNumber = false;
-        bool hadStr = false;
-        bool reject = false;
-        bool lastAlpha = false;
-        foreach (var thisItem in thisStr.ToList())
-        {
-            x += 1;
-            bool isAlpha;
-            isAlpha = thisItem.IsAlpha(true);
-            bool isInt;
-            isInt = thisItem.IsInteger();
-            if (isInt == true)
+            if (tempList.Count == 2)
             {
-                hadNumber = true;
+                int firstSecs = int.Parse(tempList.First()) * 60;
+                return firstSecs + int.Parse(tempList.Last());
             }
-            else if (isAlpha == true)
+            if (tempList.Count == 0)
             {
-                hadStr = true;
+                throw new CustomBasicException("I think its wrong");
             }
-            if (isInt == false && isAlpha == false)
+            if (tempList.Count == 1)
             {
-                reject = true;
-                break;
+                throw new CustomBasicException("Should just return as is");
             }
-            if (isAlpha == true && isInt == true)
+            throw new CustomBasicException("Not sure");
+        }
+        public bool IsValidDate(out DateOnly? newDate)
+        {
+            bool rets = DateOnly.TryParseExact(payLoad, "MMddyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly temps);
+            if (rets)
             {
-                throw new CustomBasicException("Cannot be both alpha and integers.");
+                newDate = temps;
+                return true;
             }
-            if (x == 1)
+            rets = DateOnly.TryParseExact(payLoad, "MMddyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out temps);
+            if (rets)
             {
-                item1 = thisItem.ToString();
+                newDate = temps;
+                return true;
             }
-            else if (lastAlpha == true && isAlpha == true)
+            rets = DateOnly.TryParse(payLoad, out temps);
+            if (rets)
             {
-                item1 += thisItem;
+                newDate = temps;
+                return true;
             }
-            else if (lastAlpha == false && isInt == true)
+            newDate = null;
+            return false;
+        }
+        public BasicList<Tuple<string, int?>> GetStringIntegerCombos()
+        {
+            BasicList<Tuple<string, int?>> thisList = [];
+            if (payLoad == "")
             {
-                item2 += thisItem;
+                return thisList;
             }
-            else if (lastAlpha == true && isInt == true)
+            string item1;
+            item1 = "";
+            string item2;
+            item2 = "";
+            int x = 0;
+            bool hadNumber = false;
+            bool hadStr = false;
+            bool reject = false;
+            bool lastAlpha = false;
+            foreach (var thisItem in payLoad.ToList())
             {
-                item2 = thisItem.ToString();
+                x += 1;
+                bool isAlpha;
+                isAlpha = thisItem.IsAlpha(true);
+                bool isInt;
+                isInt = thisItem.IsInteger;
+                if (isInt == true)
+                {
+                    hadNumber = true;
+                }
+                else if (isAlpha == true)
+                {
+                    hadStr = true;
+                }
+                if (isInt == false && isAlpha == false)
+                {
+                    reject = true;
+                    break;
+                }
+                if (isAlpha == true && isInt == true)
+                {
+                    throw new CustomBasicException("Cannot be both alpha and integers.");
+                }
+                if (x == 1)
+                {
+                    item1 = thisItem.ToString();
+                }
+                else if (lastAlpha == true && isAlpha == true)
+                {
+                    item1 += thisItem;
+                }
+                else if (lastAlpha == false && isInt == true)
+                {
+                    item2 += thisItem;
+                }
+                else if (lastAlpha == true && isInt == true)
+                {
+                    item2 = thisItem.ToString();
+                }
+                else
+                {
+                    int? thisInt;
+                    if (item2 == "")
+                    {
+                        thisInt = default;
+                    }
+                    else
+                    {
+                        thisInt = int.Parse(item2);
+                    }
+                    Tuple<string, int?> thisTuple = new(item1, thisInt);
+                    thisList.Add(thisTuple);
+                    item1 = thisItem.ToString();
+                    item2 = null!;
+                }
+                lastAlpha = isAlpha;
             }
-            else
+            if (reject == true)
+            {
+                thisList = [];
+                return thisList;
+            }
+            if (hadNumber == false && thisList.Count == 0)
+            {
+                thisList.Add(new Tuple<string, int?>(payLoad, default));
+            }
+            else if (hadStr == false && thisList.Count == 0 && hadNumber == true)
+            {
+                thisList.Add(new Tuple<string, int?>("", int.Parse(payLoad)));
+            }
+            else if (hadStr == true && hadNumber == true)
             {
                 int? thisInt;
                 if (item2 == "")
@@ -354,445 +400,369 @@ public static partial class Strings
                 }
                 Tuple<string, int?> thisTuple = new(item1, thisInt);
                 thisList.Add(thisTuple);
-                item1 = thisItem.ToString();
-                item2 = null!;
-            }
-            lastAlpha = isAlpha;
-        }
-        if (reject == true)
-        {
-            thisList = [];
-            return thisList;
-        }
-        if (hadNumber == false && thisList.Count == 0)
-        {
-            thisList.Add(new Tuple<string, int?>(thisStr, default));
-        }
-        else if (hadStr == false && thisList.Count == 0 && hadNumber == true)
-        {
-            thisList.Add(new Tuple<string, int?>("", int.Parse(thisStr)));
-        }
-        else if (hadStr == true && hadNumber == true)
-        {
-            int? thisInt;
-            if (item2 == "")
-            {
-                thisInt = default;
             }
             else
             {
-                thisInt = int.Parse(item2);
+                thisList = [];
+                return thisList;
             }
-            Tuple<string, int?> thisTuple = new(item1, thisInt);
-            thisList.Add(thisTuple);
-        }
-        else
-        {
-            thisList = [];
             return thisList;
         }
-        return thisList;
-    }
-    public static bool IsCompleteAlpha(this string thisStr)
-    {
-        if (thisStr.Where(xx => xx.IsAlpha() == true).Any() == true)
+        public bool IsCompleteAlpha => payLoad.All(x => x.IsAlphaNoDots);
+        public BasicList<string> Split(string words)
         {
-            return false;
-        }
-        return true;
-    }
-    public static BasicList<string> GetRange(this BasicList<string> thisList, string startWithString, string endWithString)
-    {
-        int firstIndex = thisList.IndexOf(startWithString);
-        int secondIndex = thisList.IndexOf(endWithString);
-        if (firstIndex == -1)
-        {
-            throw new CustomBasicException(startWithString + " is not found for the start string");
-        }
-        if (secondIndex == -1)
-        {
-            throw new CustomBasicException(endWithString + " is not found for the end string");
-        }
-        if (firstIndex > secondIndex)
-        {
-            throw new CustomBasicException("The first string appears later in the last than the second string");
-        }
-        return thisList.Skip(firstIndex).Take(secondIndex - firstIndex + 1).ToBasicList();
-    }
-    public static BasicList<string> Split(this string thisStr, string words)
-    {
-        int oldCount = thisStr.Length;
-        BasicList<string> tempList = [];
-        do
-        {
-            if (thisStr.Contains(words) == false)
+            int oldCount = payLoad.Length;
+            BasicList<string> tempList = [];
+            do
             {
-                if (thisStr != "")
+                if (payLoad.Contains(words) == false)
                 {
-                    tempList.Add(thisStr);
+                    if (payLoad != "")
+                    {
+                        tempList.Add(payLoad);
+                    }
+                    return tempList;
                 }
-                return tempList;
+                tempList.Add(payLoad.Substring(0, payLoad.IndexOf(words)));
+                if (tempList.Count > oldCount)
+                {
+                    throw new CustomBasicException("Can't be more than " + oldCount);
+                }
+                payLoad = payLoad.Substring(payLoad.IndexOf(words) + words.Length);
             }
-            tempList.Add(thisStr.Substring(0, thisStr.IndexOf(words)));
-            if (tempList.Count > oldCount)
+            while (true);
+        }
+        public bool ContainNumbers => payLoad.Where(Items => char.IsNumber(Items) == true).Any();
+        public string PartialString(string searchFor, bool beginning)
+        {
+            if (payLoad.Contains(searchFor) == false)
             {
-                throw new CustomBasicException("Can't be more than " + oldCount);
+                throw new CustomBasicException(searchFor + " is not contained in " + payLoad);
             }
-            thisStr = thisStr.Substring(thisStr.IndexOf(words) + words.Length);
-        }
-        while (true);
-    }
-    public static string Join(this BasicList<string> thisList, string words)
-    {
-        string newWord = "";
-        thisList.ForEach(temps =>
-        {
-            if (newWord == "")
+            if (beginning == true)
             {
-                newWord = temps;
+                return payLoad.Substring(0, payLoad.IndexOf(searchFor)).Trim();
             }
-            else
+            return payLoad.Substring(payLoad.IndexOf(searchFor) + searchFor.Length).Trim();
+        }
+        public bool ContainsFromList(BasicList<string> thisList)
+        {
+            string temps;
+            temps = payLoad.ToLower();
+            foreach (var thisItem in thisList)
             {
-                newWord = newWord + words + temps;
+                var news = thisItem.ToLower();
+                if (temps.Contains(news) == true)
+                {
+                    return true;
+                }
             }
-        });
-        return newWord;
-    }
-    public static string Join(this BasicList<string> thisList, string words, int skip, int take)
-    {
-        var newList = thisList.Skip(skip).ToBasicList();
-        if (take > 0)
-        {
-            newList = thisList.Take(take).ToBasicList();
-        }
-        return Join(newList, words);
-    }
-    public static bool ContainNumbers(this string thisStr)
-    {
-        return thisStr.Where(Items => char.IsNumber(Items) == true).Any();
-    }
-    public static string PartialString(this string fullString, string searchFor, bool beginning)
-    {
-        if (fullString.Contains(searchFor) == false)
-        {
-            throw new CustomBasicException(searchFor + " is not contained in " + fullString);
-        }
-        if (beginning == true)
-        {
-            return fullString.Substring(0, fullString.IndexOf(searchFor)).Trim();
-        }
-        return fullString.Substring(fullString.IndexOf(searchFor) + searchFor.Length).Trim();
-    }
-    public static bool ContainsFromList(this string thisStr, BasicList<string> thisList)
-    {
-        string temps;
-        temps = thisStr.ToLower();
-        foreach (var thisItem in thisList)
-        {
-            var news = thisItem.ToLower();
-            if (temps.Contains(news) == true)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    public static bool PostalCodeValidForUS(this string postalCode)
-    {
-        if (postalCode.Length < 5)
-        {
             return false;
         }
-        if (postalCode.Length == 5)
+        public bool PostalCodeValidForUS
         {
-            return int.TryParse(postalCode, out _);
-        }
-        if (postalCode.Length == 9)
-        {
-            return int.TryParse(postalCode, out _);
-        }
-        if (postalCode.Length == 10)
-        {
-            int index;
-            index = postalCode.IndexOf('-');
-            if (index != 5)
+            get
             {
+                if (payLoad.Length == 5 || payLoad.Length == 9)
+                {
+                    return int.TryParse(payLoad, out _);
+                }
+                if (payLoad.Length == 10 && payLoad[5] == '-')
+                {
+                    string temp = payLoad.Replace("-", "");
+                    return int.TryParse(temp, out _);
+                }
                 return false;
             }
-            postalCode = postalCode.Replace("-", "");
-            return int.TryParse(postalCode, out _);
         }
-        return false;
-    }
-    public static string GetWords(this string thisWord) // each upper case will represent a word.  for now; will not publish to bob's server.  if i need this function or needed for bob; then rethink that process
-    {
-        var tempList = thisWord.ToBasicList();
-        int x = 0;
-        string newText = "";
-        if (thisWord.Contains(' ') == true)
+        public string GetWords
         {
-            throw new CustomBasicException(thisWord + " cannot contain spaces already");
-        }
-        tempList.ForEach(thisItem =>
-        {
-            if (char.IsUpper(thisItem) == true && x > 0)
+            get
             {
-                newText = newText + " " + thisItem;
+                if (payLoad.Contains(' '))
+                {
+                    throw new CustomBasicException($"{payLoad} cannot contain spaces already");
+                }
+                string newText = string.Concat(
+                    payLoad.Select((c, i) => i > 0 && char.IsUpper(c) ? " " + c : c.ToString())
+                );
+                return newText.Replace("I P ", " IP ");
+            }
+        }
+        public string ToTitleCase(bool replaceUnderstores = true)
+        {
+            if (replaceUnderstores)
+            {
+                payLoad = payLoad.Replace("_", " ");
+            }
+            TextInfo currentTextInfo = CultureInfo.CurrentCulture.TextInfo;
+            string output = currentTextInfo.ToTitleCase(payLoad);
+            return output;
+        }
+        public string CapitalizeFirstLetter =>
+            string.IsNullOrEmpty(payLoad) || char.IsUpper(payLoad[0])
+                ? payLoad
+                : char.ToUpper(payLoad[0]) + payLoad.Substring(1);
+        public string ConvertCase(bool doAll = true)
+        {
+            string tempStr = "";
+            bool isSpaceOrDot = false;
+            if (doAll)
+            {
+                var loopTo = payLoad.Length - 1;
+                for (int i = 0; i <= loopTo; i++)
+                {
+                    if (payLoad[i].ToString() != " " & payLoad[i].ToString() != ".")
+                    {
+                        if (i == 0 | isSpaceOrDot)
+                        {
+                            tempStr += char.ToUpper(payLoad[i]);
+                            isSpaceOrDot = false;
+                        }
+                        else
+                        {
+                            tempStr += char.ToLower(payLoad[i]);
+                        }
+                    }
+                    else
+                    {
+                        isSpaceOrDot = true;
+                        tempStr += payLoad[i];
+                    }
+                }
             }
             else
             {
-                newText += thisItem;
-            }
-            x += 1;
-        });
-        newText = newText.Replace("I P ", " IP ");
-        return newText;
-    }
-    public static string ToTitleCase(this string info, bool replaceUnderstores = true)
-    {
-        if (replaceUnderstores)
-        {
-            info = info.Replace("_", " ");
-        }
-        TextInfo currentTextInfo = CultureInfo.CurrentCulture.TextInfo;
-        string output = currentTextInfo.ToTitleCase(info);
-        return output;
-    }
-    public static string CapitalizeFirstLetter(this string input)
-    {
-        if (string.IsNullOrEmpty(input))
-        {
-            return input;
-        }
-
-        if (char.IsUpper(input[0]))
-        {
-            return input;
-        }
-
-        return char.ToUpper(input[0]) + input.Substring(1);
-    }
-    public static string ConvertCase(this string info, bool doAll = true)
-    {
-        string tempStr = "";
-        bool isSpaceOrDot = false;
-        if (doAll)
-        {
-            var loopTo = info.Length - 1;
-            for (int i = 0; i <= loopTo; i++)
-            {
-                if (info[i].ToString() != " " & info[i].ToString() != ".")
+                var loopTo1 = payLoad.Length - 1;
+                for (int i = 0; i <= loopTo1; i++)
                 {
-                    if (i == 0 | isSpaceOrDot)
+                    if (payLoad[i].ToString() != " " & payLoad[i].ToString() != ".")
                     {
-                        tempStr += char.ToUpper(info[i]);
-                        isSpaceOrDot = false;
+                        if (isSpaceOrDot)
+                        {
+                            tempStr += char.ToUpper(payLoad[i]);
+                            isSpaceOrDot = false;
+                        }
+                        else if (i == 0)
+                        {
+                            tempStr += char.ToUpper(payLoad[0]);
+                        }
+                        else
+                        {
+                            tempStr += char.ToLower(payLoad[i]);
+                        }
                     }
                     else
                     {
-                        tempStr += char.ToLower(info[i]);
+                        if (payLoad[i].ToString() != " ")
+                        {
+                            isSpaceOrDot = !isSpaceOrDot;
+                        }
+                        tempStr += payLoad[i];
                     }
+                }
+            }
+            return tempStr;
+        }
+        public string FixBase64ForFileData =>
+            payLoad.Replace(@"\r\n", "").Replace(" ", "");
+        public void SaveFile(string path)
+        {
+            byte[] Bytes = Convert.FromBase64String(payLoad);
+
+            using FileStream FileStream = new(bb1.GetCleanedPath(path), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            FileStream.Write(Bytes, 0, Bytes.Length);
+            FileStream.Flush();
+            FileStream.Close();
+        }
+        public async Task SaveFileAsync(string path)
+        {
+            byte[] bytes = Convert.FromBase64String(payLoad);
+            using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            await fileStream.WriteAsync(bytes);
+            await fileStream.FlushAsync();
+            fileStream.Close();
+        }
+        public string GetFileData()
+        {
+            using FileStream fileStream = new(bb1.GetCleanedPath(payLoad), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            byte[] bytes = new byte[fileStream.Length - 1 + 1];
+            fileStream.ReadExactly(bytes, 0, (int)fileStream.Length);
+            fileStream.Close();
+            return Convert.ToBase64String(bytes);
+        }
+        public async Task<string> GetFileDataAsync()
+        {
+            using FileStream fileStream = new(bb1.GetCleanedPath(payLoad), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            byte[] Bytes = new byte[fileStream.Length - 1 + 1];
+            await fileStream.ReadExactlyAsync(Bytes.AsMemory(0, (int)fileStream.Length));
+            fileStream.Close();
+            return Convert.ToBase64String(Bytes);
+        }
+        public BasicList<string> GenerateSentenceList => payLoad.Split(Constants.VBCrLf).ToBasicList();
+        //was get but now not necessary since this is a property now.
+        public int ColumnNumber
+        {
+            get
+            {
+                string newStr = payLoad.ToLower();
+                BasicList<string> AlphabetList = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+                var tempList = newStr.ToList();
+                if (tempList.Count > 2)
+                {
+                    throw new CustomBasicException("Currently; only 2 digit strings can be done for figuring out the column number");
+                }
+                var index = AlphabetList.IndexOf(tempList.First().ToString());
+                if (index == -1)
+                {
+                    throw new CustomBasicException(tempList.First() + " is not part of the alphabet for the first digit of the string");
+                }
+                if (tempList.Count == 1)
+                {
+                    return index;
+                }
+                index += 1;
+                var finalIndex = AlphabetList.IndexOf(tempList.Last().ToString());
+                if (finalIndex == -1)
+                {
+                    throw new CustomBasicException(tempList.Last() + " is not part of the alphabet for the last digit of the string");
+                }
+                return index * 26 + finalIndex;
+            }
+        }
+        public (int Days, int Hours, int Minutes) Time
+        {
+            get
+            {
+                CustomBasicException thisEx = new("Incorrect.  Should have used validation");
+                _previousTime = (0, 0, 0);
+                var tempList = payLoad.Split(':').ToList();
+                bool rets;
+                int newInt;
+                if (tempList.Count == 1)
+                {
+                    rets = int.TryParse(payLoad, out newInt);
+                    if (rets == false)
+                    {
+                        throw thisEx;
+                    }
+                    return (0, 0, newInt);
+                }
+                if (tempList.Count > 3)
+                {
+                    throw thisEx;
+                }
+                BasicList<int> newList = [];
+                foreach (var thisItem in tempList)
+                {
+                    rets = int.TryParse(thisItem, out newInt);
+                    if (rets == false)
+                    {
+                        throw thisEx;
+                    }
+                    newList.Add(newInt);
+                }
+                int d;
+                int h;
+                int m;
+                if (newList.Count == 2)
+                {
+                    d = 0;
+                    h = newList.First();
+                    m = newList.Last();
                 }
                 else
                 {
-                    isSpaceOrDot = true;
-                    tempStr += info[i];
+                    d = newList.First();
+                    h = newList[1];
+                    m = newList.Last();
                 }
+                _previousString = payLoad;
+                _previousTime = (d, h, m);
+                return (d, h, m);
             }
         }
-        else
+        public int TotalSeconds
         {
-            var loopTo1 = info.Length - 1;
-            for (int i = 0; i <= loopTo1; i++)
+            get
             {
-                if (info[i].ToString() != " " & info[i].ToString() != ".")
+                if (string.IsNullOrWhiteSpace(payLoad) == true)
                 {
-                    if (isSpaceOrDot)
-                    {
-                        tempStr += char.ToUpper(info[i]);
-                        isSpaceOrDot = false;
-                    }
-                    else if (i == 0)
-                    {
-                        tempStr += char.ToUpper(info[0]);
-                    }
-                    else
-                    {
-                        tempStr += char.ToLower(info[i]);
-                    }
+                    throw new CustomBasicException("Never got the time using the GetTime format");
+                }
+                if (payLoad != _previousString)
+                {
+                    throw new CustomBasicException("You did not use the sanme string as when using the GetTime function");
+                }
+                TimeSpan thisSpan = new(_previousTime.Days, _previousTime.Hours, _previousTime.Minutes, 0);
+                return (int)thisSpan.TotalSeconds;
+            }
+        }
+        public string DoubleQuoteString => $"{Constants.DoubleQuote}{payLoad}{Constants.DoubleQuote}";
+        public T ParseEnum<T>() => (T)Enum.Parse(typeof(T), payLoad, true);
+    }
+    extension(IList<string> list)
+    {
+        public IList<string> GetRange(string startWithString, string endWithString)
+        {
+            int firstIndex = list.IndexOf(startWithString);
+            int secondIndex = list.IndexOf(endWithString);
+            if (firstIndex == -1)
+            {
+                throw new CustomBasicException(startWithString + " is not found for the start string");
+            }
+            if (secondIndex == -1)
+            {
+                throw new CustomBasicException(endWithString + " is not found for the end string");
+            }
+            if (firstIndex > secondIndex)
+            {
+                throw new CustomBasicException("The first string appears later in the last than the second string");
+            }
+            return list.Skip(firstIndex).Take(secondIndex - firstIndex + 1).ToBasicList();
+        }
+        public string Join(string words)
+        {
+            string newWord = "";
+            foreach (var item in list)
+            {
+                if (newWord == "")
+                {
+                    newWord = item;
                 }
                 else
                 {
-                    if (info[i].ToString() != " ")
-                    {
-                        isSpaceOrDot = !isSpaceOrDot;
-                    }
-                    tempStr += info[i];
+                    newWord = newWord + words + item;
                 }
             }
+            return newWord;
         }
-        return tempStr;
-    }
-    public static string FixBase64ForFileData(this string str_Image)
-    {
-        // *** Need to clean up the text in case it got corrupted travelling in an XML file
-        // i think its best to have as public.  because its possible its only corrupted because of this.
-        // has had the experience before with smart phones.
-        // however; with mango and windows phones 7; I can use a compact edition database (which would be very helpful).
-        // if doing this; then what would have to happen is I would have to have a method to check back in the music information.
-        // maybe needs to be xml afterall (don't know though).  otherwise; may have to do serializing/deserializing.
-        // some stuff is iffy at this point.
-        StringBuilder sbText = new(str_Image, str_Image.Length);
-        sbText.Replace(@"\r\n", string.Empty);
-        sbText.Replace(" ", string.Empty);
-        return sbText.ToString();
-    }
-    public static void SaveFile(this string data, string path)
-    {
-        byte[] Bytes = Convert.FromBase64String(data);
-
-        using FileStream FileStream = new(bb1.GetCleanedPath(path), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-        FileStream.Write(Bytes, 0, Bytes.Length);
-        FileStream.Flush();
-        FileStream.Close();
-    }
-    public async static Task SaveFileAsync(this string data, string path)
-    {
-        byte[] bytes = Convert.FromBase64String(data);
-        using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-        await fileStream.WriteAsync(bytes);
-        await fileStream.FlushAsync();
-        fileStream.Close();
-    }
-    public static string GetFileData(this string path)
-    {
-        using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-        byte[] bytes = new byte[fileStream.Length - 1 + 1];
-        fileStream.ReadExactly(bytes, 0, (int)fileStream.Length);
-        fileStream.Close();
-        return Convert.ToBase64String(bytes);
-    }
-    public async static Task<string> GetFileDataAsync(this string path)
-    {
-        using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-        byte[] Bytes = new byte[fileStream.Length - 1 + 1];
-        await fileStream.ReadExactlyAsync(Bytes.AsMemory(0, (int)fileStream.Length));
-        fileStream.Close();
-        return Convert.ToBase64String(Bytes);
-    }
-    public static BasicList<string> GenerateSentenceList(this string entireText)
-    {
-        return entireText.Split(Constants.VBCrLf).ToBasicList();
-    }
-    public static string BodyFromStringList(this BasicList<string> thisList)
-    {
-        if (thisList.Count == 0)
+        public string Join(string words, int skip, int take)
         {
-            throw new CustomBasicException("Must have at least one item in order to get the body from the string list");
-        }
-        StrCat cats = new();
-        thisList.ForEach(ThisItem =>
-        {
-            cats.AddToString(ThisItem, Constants.VBCrLf);
-        });
-        return cats.GetInfo();
-    }
-    public static int GetColumnNumber(this string columnString) // will be 0 based
-    {
-        string newStr = columnString.ToLower();
-        BasicList<string> AlphabetList = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-        var tempList = newStr.ToList();
-        if (tempList.Count > 2)
-        {
-            throw new CustomBasicException("Currently; only 2 digit strings can be done for figuring out the column number");
-        }
-        var index = AlphabetList.IndexOf(tempList.First().ToString());
-        if (index == -1)
-        {
-            throw new CustomBasicException(tempList.First() + " is not part of the alphabet for the first digit of the string");
-        }
-        if (tempList.Count == 1)
-        {
-            return index;
-        }
-        index += 1;
-        var finalIndex = AlphabetList.IndexOf(tempList.Last().ToString());
-        if (finalIndex == -1)
-        {
-            throw new CustomBasicException(tempList.Last() + " is not part of the alphabet for the last digit of the string");
-        }
-        return index * 26 + finalIndex;
-    }
-    public static (int Days, int Hours, int Minutes) GetTime(this string timeString)
-    {
-        CustomBasicException thisEx = new("Incorrect.  Should have used validation");
-        _previousTime = (0, 0, 0);
-        var tempList = timeString.Split(':').ToList();
-        bool rets;
-        int newInt;
-        if (tempList.Count == 1)
-        {
-            rets = int.TryParse(timeString, out newInt);
-            if (rets == false)
+            var newList = list.Skip(skip).ToBasicList();
+            if (take > 0)
             {
-                throw thisEx;
+                newList = list.Take(take).ToBasicList();
             }
-            return (0, 0, newInt);
+            return newList.Join(words);
         }
-        if (tempList.Count > 3)
+        public string BodyFromStringList
         {
-            throw thisEx;
-        }
-        BasicList<int> newList = [];
-        foreach (var thisItem in tempList)
-        {
-            rets = int.TryParse(thisItem, out newInt);
-            if (rets == false)
+            get
             {
-                throw thisEx;
+                if (list.Count == 0)
+                {
+                    throw new CustomBasicException("Must have at least one item in order to get the body from the string list");
+                }
+                StrCat cats = new();
+                foreach (var item in list)
+                {
+                    cats.AddToString(item, Constants.VBCrLf);
+                }
+                return cats.GetInfo();
             }
-            newList.Add(newInt);
         }
-        int d;
-        int h;
-        int m;
-        if (newList.Count == 2)
-        {
-            d = 0;
-            h = newList.First();
-            m = newList.Last();
-        }
-        else
-        {
-            d = newList.First();
-            h = newList[1];
-            m = newList.Last();
-        }
-        _previousString = timeString;
-        _previousTime = (d, h, m);
-        return (d, h, m);
     }
-    private static string _previousString = "";
-    private static (int Days, int Hours, int Minutes) _previousTime;
-    public static int GetTotalSeconds(this string timeString)
-    {
-        if (string.IsNullOrWhiteSpace(timeString) == true)
-        {
-            throw new CustomBasicException("Never got the time using the GetTime format");
-        }
-        if (timeString != _previousString)
-        {
-            throw new CustomBasicException("You did not use the sanme string as when using the GetTime function");
-        }
-        TimeSpan thisSpan = new(_previousTime.Days, _previousTime.Hours, _previousTime.Minutes, 0);
-        return (int)thisSpan.TotalSeconds;
-    }
-    public static string GetDoubleQuoteString(this string value) => $"{Constants.DoubleQuote}{value}{Constants.DoubleQuote}";
-    public static T ParseEnum<T>(this string value)
-    {
-        return (T)Enum.Parse(typeof(T), value, true);
-    }
-
     [GeneratedRegex("<.*?>")]
     private static partial Regex MyRegex();
 }

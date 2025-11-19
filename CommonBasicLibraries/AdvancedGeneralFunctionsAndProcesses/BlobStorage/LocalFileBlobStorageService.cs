@@ -4,7 +4,7 @@ public class LocalFileBlobStorageService : IBlobStorageService
     private readonly IConfiguration _configuration = bb1.Configuration ?? throw new CustomBasicException("Needs IConfiguration Registered");
     private string GetBlobStoragePath()
     {
-        var path = _configuration.GetBlobStorageRootPath();
+        var path = _configuration.BlobStorageRootPath;
         if (ff1.DirectoryExists(path) == false)
         {
             ff1.CreateFolder(path);

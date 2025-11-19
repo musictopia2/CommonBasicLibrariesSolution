@@ -1,54 +1,50 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class Dates
 {
-    public static DateTime ToDateTime(this DateOnly date) => new(date.Year, date.Month, date.Day); //hopefully this simple.
-    public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
-    public static TimeOnly ToTimeOnly(this DateTime date) => TimeOnly.FromDateTime(date);
-    public static string GetLongDate(this DateOnly thisDate) => thisDate.ToString("dddd M/d/yyyy");
-    public static DateOnly WhenIsThanksgivingThisYear(this DateOnly dateUsed) //try this way (since i don't think time matters)
+    extension(DateOnly date)
     {
-        int x;
-        for (x = 22; x <= 30; x++)
+        public DateTime ToDateTime => new(date.Year, date.Month, date.Day);
+        public string GetLongDate => date.ToString("dddd M/d/yyyy");
+        public DateOnly WhenIsThanksgivingThisYear
         {
-            var tempDate = new DateOnly(dateUsed.Year, 11, x);
-            if (tempDate.DayOfWeek == DayOfWeek.Thursday)
+            get
             {
-                return tempDate;
+                int x;
+                for (x = 22; x <= 30; x++)
+                {
+                    var tempDate = new DateOnly(date.Year, 11, x);
+                    if (tempDate.DayOfWeek == DayOfWeek.Thursday)
+                    {
+                        return tempDate;
+                    }
+                }
+                throw new CustomBasicException("Cannot find when thanksgiving is this year");
             }
         }
-        throw new Exception("Cannot find when thanksgiving is this year");
+        public bool IsBetweenThanksgivingAndChristmas
+        {
+            get
+            {
+                // Day after Thanksgiving
+                DateOnly start = date.WhenIsThanksgivingThisYear.AddDays(1);
+
+                // Christmas Day
+                DateOnly end = new (date.Year, 12, 25);
+
+                // Return true if date is in the range
+                return date >= start && date <= end;
+            }
+        }
     }
-    public static bool IsBetweenThanksgivingAndChristmas(this DateOnly thisDate) //only date portion is important.
+    extension(DateTime date)
     {
-        if (thisDate.Month == 12)
+        public DateOnly ToDateOnly => DateOnly.FromDateTime(date);
+        public TimeOnly ToTimeOnly => TimeOnly.FromDateTime(date);
+        public DateTime AddTimeToDate(string timeString)
         {
-            if (thisDate.Day <= 25)
-            {
-                return true;
-            }
-            return false;
+            DateTime timed = DateTime.Parse(timeString);
+            DateTime output = new(date.Year, date.Month, date.Day, timed.Hour, timed.Minute, timed.Second);
+            return output;
         }
-        if (thisDate.Month == 11)
-        {
-            if (thisDate.Day < 22)
-            {
-                return false;
-            }
-            var tempDate = DateTime.Now.ToDateOnly();
-            thisDate = new DateOnly(tempDate.Year, 11, thisDate.Day);
-            var tDate = DateTime.Now.ToDateOnly().WhenIsThanksgivingThisYear();
-            tDate = tDate.AddDays(1);
-            if (thisDate >= tDate)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    public static DateTime AddTimeToDate(this DateTime thisDate, string timestring) //since you are adding time, then means must be date/time this time.
-    {
-        DateTime timed = DateTime.Parse(timestring);
-        DateTime output = new(thisDate.Year, thisDate.Month, thisDate.Day, timed.Hour, timed.Minute, timed.Second);
-        return output;
     }
 }

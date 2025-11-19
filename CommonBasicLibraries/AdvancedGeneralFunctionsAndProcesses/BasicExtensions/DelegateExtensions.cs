@@ -1,20 +1,26 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class DelegateExtensions
 {
-    public static async Task InvokeAsync(this Func<Task>? task)
+    extension (Func<Task>? task)
     {
-        if (task is null)
+        public async Task InvokeAsync()
         {
-            return;
+            if (task is null)
+            {
+                return;
+            }
+            await task.Invoke();
         }
-        await task.Invoke();
     }
-    public static async Task InvokeAsync<T>(this Func<T, Task>? task, T item)
+    extension<T>(Func<T, Task>? task)
     {
-        if (task is null)
+        public async Task InvokeAsync(T item)
         {
-            return;
+            if (task is null)
+            {
+                return;
+            }
+            await task.Invoke(item);
         }
-        await task.Invoke(item);
     }
 }

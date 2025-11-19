@@ -1,14 +1,19 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.UploadHelpers;
 public static class UploadConfigurationExtensions
 {
-    public static string GetUploadSavePath(this IConfiguration configuration)
+    extension (IConfiguration configuration)
     {
-        var value = configuration[UploadConfigurationKeys.UploadSavePathKey];
-        if (string.IsNullOrWhiteSpace(value))
+        public string GetUploadSavePath
         {
-            throw new ConfigurationKeyNotFoundException("Upload save path is not configured.");
+            get
+            {
+                var value = configuration[UploadConfigurationKeys.UploadSavePathKey];
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ConfigurationKeyNotFoundException("Upload save path is not configured.");
+                }
+                return value;
+            }
         }
-
-        return value;
     }
 }

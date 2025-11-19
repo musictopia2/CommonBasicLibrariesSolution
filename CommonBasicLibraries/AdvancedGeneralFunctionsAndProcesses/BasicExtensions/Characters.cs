@@ -1,33 +1,41 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class Characters
 {
-    public static bool IsAlpha(this char thisChar, bool allowDots = false)
+    extension(char thisChar)
     {
-        if (AscW(thisChar) >= 97 && AscW(thisChar) <= 122)
+        public bool IsInteger
         {
-            return true;//
+            get
+            {
+                if (AscW(thisChar) >= 48 && AscW(thisChar) <= 57)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
-        if (AscW(thisChar) >= 65 && AscW(thisChar) <= 90)
+        public bool IsAlphaNoDots => thisChar.IsAlpha();
+        public bool IsAlphaAllowingDots => thisChar.IsAlpha(true);
+        internal bool IsAlpha(bool allowDots = false)
         {
-            return true;
-        }
-        if (allowDots == true)
-        {
-            if (AscW(thisChar) == 46)
+            if (AscW(thisChar) >= 97 && AscW(thisChar) <= 122)
+            {
+                return true;//
+            }
+            if (AscW(thisChar) >= 65 && AscW(thisChar) <= 90)
             {
                 return true;
             }
-        }
-        return false;
-    }
-    public static bool IsInteger(this char thisChar)
-    {
-        if (AscW(thisChar) >= 48 && AscW(thisChar) <= 57)
-        {
-            return true;
-        }
-        else
-        {
+            if (allowDots == true)
+            {
+                if (AscW(thisChar) == 46)
+                {
+                    return true;
+                }
+            }
             return false;
         }
     }

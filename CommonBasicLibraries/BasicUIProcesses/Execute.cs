@@ -1,34 +1,22 @@
 ﻿namespace CommonBasicLibraries.BasicUIProcesses;
 public static class Execute
 {
-    /// <summary>
-    ///   Executes the action on the UI thread asynchronously.
-    /// </summary>
-    /// <param name="action">The action to execute.</param>
-    public static void BeginOnUIThread(this Action action)
+    extension(Action action)
     {
-        UIPlatform.CurrentThread.BeginOnUIThread(action);
+        public void BeginOnUIThread()
+        {
+            UIPlatform.CurrentThread.BeginOnUIThread(action);
+        }
+        public void OnUIThread()
+        {
+            UIPlatform.CurrentThread.OnUIThread(action);
+        }
     }
-
-    /// <summary>
-    ///   Executes the action on the UI thread asynchronously.
-    /// </summary>
-    /// <param name = "action">The action to execute.</param>
-    public static Task OnUIThreadAsync(this Func<Task> action)
+    extension(Func<Task> action)
     {
-        return UIPlatform.CurrentThread.OnUIThreadAsync(action);
+        public Task OnUIThreadAsync()
+        {
+            return UIPlatform.CurrentThread.OnUIThreadAsync(action);
+        }
     }
-
-    /// <summary>
-    ///   Executes the action on the UI thread.
-    /// </summary>
-    /// <param name = "action">The action to execute.</param>
-    public static void OnUIThread(this Action action)
-    {
-        UIPlatform.CurrentThread.OnUIThread(action);
-    }
-
-    //wpf will handle one way.
-    //xamarin forms will handle another.
-    //if doing via unit tests, then use default.
 }
