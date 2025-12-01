@@ -17,7 +17,7 @@ public static class ListExtensions
             return $"{parameter}1";
         }
     }
-    extension<E>(IList<E> list)
+    extension<E>(BasicList<E> list)
         where E: ISimpleDatabaseEntity
     {
         public BasicList<int> GetIDList()
@@ -36,26 +36,26 @@ public static class ListExtensions
             }
         }
     }
-    extension(IList<SortInfo> sortList)
+    extension(BasicList<SortInfo> sortList)
     {
-        public IList<SortInfo> Append(string property)
+        public BasicList<SortInfo> Append(string property)
         {
             return sortList.Append(property, EnumOrderBy.Ascending);
         }
-        public IList<SortInfo> Append(string property, EnumOrderBy orderBy)
+        public BasicList<SortInfo> Append(string property, EnumOrderBy orderBy)
         {
             sortList.Add(new SortInfo() { Property = property, OrderBy = orderBy });
             return sortList;
         }
     }
-    extension(IList<UpdateFieldInfo> list)
+    extension(BasicList<UpdateFieldInfo> list)
     {
-        public IList<UpdateFieldInfo> Append(string thisProperty)
+        public BasicList<UpdateFieldInfo> Append(string thisProperty)
         {
             list.Add(new UpdateFieldInfo(thisProperty));
             return list;
         }
-        public IList<UpdateFieldInfo> Append(IEnumerable<string> propList)
+        public BasicList<UpdateFieldInfo> Append(IEnumerable<string> propList)
         {
             foreach (string prop in propList)
             {
@@ -64,9 +64,9 @@ public static class ListExtensions
             return list;
         }
     }
-    extension(IList<UpdateEntity> list)
+    extension(BasicList<UpdateEntity> list)
     {
-        public IList<UpdateEntity> Append(string thisProperty, object value)
+        public BasicList<UpdateEntity> Append(string thisProperty, object value)
         {
             list.Add(new UpdateEntity(thisProperty, value));
             return list;
