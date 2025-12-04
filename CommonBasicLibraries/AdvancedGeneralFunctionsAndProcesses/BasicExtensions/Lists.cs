@@ -222,7 +222,7 @@ public static class Lists
     extension<T>(IEnumerable<T> list)
         where T : INumber<T>
     {
-        public IList<string> CastNumberListToStringList()
+        public BasicList<string> CastNumberListToStringList()
         {
             BasicList<string> output = [];
             foreach (var item in list)
