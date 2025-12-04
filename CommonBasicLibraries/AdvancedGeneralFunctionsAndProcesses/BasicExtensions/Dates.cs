@@ -3,7 +3,7 @@ public static class Dates
 {
     extension(DateOnly date)
     {
-        public DateTime ToDateTime => new(date.Year, date.Month, date.Day);
+        public DateTime ToDateTime() => new(date.Year, date.Month, date.Day); //must do as property or does not work since there was a method that took parameters.
         public string GetLongDate => date.ToString("dddd M/d/yyyy");
         public DateOnly WhenIsThanksgivingThisYear
         {

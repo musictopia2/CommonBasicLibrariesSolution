@@ -91,30 +91,27 @@ public static class Lists
                     break;
             }
         }
-        public Span<T> AsSpan
+        public Span<T> AsSpan() //made this as method so i would not have to redo the source generators.
         {
-            get
+            if (list == null)
             {
-                if (list == null)
-                {
-                    return default;
-                }
-
-                // If it's a BasicList<T>, use the internal List<T> for efficient Span
-                if (list is BasicList<T> bl)
-                {
-                    return CollectionsMarshal.AsSpan(bl.GetInternalList);
-                }
-
-                if (list is List<T> l)
-                {
-                    return CollectionsMarshal.AsSpan(l);
-                }
-
-                // For other IEnumerable<T>, copy to array first
-                var arr = list.ToArray();
-                return new Span<T>(arr);
+                return default;
             }
+
+            // If it's a BasicList<T>, use the internal List<T> for efficient Span
+            if (list is BasicList<T> bl)
+            {
+                return CollectionsMarshal.AsSpan(bl.GetInternalList);
+            }
+
+            if (list is List<T> l)
+            {
+                return CollectionsMarshal.AsSpan(l);
+            }
+
+            // For other IEnumerable<T>, copy to array first
+            var arr = list.ToArray();
+            return new Span<T>(arr);
         }
         public void IncrementIntegers(bb1.UpdateFunct<T> selector, int startAt = 1)
         {
