@@ -50,14 +50,7 @@ public static class Lists
                 return list.Count();
             }
         }
-        public bool Contains(T value) =>
-            list switch
-            {
-                null => false,
-                List<T> l => l.Contains(value),
-                BasicList<T> bl => bl.Contains(value),
-                _ => list.Any(item => EqualityComparer<T>.Default.Equals(item, value))
-            };
+        
         public async Task ForEachAsync(ActionAsync<T> action)
         {
             switch (list)
@@ -136,6 +129,15 @@ public static class Lists
     }
     extension<T>(IList<T> list)
     {
+        //could not be under ienumerable because otherwise, does not know whether to use my custom or standard.
+        public bool Contains(T value) =>
+            list switch
+            {
+                null => false,
+                List<T> l => l.Contains(value),
+                BasicList<T> bl => bl.Contains(value),
+                _ => list.Any(item => EqualityComparer<T>.Default.Equals(item, value))
+            };
         public void RemoveGivenList(IEnumerable<T> remove)
         {
             if (list is BasicList<T> b)
