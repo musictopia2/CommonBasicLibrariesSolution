@@ -479,13 +479,22 @@ public static partial class Strings
         {
             get
             {
+                // Already human-readable → return as-is
                 if (payLoad.Contains(' '))
                 {
-                    throw new CustomBasicException($"{payLoad} cannot contain spaces already");
+                    return payLoad;
                 }
+
+                // Convert PascalCase / CamelCase to spaced words
                 string newText = string.Concat(
-                    payLoad.Select((c, i) => i > 0 && char.IsUpper(c) ? " " + c : c.ToString())
+                    payLoad.Select((c, i) =>
+                        i > 0 && char.IsUpper(c)
+                            ? " " + c
+                            : c.ToString()
+                    )
                 );
+
+                // Preserve special acronyms
                 return newText.Replace("I P ", " IP ");
             }
         }
