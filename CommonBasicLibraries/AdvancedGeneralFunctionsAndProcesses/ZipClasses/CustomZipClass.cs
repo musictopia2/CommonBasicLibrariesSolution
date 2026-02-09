@@ -1,4 +1,4 @@
-﻿using System.IO.Compression; //not common enough.
+﻿using System.IO.Compression;
 namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.ZipClasses;
 public class CustomZipClass
 {
@@ -22,6 +22,37 @@ public class CustomZipClass
             Folder = folder
         });
     }
+    public async Task SaveZipFileAsync(string zipPath, bool clearContents = true)
+    {
+        if (_zipList.Count == 0)
+        {
+            throw new CustomBasicException("There are no files for this zip file");
+        }
+        if (File.Exists(zipPath))
+        {
+            File.Delete(zipPath);
+        }
+        using FileStream zipToOpen = new(zipPath, FileMode.Create);
+        using ZipArchive archive = await ZipArchive.CreateAsync(zipToOpen, ZipArchiveMode.Create, false, null);
+        await _zipList.ForEachAsync(async x =>
+        {
+            string relative;
+            string name = ff1.FullFile(x.Path);
+            if (x.Folder == "")
+            {
+                relative = name;
+            }
+            else
+            {
+                relative = Path.Combine(x.Folder, name);
+            }
+            await archive.CreateEntryFromFileAsync(x.Path, relative);
+        });
+        if (clearContents)
+        {
+            _zipList.Clear();
+        }
+    }
     public void SaveZipFile(string zipPath, bool clearContents = true)
     {
         if (_zipList.Count == 0)
@@ -33,6 +64,7 @@ public class CustomZipClass
             File.Delete(zipPath);
         }
         using FileStream zipToOpen = new(zipPath, FileMode.Create);
+
         using ZipArchive archive = new(zipToOpen, ZipArchiveMode.Create);
         _zipList.ForEach(x =>
         {
@@ -46,12 +78,37 @@ public class CustomZipClass
             {
                 relative = Path.Combine(x.Folder, name);
             }
-            ZipArchiveEntry rr = archive.CreateEntryFromFile(x.Path, relative);
+            archive.CreateEntryFromFile(x.Path, relative);
         });
         if (clearContents)
         {
             _zipList.Clear();
         }
+    }
+    public static async Task<BasicList<OpenedZipFile>> OpenZipFileAsync(string path)
+    {
+        using ZipArchive archive = await ZipFile.OpenReadAsync(path);
+        BasicList<OpenedZipFile> output = [];
+        foreach (ZipArchiveEntry entry in archive.Entries)
+        {
+            OpenedZipFile zip = new();
+            zip.ModifyDate = entry.LastWriteTime.DateTime;
+            zip.FileName = entry.Name;
+            if (entry.FullName == entry.Name)
+            {
+                zip.FolderName = "";
+            }
+            else
+            {
+                zip.FolderName = entry.FullName.Replace(entry.Name, "");
+            }
+            output.Add(zip);
+        }
+        if (output.Count == 0)
+        {
+            throw new CustomBasicException("There are no files found in the zip file");
+        }
+        return output;
     }
     public static BasicList<OpenedZipFile> OpenZipFile(string path)
     {
@@ -78,9 +135,42 @@ public class CustomZipClass
         }
         return output;
     }
+    public static async Task UnzipAllAsync(string zipFile, string extractPath)
+    {
+        await ZipFile.ExtractToDirectoryAsync(zipFile, extractPath, true);
+    }
     public static void UnzipAll(string zipFile, string extractPath)
     {
         ZipFile.ExtractToDirectory(zipFile, extractPath, true);
+    }
+    public static async Task UnzipFileAsync(string zipFile, string extractPath, BasicList<OpenedZipFile> files)
+    {
+        using ZipArchive archive = await ZipFile.OpenReadAsync(zipFile);
+        BasicList<ZipArchiveEntry> entries = [];
+        files.ForEach(file =>
+        {
+            ZipArchiveEntry zip = archive.Entries.Where(x => x.Name == file.FileName).Single();
+            entries.Add(zip);
+        });
+        if (Directory.Exists(extractPath) == false)
+        {
+            throw new CustomBasicException("Destination does not exist");
+        }
+        await entries.ForEachAsync(async x =>
+        {
+            BasicList<string> folders = x.FullName.Split(@"\").ToBasicList();
+            folders.RemoveLastItem();
+            string temps = extractPath;
+            folders.ForEach(folder =>
+            {
+                temps = Path.Combine(temps, folder);
+                if (Directory.Exists(temps) == false)
+                {
+                    Directory.CreateDirectory(temps);
+                }
+            });
+            await x.ExtractToFileAsync(@$"C:\TempFiles\ResultZip\{x.FullName}", true);
+        });
     }
     public static void UnzipFile(string zipFile, string extractPath, BasicList<OpenedZipFile> files)
     {
