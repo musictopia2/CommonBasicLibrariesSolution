@@ -1,7 +1,8 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 public static class HttpExtensions
 {
-    extension (HttpClient client)
+    
+    extension<T>(HttpClient client)
     {
         public async Task SaveDownloadFileAsync(string requesturi, string path)
         {
@@ -14,9 +15,6 @@ public static class HttpExtensions
             var results = await output.Content.ReadAsByteArrayAsync();
             await stream.WriteAsync(results);
         }
-    }
-    extension<T>(HttpClient client)
-    {
         public async Task<HttpResponseMessage> PostJsonAsync(string uri, T value)
         {
             StringContent content = await value.GetContentAsync();
@@ -72,7 +70,6 @@ public static class HttpExtensions
         public async Task<T> GetJsonAsync()
         {
             string res = await response.Content.ReadAsStringAsync();
-            response.Dispose();
             try
             {
                 return await js1.DeserializeObjectAsync<T>(res);
@@ -86,7 +83,8 @@ public static class HttpExtensions
         {
             if (response.IsSuccessStatusCode == false)
             {
-                throw new CustomBasicException(errorMessage);
+                string details = await response.Content.ReadAsStringAsync();
+                throw new CustomBasicException($"{errorMessage} (HTTP {(int)response.StatusCode} {response.StatusCode}). {details}");
             }
             return await response.GetJsonAsync<T>();
         }

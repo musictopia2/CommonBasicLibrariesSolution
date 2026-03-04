@@ -30,11 +30,15 @@ public abstract class ApiClientServiceCore(HttpClient client)
     }
 
 
-
+    protected async Task<TResponse> PostAsync<TRequest, TResponse>(string route, TRequest body, string errorMessage)
+    {
+        using var resp = await Client.PostJsonAsync(Url(route), body);
+        return await resp.GetJsonAsync<TResponse>(errorMessage);
+    }
     protected async Task PostAsync<TRequest>(string route, TRequest body, string errorMessage)
     {
-        var resp = await Client.PostJsonAsync(Url(route), body);
-        if (resp.IsSuccessStatusCode == false)
+        using var resp = await Client.PostJsonAsync(Url(route), body);
+        if (!resp.IsSuccessStatusCode)
         {
             throw new CustomBasicException(errorMessage);
         }
@@ -48,15 +52,15 @@ public abstract class ApiClientServiceCore(HttpClient client)
 
     protected async Task<TResponse> PutAsync<TRequest, TResponse>(string route, TRequest body, string errorMessage)
     {
-        var resp = await Client.PutJsonAsync(Url(route), body);
+        using var resp = await Client.PutJsonAsync(Url(route), body);
+        if (!resp.IsSuccessStatusCode)
+        {
+            throw new CustomBasicException(errorMessage);
+        }
         return await resp.GetJsonAsync<TResponse>(errorMessage);
     }
 
-    protected async Task<string> GetDownloadDataAsync(string route, CancellationToken ct = default)
-    {
-        Uri finalAddress = Url(route);
-        return await Client.GetStringAsync(finalAddress, ct);
-    }
+    
 
 
 }

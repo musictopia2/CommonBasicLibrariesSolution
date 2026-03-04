@@ -11,7 +11,13 @@ public abstract class InternetApiClientService(HttpClient client) : ApiClientSer
         get
         {
             var scheme = UseHttps ? "https" : "http";
-            var root = $"{scheme}://{Host}/";
+            var host = Host.Trim();
+            if (host.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                host.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new CustomBasicException($"Host must not include scheme. Host was '{Host}'.");
+            }
+            var root = $"{scheme}://{host}/";
             return string.IsNullOrWhiteSpace(BasePath)
                 ? new Uri(root)
                 : new Uri(new Uri(root), BasePath.TrimStart('/') + "/");
