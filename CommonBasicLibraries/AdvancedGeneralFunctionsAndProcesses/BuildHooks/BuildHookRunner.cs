@@ -2,19 +2,54 @@
 public static class BuildHookRunner
 {
     // Most tools: allow either 3 or 4 args.
-    public static Task RunAsync(string[] args, Func<BuildHookArgs, Task> action)
-        => RunCoreAsync(
-            args,
-            validate: a => ValidateArgCount(a, allow3: true, allow4: true),
-            factory: a => new BuildHookArgs(a[0], a[1], a[2], a.Length >= 4 ? a[3] : null),
-            action: action);
+    private static string? DeriveProjectName(string? projectName, string projectFileName)
+    {
+        if (string.IsNullOrWhiteSpace(projectName) == false)
+        {
+            return projectName;
+        }
 
-    // Tools that MUST have output folder (docker/updater).
+        // If VS didn't pass ProjectName, derive from the file name: MyLib.csproj -> MyLib
+        if (string.IsNullOrWhiteSpace(projectFileName))
+        {
+            return projectName; // nothing we can do
+        }
+
+        return Path.GetFileNameWithoutExtension(projectFileName);
+    }
+
+    public static Task RunAsync(string[] args, Func<BuildHookArgs, Task> action)
+    => RunCoreAsync(
+        args,
+        validate: a => ValidateArgCount(a, allow3: true, allow4: true),
+        factory: a =>
+        {
+            string projectName = a[0];
+            string projectDir = a[1];
+            string projectFileName = a[2];
+            string? outputDir = a.Length >= 4 ? a[3] : null;
+
+            projectName = DeriveProjectName(projectName, projectFileName) ?? "";
+
+            return new BuildHookArgs(projectName, projectDir, projectFileName, outputDir);
+        },
+        action: action);
+
     public static Task RunWithOutputAsync(string[] args, Func<BuildHookArgs, Task> action)
         => RunCoreAsync(
             args,
             validate: a => ArgumentValidator.ValidateArguments(a, 4),
-            factory: a => new BuildHookArgs(a[0], a[1], a[2], a[3]),
+            factory: a =>
+            {
+                string projectName = a[0];
+                string projectDir = a[1];
+                string projectFileName = a[2];
+                string outputDir = a[3];
+
+                projectName = DeriveProjectName(projectName, projectFileName) ?? "";
+
+                return new BuildHookArgs(projectName, projectDir, projectFileName, outputDir);
+            },
             action: action);
 
     private static async Task RunCoreAsync<TArgs>(
