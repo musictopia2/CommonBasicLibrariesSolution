@@ -5,62 +5,77 @@ public abstract class ApiClientServiceCore(HttpClient client)
 
     protected abstract Uri BaseUri { get; }
 
-    protected Uri Url(string route) => new(BaseUri, route.TrimStart('/'));
+    protected Uri Url(string route)
+    {
+        if (Uri.TryCreate(route, UriKind.Absolute, out _))
+        {
+            throw new CustomBasicException($"Route must be relative, not absolute: '{route}'.");
+        }
+
+        return new Uri(BaseUri, route.TrimStart('/'));
+    }
 
     // helpers (GET/POST/etc) go here...
 
-
-    protected Task GetEnsureSuccessAsync(string route, string errorMessage)
-     => EnsureSuccessAsync(() => Client.GetAsync(Url(route)), errorMessage);
-
-
-
-    protected Task<string> GetStringAsync(string route)
-        => Client.GetStringAsync(Url(route));
-
-
-
-    private static async Task EnsureSuccessAsync(Func<Task<HttpResponseMessage>> call, string errorMessage)
+    //befor was SaveResultsAsync
+    protected async Task GetEnsureSuccessAsync(string route, string errorMessage, CancellationToken ct = default)
     {
-        using var response = await call();
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new CustomBasicException(errorMessage);
-        }
+        using var resp = await Client.GetAsync(Url(route), ct);
+        await EnsureSuccessAsync(resp, errorMessage, ct);
     }
 
 
-    protected async Task<TResponse> PostAsync<TRequest, TResponse>(string route, TRequest body, string errorMessage)
+    //before was GetDownloadDataAsync
+    protected Task<string> GetStringAsync(string route, CancellationToken ct = default)
+        => Client.GetStringAsync(Url(route), ct);
+
+
+
+
+
+    protected async Task<TResponse> PostAsync<TRequest, TResponse>(
+        string route, TRequest body, string errorMessage, CancellationToken ct = default)
     {
-        using var resp = await Client.PostJsonAsync(Url(route), body);
-        return await resp.GetJsonAsync<TResponse>(errorMessage);
+        using var resp = await Client.PostJsonAsync(Url(route), body, ct);
+        await EnsureSuccessAsync(resp, errorMessage, ct);
+        return await resp.GetJsonAsync<TResponse>();
     }
-    protected async Task PostAsync<TRequest>(string route, TRequest body, string errorMessage)
+    //before was PostResultsAsync
+    protected async Task PostAsync<TRequest>(string route, TRequest body, string errorMessage, CancellationToken ct = default)
     {
-        using var resp = await Client.PostJsonAsync(Url(route), body);
-        if (!resp.IsSuccessStatusCode)
-        {
-            throw new CustomBasicException(errorMessage);
-        }
+        using var resp = await Client.PostJsonAsync(Url(route), body, ct);
+        await EnsureSuccessAsync(resp, errorMessage, ct);
     }
     //before was getresults.
-    protected Task<T> GetAsync<T>(string route, string errorMessage)
+    protected async Task<T> GetAsync<T>(string route, string errorMessage, CancellationToken ct = default)
     {
-        // ct not supported by your existing extension; that's okay for now (or add overloads later).
-        return Client.GetJsonAsync<T>(Url(route), errorMessage);
+        using var resp = await Client.GetAsync(Url(route), ct);
+        await EnsureSuccessAsync(resp, errorMessage, ct);
+        return await resp.GetJsonAsync<T>();
     }
 
-    protected async Task<TResponse> PutAsync<TRequest, TResponse>(string route, TRequest body, string errorMessage)
+    protected async Task<TResponse> PutAsync<TRequest, TResponse>(string route, TRequest body, string errorMessage, CancellationToken ct = default)
     {
-        using var resp = await Client.PutJsonAsync(Url(route), body);
-        if (!resp.IsSuccessStatusCode)
+        using var resp = await Client.PutJsonAsync(Url(route), body, ct);
+        await EnsureSuccessAsync(resp, errorMessage, ct);
+        return await resp.GetJsonAsync<TResponse>();
+    }
+
+    private static async Task EnsureSuccessAsync(HttpResponseMessage resp, string errorMessage, CancellationToken ct)
+    {
+        if (resp.IsSuccessStatusCode)
         {
-            throw new CustomBasicException(errorMessage);
+            return;
         }
-        return await resp.GetJsonAsync<TResponse>(errorMessage);
+
+        var text = await resp.Content.ReadAsStringAsync(ct);
+        throw new CustomBasicException($"{errorMessage}. Status: {resp.StatusCode}. {text}");
     }
 
-    
-
-
+    protected async Task<byte[]> GetBytesAsync(string route, string errorMessage, CancellationToken ct = default)
+    {
+        using var resp = await Client.GetAsync(Url(route), ct);
+        await EnsureSuccessAsync(resp, errorMessage, ct);
+        return await resp.Content.ReadAsByteArrayAsync(ct);
+    }
 }

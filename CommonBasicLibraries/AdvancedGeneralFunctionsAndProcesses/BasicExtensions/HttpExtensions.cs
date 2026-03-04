@@ -15,44 +15,44 @@ public static class HttpExtensions
             var results = await output.Content.ReadAsByteArrayAsync();
             await stream.WriteAsync(results);
         }
-        public async Task<HttpResponseMessage> PostJsonAsync(string uri, T value)
+        public async Task<HttpResponseMessage> PostJsonAsync(string uri, T value, CancellationToken ct)
         {
             StringContent content = await value.GetContentAsync();
-            return await client.PostAsync(uri, content);
+            return await client.PostAsync(uri, content,ct);
         }
-        public async Task<HttpResponseMessage> PostJsonAsync(Uri uri, T value)
+        public async Task<HttpResponseMessage> PostJsonAsync(Uri uri, T value, CancellationToken ct)
         {
             StringContent content = await value.GetContentAsync();
-            return await client.PostAsync(uri, content);
+            return await client.PostAsync(uri, content, ct);
         }
-        public async Task<HttpResponseMessage> PutJsonAsync(string uri, T value)
+        public async Task<HttpResponseMessage> PutJsonAsync(string uri, T value, CancellationToken ct)
         {
             StringContent content = await value.GetContentAsync();
-            return await client.PutAsync(uri, content);
+            return await client.PutAsync(uri, content,ct);
         }
-        public async Task<HttpResponseMessage> PutJsonAsync(Uri uri, T value)
+        public async Task<HttpResponseMessage> PutJsonAsync(Uri uri, T value, CancellationToken ct)
         {
             StringContent content = await value.GetContentAsync();
-            return await client.PutAsync(uri, content);
+            return await client.PutAsync(uri, content, ct);
         }
-        public async Task<HttpResponseMessage> PatchJsonAsync(string uri, T value)
+        public async Task<HttpResponseMessage> PatchJsonAsync(string uri, T value, CancellationToken ct)
         {
             StringContent content = await value.GetContentAsync();
-            return await client.PatchAsync(uri, content);
+            return await client.PatchAsync(uri, content, ct);
         }
-        public async Task<HttpResponseMessage> PatchJsonAsync(Uri uri, T value)
+        public async Task<HttpResponseMessage> PatchJsonAsync(Uri uri, T value, CancellationToken ct)
         {
             StringContent content = await value.GetContentAsync();
-            return await client.PatchAsync(uri, content);
+            return await client.PatchAsync(uri, content, ct);
         }
-        public async Task<T> GetJsonAsync(Uri uri, string errorMessage = "Failed to get async json data.  Rethink")
+        public async Task<T> GetJsonAsync(Uri uri, string errorMessage = "Failed to get async json data.  Rethink", CancellationToken ct = default)
         {
-            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage response = await client.GetAsync(uri, ct);
             return await response.GetJsonAsync<T>(errorMessage);
         }
-        public async Task<T> GetJsonAsync(string uri, string errorMessage = "Failed to get async json data.  Rethink")
+        public async Task<T> GetJsonAsync(string uri, string errorMessage = "Failed to get async json data.  Rethink", CancellationToken ct = default)
         {
-            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage response = await client.GetAsync(uri, ct);
             return await response.GetJsonAsync<T>(errorMessage);
         }
     }

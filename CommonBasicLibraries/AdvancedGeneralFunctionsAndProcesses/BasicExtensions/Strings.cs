@@ -573,24 +573,25 @@ public static partial class Strings
             }
             return tempStr;
         }
-        public string FixBase64ForFileData =>
-            payLoad.Replace(@"\r\n", "").Replace(" ", "");
+        // Legacy helper – was used to clean Base64 payloads in earlier versions.
+        // Keeping temporarily in case older clients still send formatted Base64.
+        // Can likely be removed in future cleanup.
+        //public string FixBase64ForFileData =>
+        //    payLoad.Replace(@"\r\n", "").Replace(" ", "");
+
+        //decided to risk removing.  if i have to bring it back later, will do.
+
         public void SaveFile(string path)
         {
             byte[] Bytes = Convert.FromBase64String(payLoad);
-
-            using FileStream FileStream = new(bb1.GetCleanedPath(path), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-            FileStream.Write(Bytes, 0, Bytes.Length);
-            FileStream.Flush();
-            FileStream.Close();
+            File.WriteAllBytes(bb1.GetCleanedPath(path), Bytes);
+           
         }
         public async Task SaveFileAsync(string path)
         {
             byte[] bytes = Convert.FromBase64String(payLoad);
-            using FileStream fileStream = new(bb1.GetCleanedPath(path), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-            await fileStream.WriteAsync(bytes);
-            await fileStream.FlushAsync();
-            fileStream.Close();
+            await File.WriteAllBytesAsync(bb1.GetCleanedPath(path), bytes); //suggested using the files part for it.
+
         }
         public string GetFileData()
         {
