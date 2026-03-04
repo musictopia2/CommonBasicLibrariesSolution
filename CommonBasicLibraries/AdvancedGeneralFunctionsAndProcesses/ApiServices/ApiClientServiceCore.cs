@@ -49,7 +49,7 @@ public abstract class ApiClientServiceCore(HttpClient client)
 
     protected async Task PostAsync(string route, string errorMessage, CancellationToken ct = default)
     {
-        using var resp = await Client.PostAsync(route, null, ct);
+        using var resp = await Client.PostAsync(Url(route), null, ct);
         await EnsureSuccessAsync(resp, errorMessage, ct);
     }
 
@@ -76,7 +76,14 @@ public abstract class ApiClientServiceCore(HttpClient client)
         }
 
         var text = await resp.Content.ReadAsStringAsync(ct);
-        throw new CustomBasicException($"{errorMessage}. Status: {resp.StatusCode}. {text}");
+        var url = resp.RequestMessage?.RequestUri;
+
+        throw new CustomBasicException(
+            $"{errorMessage}\n" +
+            $"URL: {url}\n" +
+            $"Status: {(int)resp.StatusCode} ({resp.StatusCode})\n" +
+            $"Response: {text}"
+        );
     }
 
     protected async Task<byte[]> GetBytesAsync(string route, string errorMessage, CancellationToken ct = default)
