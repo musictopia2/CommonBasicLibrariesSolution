@@ -46,6 +46,13 @@ public abstract class ApiClientServiceCore(HttpClient client)
         using var resp = await Client.PostJsonAsync(Url(route), body, ct);
         await EnsureSuccessAsync(resp, errorMessage, ct);
     }
+
+    protected async Task PostAsync(string route, string errorMessage, CancellationToken ct = default)
+    {
+        using var resp = await Client.PostAsync(route, null, ct);
+        await EnsureSuccessAsync(resp, errorMessage, ct);
+    }
+
     //before was getresults.
     protected async Task<T> GetAsync<T>(string route, string errorMessage, CancellationToken ct = default)
     {
