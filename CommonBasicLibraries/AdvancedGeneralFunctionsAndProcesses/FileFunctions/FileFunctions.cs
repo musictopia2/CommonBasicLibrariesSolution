@@ -1,6 +1,20 @@
 ﻿namespace CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.FileFunctions;
 public static class FileFunctions
 {
+    public static string GetApplicationDataFilePath(string appName, string fileName)
+    {
+        if (string.IsNullOrWhiteSpace(appName))
+        {
+            throw new CustomBasicException("App name cannot be empty");
+        }
+        string basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string folder = Path.Combine(basePath, appName);
+        if (DirectoryExists(folder) == false)
+        {
+            CreateFolder(folder);
+        }
+        return Path.Combine(folder, fileName);
+    }
     public static void PopulateAndroidDesktopApplicationPath(ref string fileName)
     {
         if (bb1.OS == bb1.EnumOS.Android)
