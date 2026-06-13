@@ -18,6 +18,15 @@ public static class RandomHelpers
         _rs ??= new RandomGenerator();
         return _rs;
     }
+
+
+    public static void SetUpSeedForDefaultGenerator(int seed)
+    {
+        RandomGenerator randoms = new();
+        randoms.SetRandomSeed(seed);
+        _rs = randoms;
+    }
+
     public static IRandomData GetRandomDataClass()
     {
         _data ??= new BasicRandomDataClass();

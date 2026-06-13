@@ -5,6 +5,22 @@ public static class RandomExtensions
 
     extension (IRandomNumberList random)
     {
+        public bool NextBool(int truePercentage = 50)
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThan(truePercentage, 0);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(truePercentage, 100);
+
+            if (truePercentage == 0)
+            {
+                return false;
+            }
+            if (truePercentage == 100)
+            {
+                return true;
+            }
+
+            return random.GetRandomNumber(100) <= truePercentage;
+        }
         public string NextAddress(int syllables = 2, bool shortSuffix = true) => $"{random.GetRandomNumber(6000, 100)} {NextStreet(random, syllables, shortSuffix)}";
         public int NextAge(EnumAgeRanges types = EnumAgeRanges.Adult) //this means if somebody wants to create a new version and have different rules it can.
         {
