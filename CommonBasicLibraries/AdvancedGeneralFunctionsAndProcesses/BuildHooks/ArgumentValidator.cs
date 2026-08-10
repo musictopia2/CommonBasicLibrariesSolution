@@ -16,4 +16,21 @@ public static class ArgumentValidator
             Environment.Exit(1); // Exit with failure
         }
     }
+    public static void ValidateMinimumArguments(
+    string[] args,
+    int minimumCount)
+    {
+        if (args.Length == 0)
+        {
+            Console.WriteLine("No arguments provided.");
+            Environment.Exit(1); // Exit with failure
+        }
+        if (args.Length < minimumCount)
+        {
+            Console.WriteLine(
+                $"Expected at least {minimumCount} arguments, but got {args.Length}.");
+
+            Environment.Exit(1);
+        }
+    }
 }
