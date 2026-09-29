@@ -1,13 +1,15 @@
-﻿using System.Collections;
+﻿using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BsonHelpers;
+using System.Collections;
 using static CommonBasicLibraries.BasicDataSettingsAndProcesses.BasicDataFunctions;
 namespace CommonBasicLibraries.CollectionClasses;
-public class BasicList<T> : IEnumerable<T>, IListModifiers<T>, 
+public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
     ICountCollection, ISimpleList<T>, IBasicList<T>, IList<T>,
     IReadOnlyList<T>
-    //needs inheritance still because game package needs it.
+//needs inheritance still because game package needs it.
 {
     internal List<T> GetInternalList => PrivateList; //only internal can do this.
     protected List<T> PrivateList;
+    protected virtual void ListChanged(){}
     public BasicList() //try this to make it supported by the system.text.json serializer system.
     {
         PrivateList = new(5);
@@ -63,6 +65,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
                 throw new CustomArgumentException("Index", "When setting custom collection, out of range");
             }
             PrivateList[index] = value;
+            ListChanged();
         }
     }
     public int Count => PrivateList.Count;
@@ -80,16 +83,19 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
     {
         PrivateList.Add(value);
         Behavior!.Add(value);
+        ListChanged();
     }
     public void AddRange(IEnumerable<T> thisList)
     {
         PrivateList.AddRange(thisList);
         Behavior!.AddRange(thisList);
+        ListChanged();
     }
     public void Clear()
     {
         PrivateList.Clear();
         Behavior!.Clear();
+        ListChanged();
     }
     public bool Contains(T item)
     {
@@ -345,10 +351,12 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
     public void InsertBeginning(T value)
     {
         InsertItem(0, value);
+        ListChanged();
     }
     public void InsertMiddle(int index, T value)
     {
         InsertItem(index, value);
+        ListChanged();
     }
     private void InsertItem(int index, T value)
     {
@@ -404,10 +412,12 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
     public void RemoveAt(int index)
     {
         RemoveItem(index);
+        ListChanged();
     }
     public void RemoveFirstItem()
     {
         RemoveItem(0);
+        ListChanged();
     }
     private void RemoveItem(int index)
     {
@@ -423,10 +433,12 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
             PrivateList.Remove(item);
             Behavior!.RemoveSpecificItem(item);
         }
+        ListChanged();
     }
     public void RemoveLastItem()
     {
         RemoveItem(PrivateList.Count - 1);
+        ListChanged();
     }
     public void RemoveRange(int index, int count)
     {
@@ -441,6 +453,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
             return false;
         }
         RemoveItem(index);
+        ListChanged();
         return true;
     }
     public void ReplaceAllWithGivenItem(T value)
@@ -458,6 +471,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
     public void Reverse()
     {
         PrivateList.Reverse();
+        ListChanged();
     }
     public void ShuffleList()
     {
@@ -474,6 +488,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
         }
         PrivateList.Clear();
         PrivateList.AddRange(rList);
+        ListChanged();
     }
     public void ShuffleList(int howMany)
     {
@@ -490,19 +505,23 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
     public void Sort()
     {
         PrivateList.Sort();
+        ListChanged();
     }
     public void Sort(Comparison<T> comparison)
     {
         PrivateList.Sort(comparison);
+        ListChanged();
     }
     public void Sort(int index, int count, IComparer<T> comparer)
     {
         PrivateList.Sort(index, count, comparer);
+        ListChanged();
     }
     //for icomparer, 1 means greater than.  -1 means less than.  0 means equal.
     public void Sort(IComparer<T> comparer)
     {
         PrivateList.Sort(comparer);
+        ListChanged();
     }
     public bool TrueForAll(Predicate<T> match)
     {
@@ -521,6 +540,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
         ArgumentNullException.ThrowIfNull(items);
         PrivateList.InsertRange(index, items);
         Behavior!.AddRange(items);
+        ListChanged();
     }
     public int HowMany(Predicate<T> match)
     {
@@ -544,6 +564,7 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
         PrivateList.Clear();
         PrivateList.AddRange(thisList);
         Behavior!.ReplaceRange(thisList);
+        ListChanged();
     }
     public void RemoveOnlyOneAfterAction(Predicate<T> match, Action<T> action)
     {
@@ -621,17 +642,18 @@ public class BasicList<T> : IEnumerable<T>, IListModifiers<T>,
         int oldIndex = PrivateList.IndexOf(item);
         PrivateList.RemoveAt(oldIndex);
         PrivateList.Insert(newIndex, item);
-    }
-    void IList<T>.Insert(int index, T item)
-    {
-        PrivateList.Insert(index, item);
+        ListChanged();
     }
     void ICollection<T>.CopyTo(T[] array, int arrayIndex)
     {
         PrivateList.CopyTo(array, arrayIndex); //go ahead and allow.  a person can only use if specifically using the interface.
     }
+    void IList<T>.Insert(int index, T item)
+    {
+        InsertMiddle(index, item);
+    }
     bool ICollection<T>.Remove(T item)
     {
-        return PrivateList.Remove(item);
+        return RemoveSpecificItem(item);
     }
 }
