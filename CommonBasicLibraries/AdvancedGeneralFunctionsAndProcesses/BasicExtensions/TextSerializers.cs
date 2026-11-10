@@ -138,4 +138,56 @@ public static class TextSerializers
             return output;
         }
     }
+
+    extension(BasicList<string> payLoad)
+    {
+        public BasicList<T> DeserializeDelimitedTextList<T>(
+            string delimiter = ",")
+            where T : new()
+        {
+            BasicList<T> output = [];
+
+            var table = FlatDataHelpers<T>.MasterContext
+                ?? throw new InvalidOperationException(
+                    "Flat data provider is not registered.");
+
+            int columnCount = table.ColumnCount;
+
+            foreach (var line in payLoad)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                T news = new();
+                var parts = line.Split(delimiter);
+
+                if (parts.Length != columnCount)
+                {
+                    throw new InvalidOperationException(
+                        $"The number of columns in the line {line} " +
+                        $"does not match the expected column count of {columnCount}.");
+                }
+
+                for (int x = 0; x < parts.Length; x++)
+                {
+                    if (table.TrySetValue(
+                        ref news,
+                        x,
+                        parts[x].Trim(),
+                        out string? error) == false)
+                    {
+                        throw new CustomBasicException(
+                            $"Unable to set data. Error was {error}");
+                    }
+                }
+
+                output.Add(news);
+            }
+
+            return output;
+        }
+    }
+
 }
